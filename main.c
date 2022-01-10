@@ -8,10 +8,6 @@
 
 #include "main.h"
 
-typedef struct {
-    unsigned val;
-}coord_t;
-
 void print_curve(unsigned degree, coord_t* x, coord_t* y);
 void add_segments(unsigned degree, coord_t* x, coord_t* y);
 void hilbert(unsigned degree, coord_t* x, coord_t* y);

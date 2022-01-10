@@ -6,7 +6,7 @@
 #include <string.h>
 #include <time.h>
 
-#include "regulafalsi.h"
+#include "main.h"
 
 typedef struct {
     unsigned val;
@@ -205,12 +205,13 @@ void hilbert(unsigned degree, coord_t* x, coord_t* y) {
 
 
 void hilbert_V1(unsigned degree, coord_t* x, coord_t* y) {
-    printf("Not implemented yet\n");
+    /*printf("Not implemented yet\n");
     degree +=1;
     x[0].val = 0;
-    y[0].val = 0;
+    y[0].val = 0;*/
+    
+    v_assembly(degree, x, y);
 }
-
 
 void write_svg(char* output_file_svg, int degree, coord_t* x, coord_t* y) {
     unsigned length = 1 << (2*degree);

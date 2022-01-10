@@ -1,7 +1,7 @@
 CC = gcc
 CFLAGS = -Wall -Werror
 LDFLAGS = 
-OBJFILES = main.o
+OBJFILES = main.o v_assembly.S
 TARGET = main
 
 all: $(TARGET)

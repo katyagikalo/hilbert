@@ -16,7 +16,7 @@ void write_svg(char* output_file_svg, int degree, coord_t* x, coord_t* y);
 void write_txt(char* output_file_txt, int degree, coord_t* x, coord_t* y);
 void help_message();
 
-void compare(coord_t* x1, coord_t* y1, coord_t* x2, coord_t* y2);
+void compare();
 
 int main(int argc, char **argv) {
     int version = 0;
@@ -112,14 +112,7 @@ int main(int argc, char **argv) {
     x = malloc(sizeof(coord_t)*curve_length);
     y = malloc(sizeof(coord_t)*curve_length);
     
-    
-    coord_t* x2 = malloc(sizeof(coord_t)*curve_length);
-    coord_t* y2 = malloc(sizeof(coord_t)*curve_length);
-    
-    hilbert(degree, x, y);
-    hilbert_V1(degree, x2, y2);
-    
-    compare(x, y, x2, y2);
+    compare();
 
 //hilbert
     switch (version) {
@@ -220,10 +213,18 @@ void hilbert_V1(unsigned degree, coord_t* x, coord_t* y) {
     v_assembly(degree, x, y);
 }
 
-void compare(coord_t* x1, coord_t* y1, coord_t* x2, coord_t* y2){
-    
+void compare(){
     for(unsigned degree = 0; degree <= 5; degree++){
         unsigned length = 1 << (2 * degree);
+        
+        coord_t* x1 = malloc(sizeof(coord_t)*length);
+        coord_t* y1 = malloc(sizeof(coord_t)*length);
+        coord_t* x2 = malloc(sizeof(coord_t)*length);
+        coord_t* y2 = malloc(sizeof(coord_t)*length);
+        
+        hilbert(degree, x1, y1);
+        hilbert_V1(degree, x2, y2)
+        
         for(int i = 0; i < length; i++){
             if(x1[i].val != x2[i].val){
                 printf("x values were different. degree: %d, c: %d, assembly: %d\n", degree, x1[i].val, x2[i].val);

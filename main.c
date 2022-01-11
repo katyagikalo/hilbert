@@ -220,22 +220,24 @@ void hilbert_V1(unsigned degree, coord_t* x, coord_t* y) {
     v_assembly(degree, x, y);
 }
 
-void compare(unsigned degree, coord_t* x1, coord_t* y1, coord_t* x2, coord_t* y2){
-    unsigned length = 1 << (2 * degree);
+void compare(coord_t* x1, coord_t* y1, coord_t* x2, coord_t* y2){
     
-    for(int i = 0; i < length; i++){
-        if(x1[i].val != x2[i].val){
-            printf("x values were different. c: %d, assemb;y: %d", x1[i].val, x2[i].val);
-            return;
-        }
-        
-        if(y1[i].val != y2[i].val){
-            printf("y values were different. c: %d, assemb;y: %d", y1[i].val, y2[i].val);
-            return;
+    for(unsigned degree = 0; degree <= 5; degree++){
+        unsigned length = 1 << (2 * degree);
+        for(int i = 0; i < length; i++){
+            if(x1[i].val != x2[i].val){
+                printf("x values were different. degree: %d, c: %d, assembly: %d\n", degree, x1[i].val, x2[i].val);
+                return;
+            }
+            
+            if(y1[i].val != y2[i].val){
+                printf("y values were different. degree: %d, c: %d, assembly: %d\n", degree, y1[i].val, y2[i].val);
+                return;
+            }
         }
     }
     
-    printf("congrats! both arrays have the sasme values");
+    printf("congrats! both arrays have same values\n");
 }
 
 void write_svg(char* output_file_svg, int degree, coord_t* x, coord_t* y) {

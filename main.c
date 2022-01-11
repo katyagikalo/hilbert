@@ -16,8 +16,6 @@ void write_svg(char* output_file_svg, int degree, coord_t* x, coord_t* y);
 void write_txt(char* output_file_txt, int degree, coord_t* x, coord_t* y);
 void help_message();
 
-void compare();
-
 int main(int argc, char **argv) {
     int version = 0;
     bool print_console,messure_time,write_txt_file,write_svg_file;
@@ -111,8 +109,6 @@ int main(int argc, char **argv) {
     unsigned curve_length = 1 << (2 * degree);
     x = malloc(sizeof(coord_t)*curve_length);
     y = malloc(sizeof(coord_t)*curve_length);
-    
-    //compare();
 
 //hilbert
     switch (version) {
@@ -198,49 +194,14 @@ void hilbert(unsigned degree, coord_t* x, coord_t* y) {
     //curve for degree = 1
     x[0].val = 0; y[0].val = 0; x[1].val = 0; y[1].val = 1; x[2].val = 1; y[2].val = 1; x[3].val = 1; y[3].val = 0;
 
-    for(unsigned i = 2; i <= degree; i++){
-        add_segments(i-1, x, y);
+    for(unsigned i = 1; i <= degree; i++){
+        add_segments(i, x, y);
     }
 }
 
 
 void hilbert_V1(unsigned degree, coord_t* x, coord_t* y) {
-    /*printf("Not implemented yet\n");
-    degree +=1;
-    x[0].val = 0;
-    y[0].val = 0;*/
-    
     v_assembly(degree, x, y);
-}
-
-void compare(){
-    for(unsigned degree = 0; degree <= 15; degree++){
-        unsigned length = 1 << (2 * degree);
-        
-        coord_t* x1 = malloc(sizeof(coord_t)*length);
-        coord_t* y1 = malloc(sizeof(coord_t)*length);
-        coord_t* x2 = malloc(sizeof(coord_t)*length);
-        coord_t* y2 = malloc(sizeof(coord_t)*length);
-        
-        hilbert(degree, x1, y1);
-        hilbert_V1(degree, x2, y2);
-        
-        for(int i = 0; i < length; i++){
-            if(x1[i].val != x2[i].val){
-                printf("x values were different. degree: %d, c: %d, assembly: %d\n", degree, x1[i].val, x2[i].val);
-                return;
-            }
-            
-            if(y1[i].val != y2[i].val){
-                printf("y values were different. degree: %d, c: %d, assembly: %d\n", degree, y1[i].val, y2[i].val);
-                return;
-            }
-        }
-        
-        printf("degree = %d done\n", degree);
-    }
-    
-    printf("congrats! both arrays have same values\n");
 }
 
 void write_svg(char* output_file_svg, int degree, coord_t* x, coord_t* y) {

@@ -96,7 +96,7 @@ segments_loop:
     sub r10, qword ptr [rdx + 4*rcx]
     mov qword ptr [rdx + r11], r10
 
-    inc r9d
+    inc rcx
     
     jmp segments_loop
 

@@ -237,7 +237,7 @@ void compare(){
             }
         }
         
-        printf("degree = %d done", degree);
+        printf("degree = %d done\n", degree);
     }
     
     printf("congrats! both arrays have same values\n");

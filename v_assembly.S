@@ -54,7 +54,7 @@ segments_loop:
     mov dword ptr [rsi + r11], r10d
 
     mov r10d, dword ptr [rdx + 4*rcx]       //y[i] + segment max coordinate + 1
-    add r10, rcx
+    add r10, r9
     inc r10
     mov dword ptr [rdx + r11], r10d
 
@@ -65,12 +65,12 @@ segments_loop:
     imul r11, 4
 
     mov r10d, dword ptr [rsi + 4*rcx]       //x[i] + segment max coordinate + 1
-    add r10, rcx
+    add r10, r9
     inc r10
     mov dword ptr [rsi + r11], r10d
 
     mov r10d, dword ptr [rdx + 4*rcx]       //y[i] + segment max coordinate + 1
-    add r10, rcx
+    add r10, r9
     inc r10
     mov dword ptr [rdx + r11], r10d
 
@@ -86,13 +86,13 @@ segments_loop:
     add r11, rcx
     imul r11, 4
 
-    mov r10, rcx                        //2 * segment max coordinate + 1 - x[i]
+    mov r10, r9                        //2 * segment max coordinate + 1 - x[i]
     imul r10, 2
     inc r10
     sub r10d, dword ptr [rsi + 4*rcx]
     mov dword ptr [rsi + r11], r10d
 
-    mov r10, rcx                        //segment max coordinate + 1 - y[i]
+    mov r10, r9                        //segment max coordinate + 1 - y[i]
     sub r10d, dword ptr [rdx + 4*rcx]
     mov dword ptr [rdx + r11], r10d
 

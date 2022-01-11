@@ -119,7 +119,7 @@ int main(int argc, char **argv) {
     hilbert(degree, x, y);
     hilbert_V1(degree, x2, y2);
     
-    compare(degree, x, y, x2, y2);
+    compare(x, y, x2, y2);
 
 //hilbert
     switch (version) {

@@ -112,7 +112,7 @@ int main(int argc, char **argv) {
     x = malloc(sizeof(coord_t)*curve_length);
     y = malloc(sizeof(coord_t)*curve_length);
     
-    compare();
+    //compare();
 
 //hilbert
     switch (version) {

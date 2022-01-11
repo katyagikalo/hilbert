@@ -46,7 +46,7 @@ segments_loop:
     je degrees_loop
 
     //left upper segment
-    mov r11, r8                        //segment length + i
+    /*mov r11, r8                        //segment length + i
     add r11, rcx
     imul r11, 4
     
@@ -72,7 +72,7 @@ segments_loop:
     mov r10, qword ptr [rdx + 4*rcx]       //y[i] + segment max coordinate + 1
     add r10, rcx
     inc r10
-    mov qword ptr [rdx + r11], r10
+    mov qword ptr [rdx + r11], r10*/
 
     //left lower segment
     mov r10, qword ptr [rsi + 4*rcx]
@@ -80,7 +80,7 @@ segments_loop:
     mov qword ptr [rsi + 4*rcx], r11
     mov qword ptr [rdx + 4*rcx], r10
 
-    //right lower segment
+    /*//right lower segment
     mov r11, r8                        //3 * segment length + i
     imul r11, 3
     add r11, rcx
@@ -94,7 +94,7 @@ segments_loop:
 
     mov r10, rcx                        //segment max coordinate + 1 - y[i]
     sub r10, qword ptr [rdx + 4*rcx]
-    mov qword ptr [rdx + r11], r10
+    mov qword ptr [rdx + r11], r10*/
 
     inc rcx
     

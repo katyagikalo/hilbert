@@ -115,18 +115,19 @@ right_lower:
     imul r11, 3
     add r11, rcx
     imul r11, 4
-
-    movd xmm1, 1
+    
+    mov r10, 1
+    movd xmm1, r10
     pshufd xmm1, xmm1, 0x00
 
-    movups xmm0, r9
+    movd xmm0, r9
     pshufd xmm0, xmm0, 0x00
-    pmuld xmm0, 2
+    mulsd xmm0, 2
     psubd xmm0, xmm1
     psubd xmm0, [rsi + 4*rcx]
     movups [rsi + r11], xmm0
 
-    movups xmm0, r9
+    movd xmm0, r9
     pshufd xmm0, xmm0, 0x00
     psubd xmm0, xmm1
     psubd xmm0, [rdx + 4*rcx]

@@ -111,8 +111,8 @@ int main(int argc, char **argv) {
     y = malloc(sizeof(coord_t)*curve_length);
     
     
-    x2 = malloc(sizeof(coord_t)*curve_length);
-    y2 = malloc(sizeof(coord_t)*curve_length);
+    coord_t* x2 = malloc(sizeof(coord_t)*curve_length);
+    coord_t* y2 = malloc(sizeof(coord_t)*curve_length);
     
     hilbert(degree, x, y);
     hilbert_V1(degree, x2, y2);

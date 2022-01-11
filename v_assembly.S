@@ -46,17 +46,17 @@ segments_loop:
     je degrees_loop
 
     //left upper segment
-    /*mov r11, r8                        //segment length + i
+    mov r11, r8                        //segment length + i
     add r11, rcx
     imul r11, 4
     
-    mov r10, qword ptr [rsi + 4*rcx]       //x[i]
-    mov qword ptr [rsi + r11], r10
+    mov r10d, dword ptr [rsi + 4*rcx]       //x[i]
+    mov dword ptr [rsi + r11], r10d
 
-    mov r10, qword ptr [rdx + 4*rcx]       //y[i] + segment max coordinate + 1
+    mov r10d, dword ptr [rdx + 4*rcx]       //y[i] + segment max coordinate + 1
     add r10, rcx
     inc r10
-    mov qword ptr [rdx + r11], r10
+    mov dword ptr [rdx + r11], r10d
 
     //right upper segment
     mov r11, r8                        //2 * segment length + i
@@ -64,15 +64,15 @@ segments_loop:
     add r11, rcx
     imul r11, 4
 
-    mov r10, qword ptr [rsi + 4*rcx]       //x[i] + segment max coordinate + 1
+    mov r10d, dword ptr [rsi + 4*rcx]       //x[i] + segment max coordinate + 1
     add r10, rcx
     inc r10
-    mov qword ptr [rsi + r11], r10
+    mov dword ptr [rsi + r11], r10d
 
-    mov r10, qword ptr [rdx + 4*rcx]       //y[i] + segment max coordinate + 1
+    mov r10d, dword ptr [rdx + 4*rcx]       //y[i] + segment max coordinate + 1
     add r10, rcx
     inc r10
-    mov qword ptr [rdx + r11], r10*/
+    mov dword ptr [rdx + r11], r10d
 
     //left lower segment
     mov r10d, dword ptr [rsi + 4*rcx]
@@ -80,7 +80,7 @@ segments_loop:
     mov dword ptr [rsi + 4*rcx], r11d
     mov dword ptr [rdx + 4*rcx], r10d
 
-    /*//right lower segment
+    //right lower segment
     mov r11, r8                        //3 * segment length + i
     imul r11, 3
     add r11, rcx
@@ -89,12 +89,12 @@ segments_loop:
     mov r10, rcx                        //2 * segment max coordinate + 1 - x[i]
     imul r10, 2
     inc r10
-    sub r10, qword ptr [rsi + 4*rcx]
-    mov qword ptr [rsi + r11], r10
+    sub r10d, dword ptr [rsi + 4*rcx]
+    mov dword ptr [rsi + r11], r10d
 
     mov r10, rcx                        //segment max coordinate + 1 - y[i]
-    sub r10, qword ptr [rdx + 4*rcx]
-    mov qword ptr [rdx + r11], r10*/
+    sub r10d, dword ptr [rdx + 4*rcx]
+    mov dword ptr [rdx + r11], r10d
 
     inc rcx
     

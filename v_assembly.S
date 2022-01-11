@@ -70,10 +70,10 @@ left_upper:
     add r11, rcx
     imul r11, 4
     
-    movups xmm1, dword ptr [rsi + 4*rcx]    //x[i] .. x[i+3]
+    movups xmm1, [rsi + 4*rcx]    //x[i] .. x[i+3]
     //mov r10d, dword ptr [rsi + 4*rcx]       //x[i]
     //mov dword ptr [rsi + r11], r10d
-    movups dword ptr [rsi + r11], xmm0
+    movups [rsi + r11], xmm0
 
     mov r10d, dword ptr [rdx + 4*rcx]       //y[i] + segment max coordinate + 1
     add r10, r9

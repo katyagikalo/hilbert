@@ -93,12 +93,14 @@ segments_loop:
     movss xmm0, xmm2
     paddd xmm0, xmm0
     psubd xmm0, xmm1
-    psubd xmm0, [rsi + r9]
+    movups [rsi + r9], xmm1
+    psubd xmm0, xmm1
     movups [rsi + r11], xmm0
 
     movss xmm0, xmm2
     psubd xmm0, xmm1
-    psubd xmm0, [rdx + r9]
+    movups [rdx + r9], xmm1
+    psubd xmm0, xmm1
     movups [rdx + r11], xmm0
 
     add r9, 16

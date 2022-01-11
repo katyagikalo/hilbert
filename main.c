@@ -16,6 +16,8 @@ void write_svg(char* output_file_svg, int degree, coord_t* x, coord_t* y);
 void write_txt(char* output_file_txt, int degree, coord_t* x, coord_t* y);
 void help_message();
 
+void compare(unsigned degree, coord_t* x1, coord_t* y1, coord_t* x2, coord_t* y2);
+
 int main(int argc, char **argv) {
     int version = 0;
     bool print_console,messure_time,write_txt_file,write_svg_file;
@@ -223,12 +225,12 @@ void compare(unsigned degree, coord_t* x1, coord_t* y1, coord_t* x2, coord_t* y2
     
     for(int i = 0; i < length; i++){
         if(x1[i].val != x2[i].val){
-            printf("x values were different. c: %d, assemb;y: %d", x1[i], x2[i]);
+            printf("x values were different. c: %d, assemb;y: %d", x1[i].val, x2[i].val);
             return;
         }
         
         if(y1[i].val != y2[i].val){
-            printf("y values were different. c: %d, assemb;y: %d", y1[i], y2[i]);
+            printf("y values were different. c: %d, assemb;y: %d", y1[i].val, y2[i].val);
             return;
         }
     }

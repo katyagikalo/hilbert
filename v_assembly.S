@@ -122,7 +122,7 @@ right_lower:
 
     movd xmm0, r9
     pshufd xmm0, xmm0, 0x00
-    mulsd xmm0, 2
+    paddd xmm0, xmm0
     psubd xmm0, xmm1
     psubd xmm0, [rsi + 4*rcx]
     movups [rsi + r11], xmm0

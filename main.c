@@ -214,7 +214,7 @@ void hilbert_V1(unsigned degree, coord_t* x, coord_t* y) {
 }
 
 void compare(){
-    for(unsigned degree = 0; degree <= 10; degree++){
+    for(unsigned degree = 0; degree <= 100; degree++){
         unsigned length = 1 << (2 * degree);
         
         coord_t* x1 = malloc(sizeof(coord_t)*length);

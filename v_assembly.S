@@ -42,6 +42,7 @@ degrees_loop:
 
     xor rcx, rcx                            //loop counter
     xor r9, r9
+
 segments_loop:
     cmp rcx, r8
     je degrees_loop

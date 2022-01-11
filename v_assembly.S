@@ -41,7 +41,7 @@ degrees_loop:
     pshufd xmm2, xmm2, 0x00
 
     xor rcx, rcx                            //loop counter
-    
+    xor r9, r9
 segments_loop:
     cmp rcx, r8
     je degrees_loop

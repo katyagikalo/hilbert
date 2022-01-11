@@ -89,11 +89,11 @@ segments_loop:
     mov r10, rcx                        //2 * segment max coordinate + 1 - x[i]
     imul r10, 2
     inc r10
-    sub r10, dword ptr [rsi + 4*rcx]
+    sub r10, qword ptr [rsi + 4*rcx]
     mov qword ptr [rsi + r11], r10
 
     mov r10, rcx                        //segment max coordinate + 1 - y[i]
-    sub r10, dword ptr [rdx + 4*rcx]
+    sub r10, qword ptr [rdx + 4*rcx]
     mov qword ptr [rdx + r11], r10
 
     inc r9d

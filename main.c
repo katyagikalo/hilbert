@@ -16,7 +16,7 @@ void write_svg(char* output_file_svg, int degree, coord_t* x, coord_t* y);
 void write_txt(char* output_file_txt, int degree, coord_t* x, coord_t* y);
 void help_message();
 
-void compare(unsigned degree, coord_t* x1, coord_t* y1, coord_t* x2, coord_t* y2);
+void compare(coord_t* x1, coord_t* y1, coord_t* x2, coord_t* y2);
 
 int main(int argc, char **argv) {
     int version = 0;

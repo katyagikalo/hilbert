@@ -75,10 +75,10 @@ segments_loop:
     mov qword ptr [rdx + r11], r10*/
 
     //left lower segment
-    mov r10, dword ptr [rsi + 4*rcx]
-    mov r11, dword ptr [rdx + 4*rcx]
-    mov dword ptr [rsi + 4*rcx], r11
-    mov dword ptr [rdx + 4*rcx], r10
+    mov r10d, dword ptr [rsi + 4*rcx]
+    mov r11d, dword ptr [rdx + 4*rcx]
+    mov dword ptr [rsi + 4*rcx], r11d
+    mov dword ptr [rdx + 4*rcx], r10d
 
     /*//right lower segment
     mov r11, r8                        //3 * segment length + i

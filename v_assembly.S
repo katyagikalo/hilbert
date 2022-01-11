@@ -6,68 +6,68 @@
 .align 16
 
 v_assembly:
-    cmp rdi, 0
+    cmp edi, 0
     jle end
 
-    xor rax, rax                //segment degree
+    xor eax, eax                //segment degree
 
-    mov dword ptr [rsi], 0      //x[0]
-    mov dword ptr [rdx], 0      //y[0]
+    mov dword ptr [esi], 0      //x[0]
+    mov dword ptr [edx], 0      //y[0]
 
-    mov dword ptr [rsi + 4], 0      //x[1]
-    mov dword ptr [rdx + 4], 1      //y[1]
+    mov dword ptr [esi + 4], 0      //x[1]
+    mov dword ptr [edx + 4], 1      //y[1]
 
-    mov dword ptr [rsi + 8], 1      //x[2]
-    mov dword ptr [rdx + 8], 1      //y[2]
+    mov dword ptr [esi + 8], 1      //x[2]
+    mov dword ptr [edx + 8], 1      //y[2]
 
-    mov dword ptr [rsi + 12], 1      //x[3]
-    mov dword ptr [rdx + 12], 0      //y[3]
+    mov dword ptr [esi + 12], 1      //x[3]
+    mov dword ptr [edx + 12], 0      //y[3]
 
 degrees_loop:
-    inc rax
+    inc eax
 
-    cmp rax, rdi
+    cmp eax, edi
     je end
     
-    mov r8, 1                  //segment length
-    mov rcx, rax
-    imul rcx, 2                  //2 * segment degree
-    shl r8, cl                  //1 << (2 * (segment degree))
+    mov r8d, 1                  //segment length
+    mov ecx, eax
+    imul ecx, 2                  //2 * segment degree
+    shl r8d, cl                  //1 << (2 * (segment degree))
     
-    mov rcx, rax
-    mov r9, 1                   //segment max coordinate
-    shl rcx, cl                  //1 << segment degree
-    dec r9                      //(1 << segment_degree) - 1
+    mov ecx, eax
+    mov r9d, 1                   //segment max coordinate
+    shl ecx, cl                  //1 << segment degree
+    dec r9d                      //(1 << segment_degree) - 1
 
-    xor rcx, rcx                //counter
+    xor ecx, ecx                //counter
 
 segments_loop:
-    cmp rcx, r8
+    cmp ecx, r8d
     je degrees_loop
 
     //left upper segment
-    mov r11, r8                        //segment length + i
-    add r11, rcx
-    imul r11, 4
+    mov r11d, r8d                        //segment length + i
+    add r11d, ecx
+    imul r11d, 4
     
-    mov r10, dword ptr [esi + 4*ecx]       //x[i]
-    mov dword ptr [esi + r11], r10
+    mov r10d, dword ptr [esi + 4*ecx]       //x[i]
+    mov dword ptr [esi + r11d], r10d
 
-    mov r10, dword ptr [edx + 4*ecx]       //y[i] + segment max coordinate + 1
-    add r10, ecx
-    inc r10
+    mov r10d, dword ptr [edx + 4*ecx]       //y[i] + segment max coordinate + 1
+    add r10d, ecx
+    inc r10d
     mov dword ptr [edx + r11d], r10d
 
     //right upper segment
-    mov r11d, r8                        //2 * segment length + i
+    mov r11d, r8d                        //2 * segment length + i
     imul r11d, 2
     add r11d, ecx
     imul r11d, 4
 
-    mov r10, dword ptr [esi + 4*ecx]       //x[i] + segment max coordinate + 1
+    mov r10d, dword ptr [esi + 4*ecx]       //x[i] + segment max coordinate + 1
     add r10d, ecx
     inc r10d
-    mov dword ptr [rsi + r11], r10d
+    mov dword ptr [esi + r11d], r10d
 
     mov r10, dword ptr [edx + 4*ecx]       //y[i] + segment max coordinate + 1
     add r10d, ecx
@@ -81,7 +81,7 @@ segments_loop:
     mov dword ptr [edx + 4*ecx], r10d
 
     //right lower segment
-    mov r11d, r8                        //3 * segment length + i
+    mov r11d, r8d                        //3 * segment length + i
     imul r11d, 3
     add r11d, ecx
     imul r11d, 4

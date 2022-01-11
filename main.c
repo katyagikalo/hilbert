@@ -172,15 +172,15 @@ void print_curve(unsigned degree, coord_t* x, coord_t* y){
 
 
 void add_segments(unsigned segment_degree, coord_t* x, coord_t* y){
-    unsigned segment_length = 1 << (2 * (segment_degree)), segment_coord = (1 << segment_degree) - 1;
+    unsigned segment_length = 1 << (2 * (segment_degree)), segment_coord = (1 << segment_degree);
     for(unsigned i = 0; i < segment_length; ++i) {
         //left upper segment
         x[segment_length + i].val = x[i].val;
-        y[segment_length + i].val = y[i].val + segment_coord + 1;
+        y[segment_length + i].val = y[i].val + segment_coord;
 
         //right upper segment
-        x[2*segment_length + i].val = x[i].val + segment_coord + 1;
-        y[2*segment_length + i].val = y[i].val + segment_coord + 1;
+        x[2*segment_length + i].val = x[i].val + segment_coord;
+        y[2*segment_length + i].val = y[i].val + segment_coord;
 
         //left lower segment
         unsigned temp = x[i].val;
@@ -188,8 +188,8 @@ void add_segments(unsigned segment_degree, coord_t* x, coord_t* y){
         y[i].val = temp;
 
         //right lower segment
-        x[3*segment_length + i].val = 2*segment_coord + 1 - x[i].val;
-        y[3*segment_length + i].val = segment_coord - y[i].val;
+        x[3*segment_length + i].val = 2*segment_coord - 1 - x[i].val;
+        y[3*segment_length + i].val = segment_coord - 1 - y[i].val;
     }
 }
 

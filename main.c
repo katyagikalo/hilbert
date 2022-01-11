@@ -223,7 +223,7 @@ void compare(){
         coord_t* y2 = malloc(sizeof(coord_t)*length);
         
         hilbert(degree, x1, y1);
-        hilbert_V1(degree, x2, y2)
+        hilbert_V1(degree, x2, y2);
         
         for(int i = 0; i < length; i++){
             if(x1[i].val != x2[i].val){

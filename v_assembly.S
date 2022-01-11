@@ -31,13 +31,12 @@ degrees_loop:
     
     mov r8, 1                               //segment length
     mov rcx, rax
-    imul rcx, 2                             //2 * segment degree
+    add rcx, rcx
     shl r8, cl                              //1 << (2 * (segment degree))
     
     mov rcx, rax
     mov r9, 1                               //segment max coordinate
     shl r9, cl                              //1 << segment degree
-    //dec r9                                  //(1 << segment_degree) - 1
 
     xor rcx, rcx                            //loop counter
     
@@ -45,31 +44,11 @@ segments_loop:
     cmp rcx, r8
     je degrees_loop
 
-    jmp left_upper
-
-left_upper_end:
-
-    jmp right_upper
-
-right_upper_end:
-    
-    jmp left_lower
-
-left_lower_end:
-    
-    jmp right_lower
-
-right_lower_end:
-
-    add rcx, 4
-    
-    jmp segments_loop
-
-left_upper:
+    //left upper segment
     mov r11, r8                             //segment length + i
     add r11, rcx
     imul r11, 4
-    
+
     movups xmm0, [rsi + 4*rcx]              //x[i] .. x[i+3]
     movups [rsi + r11], xmm0
 
@@ -78,10 +57,8 @@ left_upper:
     pshufd xmm1, xmm1, 0x00
     paddd xmm0, xmm1                            //y[i] + segment_coord .. y[i+3] + segment_coord
     movups [rdx + r11], xmm0
-    
-    jmp left_upper_end
 
-right_upper:
+    //right upper segment
     mov r11, r8                             //2 * segment length + i
     imul r11, 2
     add r11, rcx
@@ -98,24 +75,20 @@ right_upper:
     pshufd xmm1, xmm1, 0x00
     paddd xmm0, xmm1                            //y[i] + segment_coord .. y[i+3] + segment_coord
     movups [rdx + r11], xmm0
-    
-    jmp right_upper_end
 
-left_lower:
+    //left lower segment
     movups xmm0, [rsi + 4*rcx]              //x[i] .. x[i+3]
     movups xmm1, [rdx + 4*rcx]                   //y[i] .. y[i+3]
-    
+
     movups [rsi + 4*rcx], xmm1
     movups [rdx + 4*rcx], xmm0
-    
-    jmp left_lower_end
 
-right_lower:
+    //right lower segment
     mov r11, r8                        //3 * segment length + i
     imul r11, 3
     add r11, rcx
     imul r11, 4
-    
+
     mov r10, 1
     movd xmm1, r10
     pshufd xmm1, xmm1, 0x00
@@ -132,8 +105,10 @@ right_lower:
     psubd xmm0, xmm1
     psubd xmm0, [rdx + 4*rcx]
     movups [rdx + r11], xmm0
+
+    add rcx, 4
     
-    jmp right_lower_end
+    jmp segments_loop
 
 end:
     ret

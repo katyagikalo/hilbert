@@ -109,6 +109,15 @@ int main(int argc, char **argv) {
     unsigned curve_length = 1 << (2 * degree);
     x = malloc(sizeof(coord_t)*curve_length);
     y = malloc(sizeof(coord_t)*curve_length);
+    
+    
+    x2 = malloc(sizeof(coord_t)*curve_length);
+    y2 = malloc(sizeof(coord_t)*curve_length);
+    
+    hilbert(degree, x, y);
+    hilbert_V1(degree, x2, y2);
+    
+    compare(degree, x, y, x2, y2);
 
 //hilbert
     switch (version) {

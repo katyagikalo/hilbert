@@ -91,16 +91,14 @@ segments_loop:
     pshufd xmm1, xmm1, 0x00
 
     movups xmm0, xmm2
-    //paddd xmm0, xmm0
-    //psubd xmm0, xmm1
-    movups xmm1, [rsi + 4*rcx]
+    paddd xmm0, xmm0
     psubd xmm0, xmm1
+    psubd xmm0, [rsi + 4*rcx]
     movups [rsi + r11], xmm0
 
     movups xmm0, xmm2
-    //psubd xmm0, xmm1
-    movups xmm1, [rdx + 4*rcx]
     psubd xmm0, xmm1
+    psubd xmm0, [rdx + 4*rcx]
     movups [rdx + r11], xmm0
 
     add r9, 16

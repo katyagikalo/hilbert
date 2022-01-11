@@ -14,14 +14,14 @@ v_assembly:
     mov dword ptr [esi], 0      //x[0]
     mov dword ptr [edx], 0      //y[0]
 
-    mov dword ptr [esi + 4], 0      //x[1]
-    mov dword ptr [edx + 4], 1      //y[1]
+    mov dword ptr [esi + 1], 0      //x[1]
+    mov dword ptr [edx + 1], 1      //y[1]
 
-    mov dword ptr [esi + 8], 1      //x[2]
-    mov dword ptr [edx + 8], 1      //y[2]
+    mov dword ptr [esi + 2], 1      //x[2]
+    mov dword ptr [edx + 2], 1      //y[2]
 
-    mov dword ptr [esi + 12], 1      //x[3]
-    mov dword ptr [edx + 12], 0      //y[3]
+    mov dword ptr [esi + 3], 1      //x[3]
+    mov dword ptr [edx + 3], 0      //y[3]
 
 degrees_loop:
     inc eax

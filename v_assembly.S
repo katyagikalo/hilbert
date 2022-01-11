@@ -69,7 +69,7 @@ segments_loop:
     inc r10d
     mov dword ptr [esi + r11d], r10d
 
-    mov r10, dword ptr [edx + 4*ecx]       //y[i] + segment max coordinate + 1
+    mov r10d, dword ptr [edx + 4*ecx]       //y[i] + segment max coordinate + 1
     add r10d, ecx
     inc r10d
     mov dword ptr [edx + r11d], r10d

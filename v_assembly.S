@@ -52,11 +52,11 @@ segments_loop:
     add r11, rcx
     imul r11, 4
 
-    movups xmm0, [rsi + r9]              //x[i] .. x[i+3]
+    movups xmm0, [rsi + r9]                 //x[i] .. x[i+3]
     movups [rsi + r11], xmm0
 
-    movups xmm0, [rdx + r9]                   //y[i] .. y[i+3]
-    paddd xmm0, xmm2                            //y[i] + segment_coord .. y[i+3] + segment_coord
+    movups xmm0, [rdx + r9]                 //y[i] .. y[i+3]
+    paddd xmm0, xmm2                        //y[i] + segment_coord .. y[i+3] + segment_coord
     movups [rdx + r11], xmm0
 
     //right upper segment
@@ -65,23 +65,23 @@ segments_loop:
     add r11, rcx
     imul r11, 4
 
-    movups xmm0, [rsi + r9]              //x[i] .. x[i+3]
+    movups xmm0, [rsi + r9]                 //x[i] .. x[i+3]
     paddd xmm0, xmm2
     movups [rsi + r11], xmm0
 
-    movups xmm0, [rdx + r9]                   //y[i] .. y[i+3]
-    paddd xmm0, xmm2                            //y[i] + segment_coord .. y[i+3] + segment_coord
+    movups xmm0, [rdx + r9]                 //y[i] .. y[i+3]
+    paddd xmm0, xmm2                        //y[i] + segment_coord .. y[i+3] + segment_coord
     movups [rdx + r11], xmm0
 
     //left lower segment
-    movups xmm0, [rsi + r9]              //x[i] .. x[i+3]
-    movups xmm1, [rdx + r9]                   //y[i] .. y[i+3]
+    movups xmm0, [rsi + r9]                 //x[i] .. x[i+3]
+    movups xmm1, [rdx + r9]                 //y[i] .. y[i+3]
 
     movups [rsi + r9], xmm1
     movups [rdx + r9], xmm0
 
     //right lower segment
-    mov r11, r8                        //3 * segment length + i
+    mov r11, r8                             //3 * segment length + i
     imul r11, 3
     add r11, rcx
     imul r11, 4

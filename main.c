@@ -194,7 +194,7 @@ void hilbert(unsigned degree, coord_t* x, coord_t* y) {
     //curve for degree = 1
     x[0].val = 0; y[0].val = 0; x[1].val = 0; y[1].val = 1; x[2].val = 1; y[2].val = 1; x[3].val = 1; y[3].val = 0;
 
-    for(unsigned i = 1; i <= degree; i++){
+    for(unsigned i = 1; i < degree; i++){
         add_segments(i, x, y);
     }
 }

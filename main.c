@@ -5,13 +5,16 @@
 #include <ctype.h>
 #include <string.h>
 #include <time.h>
+#include <immintrin.h>
 
 #include "main.h"
 
 void print_curve(unsigned degree, coord_t* x, coord_t* y);
 void add_segments(unsigned degree, coord_t* x, coord_t* y);
+void vadd_segments(unsigned degree, coord_t* x, coord_t* y);
 void hilbert(unsigned degree, coord_t* x, coord_t* y);
 void hilbert_V1(unsigned degree, coord_t* x, coord_t* y);
+void hilbert_V2(unsigned degree, coord_t* x, coord_t* y);
 void write_svg(char* output_file_svg, int degree, coord_t* x, coord_t* y);
 void write_txt(char* output_file_txt, int degree, coord_t* x, coord_t* y);
 void help_message();
@@ -189,6 +192,14 @@ void add_segments(unsigned segment_degree, coord_t* x, coord_t* y){
     }
 }
 
+/*void vadd_segments(unsigned degree, coord_t* x, coord_t* y){
+    unsigned segment_length = 1 << (2 * (segment_degree)), segment_coord = (1 << segment_degree);
+    for(int i = 0; i < segment_length; ++i){
+        __mm128i vx = _mm_loadu_si128(x);
+        __mm128i vy = _mm_loadu_si128(y);
+    }
+}*/
+
 
 void hilbert(unsigned degree, coord_t* x, coord_t* y) {
     //curve for degree = 1
@@ -199,9 +210,63 @@ void hilbert(unsigned degree, coord_t* x, coord_t* y) {
     }
 }
 
+void rot(int n, int *x, int *y, int rx, int ry) {
+    if (ry == 0) {
+        if (rx == 1) {
+            *x = n-1 - *x;
+            *y = n-1 - *y;
+        }
+
+        int t  = *x;
+        *x = *y;
+        *y = t;
+    }
+}
+
+void d2xy(int n, int d, int *x, int *y) {
+    int rx, ry, s, t=d;
+    *x = *y = 0;
+    for (s=1; s<n; s*=2) {
+        rx = 1 & (t/2);
+        ry = 1 & (t ^ rx);
+        rot(s, x, y, rx, ry);
+        *x += s * rx;
+        *y += s * ry;
+        t /= 4;
+    }
+}
+
 
 void hilbert_V1(unsigned degree, coord_t* x, coord_t* y) {
-    v_assembly(degree, x, y);
+   // v_assembly(degree, x, y);
+    unsigned length = 1 << (2 * degree);
+    d2xy(degree, length, x, y);
+}
+
+
+void find_coord(unsigned degree, unsigned i){
+    unsigned length = 1 << 2*degree, segment_length = length / 4;
+    unsigned segment_number = i/segment_length, group = i%segment_length;
+    
+    switch(segment_number){
+        //left lower
+        case 0: break;
+            
+        //left upper
+        case 1: break;
+            
+        //right upper
+        case 2: break;
+        
+        //right lower
+        case 3: break;
+        
+        default:printf("erroorrrrr"); break;
+    }
+}
+
+void hilbert_V2(unsigned degree, coord_t* x, coord_t* y) {
+    
 }
 
 void write_svg(char* output_file_svg, int degree, coord_t* x, coord_t* y) {

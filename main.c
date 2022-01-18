@@ -210,28 +210,28 @@ void hilbert(unsigned degree, coord_t* x, coord_t* y) {
     }
 }
 
-void rot(int n, int *x, int *y, int rx, int ry) {
+void rot(int n, coord_t *x, coord_t *y, int rx, int ry) {
     if (ry == 0) {
         if (rx == 1) {
-            *x = n-1 - *x;
-            *y = n-1 - *y;
+            *x.val = n-1 - *x.val;
+            *y.val = n-1 - *y.val;
         }
 
-        int t  = *x;
-        *x = *y;
-        *y = t;
+        int t  = *x.val;
+        *x.val = *y.val;
+        *y.val = t;
     }
 }
 
-void d2xy(int n, int d, int *x, int *y) {
+void d2xy(int n, int d, coord_t *x, coord_t *y) {
     int rx, ry, s, t=d;
-    *x = *y = 0;
+    *x.val = *y.val = 0;
     for (s=1; s<n; s*=2) {
         rx = 1 & (t/2);
         ry = 1 & (t ^ rx);
         rot(s, x, y, rx, ry);
-        *x += s * rx;
-        *y += s * ry;
+        *x.val += s * rx;
+        *y.val += s * ry;
         t /= 4;
     }
 }
@@ -241,32 +241,6 @@ void hilbert_V1(unsigned degree, coord_t* x, coord_t* y) {
    // v_assembly(degree, x, y);
     unsigned length = 1 << (2 * degree);
     d2xy(degree, length, x, y);
-}
-
-
-void find_coord(unsigned degree, unsigned i){
-    unsigned length = 1 << 2*degree, segment_length = length / 4;
-    unsigned segment_number = i/segment_length, group = i%segment_length;
-    
-    switch(segment_number){
-        //left lower
-        case 0: break;
-            
-        //left upper
-        case 1: break;
-            
-        //right upper
-        case 2: break;
-        
-        //right lower
-        case 3: break;
-        
-        default:printf("erroorrrrr"); break;
-    }
-}
-
-void hilbert_V2(unsigned degree, coord_t* x, coord_t* y) {
-    
 }
 
 void write_svg(char* output_file_svg, int degree, coord_t* x, coord_t* y) {

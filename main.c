@@ -240,7 +240,8 @@ void d2xy(int n, int d, coord_t *x, coord_t *y) {
 void hilbert_V1(unsigned degree, coord_t* x, coord_t* y) {
    // v_assembly(degree, x, y);
     unsigned length = 1 << (2 * degree);
-    d2xy(degree, length, x, y);
+    unsigned n = 1 << degree;
+    d2xy(n, length, x, y);
 }
 
 void write_svg(char* output_file_svg, int degree, coord_t* x, coord_t* y) {

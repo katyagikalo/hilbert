@@ -213,25 +213,25 @@ void hilbert(unsigned degree, coord_t* x, coord_t* y) {
 void rot(int n, coord_t *x, coord_t *y, int rx, int ry) {
     if (ry == 0) {
         if (rx == 1) {
-            *x.val = n-1 - *x.val;
-            *y.val = n-1 - *y.val;
+            x->val = n-1 - x->val;
+            y->val = n-1 - y->val;
         }
 
-        int t  = *x.val;
-        *x.val = *y.val;
-        *y.val = t;
+        int t  = x->val;
+        x->val = y->val;
+        y->val = t;
     }
 }
 
 void d2xy(int n, int d, coord_t *x, coord_t *y) {
     int rx, ry, s, t=d;
-    *x.val = *y.val = 0;
+    x->val = y->val = 0;
     for (s=1; s<n; s*=2) {
         rx = 1 & (t/2);
         ry = 1 & (t ^ rx);
         rot(s, x, y, rx, ry);
-        *x.val += s * rx;
-        *y.val += s * ry;
+        x->val += s * rx;
+        y->val += s * ry;
         t /= 4;
     }
 }

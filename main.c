@@ -5,19 +5,9 @@
 #include <ctype.h>
 #include <string.h>
 #include <time.h>
-#include <immintrin.h>
+#include <xmmintrin.h>
 
 #include "main.h"
-
-void print_curve(unsigned degree, coord_t* x, coord_t* y);
-void add_segments(unsigned degree, coord_t* x, coord_t* y);
-void vadd_segments(unsigned degree, coord_t* x, coord_t* y);
-void hilbert(unsigned degree, coord_t* x, coord_t* y);
-void hilbert_V1(unsigned degree, coord_t* x, coord_t* y);
-void hilbert_V2(unsigned degree, coord_t* x, coord_t* y);
-void write_svg(char* output_file_svg, int degree, coord_t* x, coord_t* y);
-void write_txt(char* output_file_txt, int degree, coord_t* x, coord_t* y);
-void help_message();
 
 int main(int argc, char **argv) {
     int version = 0;
@@ -109,7 +99,7 @@ int main(int argc, char **argv) {
            (write_txt_file ? output_file_txt : "--nicht gewaehlt--"));
 
 //prep x und y
-    unsigned curve_length = 1 << (2 * degree);
+    unsigned long long curve_length = 1 << (2 * degree);
     x = malloc(sizeof(coord_t)*curve_length);
     y = malloc(sizeof(coord_t)*curve_length);
 
@@ -161,9 +151,9 @@ int main(int argc, char **argv) {
 
 
 void print_curve(unsigned degree, coord_t* x, coord_t* y){
-    unsigned length = 1 << (2*degree);
+    unsigned long long length = 1 << (2*degree);
     printf("\n\n\n\n\nArray der Koordinaten:\n\n");
-    for(unsigned i = 0; i < length; ++i) {
+    for(unsigned long long i = 0; i < length; ++i) {
         printf("(%d,%d) ", x[i].val, y[i].val);
     }
     printf("\n");
@@ -171,8 +161,8 @@ void print_curve(unsigned degree, coord_t* x, coord_t* y){
 
 
 void add_segments(unsigned segment_degree, coord_t* x, coord_t* y){
-    unsigned segment_length = 1 << (2 * (segment_degree)), segment_coord = (1 << segment_degree);
-    for(unsigned i = 0; i < segment_length; ++i) {
+    unsigned long long segment_length = 1 << (2 * (segment_degree)), segment_coord = (1 << segment_degree);
+    for(unsigned long long i = 0; i < segment_length; ++i) {
         //left upper segment
         x[segment_length + i].val = x[i].val;
         y[segment_length + i].val = y[i].val + segment_coord;
@@ -192,61 +182,28 @@ void add_segments(unsigned segment_degree, coord_t* x, coord_t* y){
     }
 }
 
-/*void vadd_segments(unsigned degree, coord_t* x, coord_t* y){
-    unsigned segment_length = 1 << (2 * (segment_degree)), segment_coord = (1 << segment_degree);
-    for(int i = 0; i < segment_length; ++i){
-        __mm128i vx = _mm_loadu_si128(x);
-        __mm128i vy = _mm_loadu_si128(y);
-    }
-}*/
-
 
 void hilbert(unsigned degree, coord_t* x, coord_t* y) {
     //curve for degree = 1
     x[0].val = 0; y[0].val = 0; x[1].val = 0; y[1].val = 1; x[2].val = 1; y[2].val = 1; x[3].val = 1; y[3].val = 0;
 
-    for(unsigned i = 1; i < degree; i++){
+    for(unsigned i = 1; i < degree; ++i){
         add_segments(i, x, y);
-    }
-}
-
-void rot(int n, coord_t *x, coord_t *y, int rx, int ry) {
-    if (ry == 0) {
-        if (rx == 1) {
-            x->val = n-1 - x->val;
-            y->val = n-1 - y->val;
-        }
-
-        int t  = x->val;
-        x->val = y->val;
-        y->val = t;
-    }
-}
-
-void d2xy(int n, int d, coord_t *x, coord_t *y) {
-    int rx, ry, s, t=d;
-    x->val = y->val = 0;
-    for (s=1; s<n; s*=2) {
-        rx = 1 & (t/2);
-        ry = 1 & (t ^ rx);
-        rot(s, x, y, rx, ry);
-        x->val += s * rx;
-        y->val += s * ry;
-        t /= 4;
     }
 }
 
 
 void hilbert_V1(unsigned degree, coord_t* x, coord_t* y) {
-   // v_assembly(degree, x, y);
-    unsigned length = 1 << (2 * degree);
-    unsigned n = 1 << degree;
-    d2xy(n, length, x, y);
+    v_assembly(degree, x, y);
+}
+
+void hilbert_V2(unsigned degree, coord_t* x, coord_t* y){
+    
 }
 
 void write_svg(char* output_file_svg, int degree, coord_t* x, coord_t* y) {
-    unsigned length = 1 << (2*degree);
-    unsigned win_size = 1 << degree;
+    unsigned long long length = 1 << (2*degree);
+    unsigned long long win_size = 1 << degree;
 
     char file_name[strlen(output_file_svg) + 5];
     FILE* svg_fp = fopen(strcat(strcpy(file_name, output_file_svg),".svg\0"),"w");
@@ -266,7 +223,7 @@ void write_svg(char* output_file_svg, int degree, coord_t* x, coord_t* y) {
                     "<polyline fill=\"none\" stroke=\"black\" stroke-width=\"1px\"\n"
                     "points=\"00 00", win_size, win_size);
 
-    for (unsigned i = 1; i < length; ++i)
+    for (unsigned long long i = 1; i < length; ++i)
         fprintf(svg_fp, ",%d0 %d0", x[i].val, y[i].val);
 
     fprintf(svg_fp,"\" transform=\"scale(1 -1) translate(0 -%d0)\"/>\n</svg>\n",win_size);
@@ -275,7 +232,7 @@ void write_svg(char* output_file_svg, int degree, coord_t* x, coord_t* y) {
 
 
 void write_txt(char* output_file_txt, int degree, coord_t* x, coord_t *y) {
-    unsigned length = 1 << (2*degree);
+    unsigned long long length = 1 << (2*degree);
 
     char file_name[strlen(output_file_txt) + 5];
     FILE* txt_fp = fopen(strcat(strcpy(file_name, output_file_txt),".txt\0"),"w");
@@ -284,7 +241,7 @@ void write_txt(char* output_file_txt, int degree, coord_t* x, coord_t *y) {
         printf("File kann nicht angelegt werden\n");
         return;
     }
-    for (unsigned i = 0; i < length; ++i)
+    for (unsigned long long i = 0; i < length; ++i)
         fprintf(txt_fp, "(%d,%d)", x[i].val, y[i].val);
     fclose(txt_fp);
 }

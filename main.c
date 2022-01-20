@@ -119,7 +119,7 @@ int main(int argc, char **argv) {
         printf("%ld", end - start);
     }
     
-    printf("%lld\n", curve_length);
+    printf("%d\n", curve_length);
 
 //hilbert
     /*switch (version) {

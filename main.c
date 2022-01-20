@@ -102,6 +102,8 @@ int main(int argc, char **argv) {
     unsigned long long curve_length = (unsigned long long)1 << (2 * degree);
     x = malloc(sizeof(coord_t)*curve_length);
     y = malloc(sizeof(coord_t)*curve_length);
+    x[0].val = 0;
+    y[0].val = 0;
     int a = 0;
     if(a == 1){
         start = clock();

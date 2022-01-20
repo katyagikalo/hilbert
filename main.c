@@ -126,7 +126,7 @@ int main(int argc, char **argv) {
                 end = clock();
             }
             else {
-                hilbert_V1(degree, x, y);
+                //hilbert_V1(degree, x, y);
             }
             break;
         default :

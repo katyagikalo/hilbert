@@ -100,8 +100,8 @@ int main(int argc, char **argv) {
 
 //prep x und y
     unsigned long long curve_length = (unsigned long long)1 << (2 * degree);
-    x = malloc(sizeof(coord_t)*curve_length);
-    y = malloc(sizeof(coord_t)*curve_length);
+    x = malloc(sizeof(coord_t)*1024);
+    y = malloc(sizeof(coord_t)*1024);
     
     printf("%lld\n", curve_length);
 
@@ -126,7 +126,7 @@ int main(int argc, char **argv) {
                 end = clock();
             }
             else {
-                //hilbert_V1(degree, x, y);
+                hilbert_V1(degree, x, y);
             }
             break;
         default :

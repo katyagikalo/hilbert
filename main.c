@@ -99,7 +99,7 @@ int main(int argc, char **argv) {
            (write_txt_file ? output_file_txt : "--nicht gewaehlt--"));
 
 //prep x und y
-    unsigned long long curve_length = (unsigned long long)1 << (2 * degree);
+    unsigned long long curve_length = (unsigned long long)(1) << (2 * degree);
     x = malloc(sizeof(coord_t)*curve_length);
     y = malloc(sizeof(coord_t)*curve_length);
     

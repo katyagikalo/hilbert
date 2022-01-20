@@ -162,7 +162,7 @@ void print_curve(unsigned degree, coord_t* x, coord_t* y){
 
 void add_segments(unsigned segment_degree, coord_t* x, coord_t* y){
     unsigned long long segment_length = 1 << (2 * (segment_degree)), segment_coord = (1 << segment_degree);
-    for(unsigned long long i = 0; i < 10; ++i) {
+    for(unsigned long long i = 0; i < 1; ++i) {
         segment_coord--;
         //left upper segment
         x[segment_length + i].val = x[i].val;

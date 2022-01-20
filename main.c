@@ -168,7 +168,7 @@ void add_segments(unsigned segment_degree, coord_t* x, coord_t* y){
         segment_coord--;
         //left upper segment
         //printf("%lld\n", segment_length + i);
-        x[segment_length + i].val = x[i].val;
+        x[segment_length].val = x[0].val;
         //y[segment_length + i].val = y[i].val + segment_coord;
 
         //right upper segment

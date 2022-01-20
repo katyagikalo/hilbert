@@ -105,8 +105,10 @@ int main(int argc, char **argv) {
         printf("NULLLLL\n");
     }
     y = malloc(sizeof(coord_t)*curve_length);
-    x[0].val = 0;
-    y[0].val = 0;
+    //x[0].val = 0;
+    //y[0].val = 0;
+    
+    
     int a = 0;
     if(a == 1){
         start = clock();

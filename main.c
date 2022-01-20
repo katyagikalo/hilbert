@@ -99,7 +99,7 @@ int main(int argc, char **argv) {
            (write_txt_file ? output_file_txt : "--nicht gewaehlt--"));
 
 //prep x und y
-    unsigned long long curve_length = (unsigned long long)(1) << (2 * degree);
+    unsigned long long curve_length = (unsigned long long)1 << (2 * degree);
     x = malloc(sizeof(coord_t)*curve_length);
     y = malloc(sizeof(coord_t)*curve_length);
     
@@ -163,7 +163,7 @@ void print_curve(unsigned degree, coord_t* x, coord_t* y){
 
 
 void add_segments(unsigned segment_degree, coord_t* x, coord_t* y){
-    unsigned long long segment_length = 1 << (2 * (segment_degree)), segment_coord = (1 << segment_degree);
+    unsigned long long segment_length = (unsigned long long)1 << (2 * (segment_degree)), segment_coord = (unsigned long long)1 << segment_degree;
     for(unsigned long long i = 0; i < segment_length; ++i) {
         segment_coord--;
         //left upper segment

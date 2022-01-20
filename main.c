@@ -165,7 +165,7 @@ void add_segments(unsigned segment_degree, coord_t* x, coord_t* y){
     for(unsigned long long i = 0; i < segment_length; ++i) {
         //left upper segment
         x[segment_length + i].val = x[i].val;
-        y[segment_length + i].val = y[i].val + segment_coord;
+        //y[segment_length + i].val = y[i].val + segment_coord;
 
         //right upper segment
         /*x[2*segment_length + i].val = x[i].val + segment_coord;

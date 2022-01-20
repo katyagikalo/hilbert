@@ -100,7 +100,7 @@ int main(int argc, char **argv) {
 
 //prep x und y
     unsigned long long curve_length = (unsigned long long)1 << (2 * degree);
-    printf("%d\n", curve_length);
+    printf("%lld\n", curve_length);
     x = malloc(sizeof(coord_t)*curve_length);
     if(x == NULL){
         printf("X NULL\n");

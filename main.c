@@ -198,7 +198,7 @@ void hilbert_V1(unsigned degree, coord_t* x, coord_t* y) {
 }
 
 void hilbert_V2(unsigned degree, coord_t* x, coord_t* y){
-    
+    ;
 }
 
 void write_svg(char* output_file_svg, int degree, coord_t* x, coord_t* y) {

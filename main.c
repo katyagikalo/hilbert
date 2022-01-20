@@ -164,7 +164,7 @@ void add_segments(unsigned segment_degree, coord_t* x, coord_t* y){
     unsigned long long segment_length = 1 << (2 * (segment_degree)), segment_coord = (1 << segment_degree);
     for(unsigned long long i = 0; i < segment_length; ++i) {
         //left upper segment
-        x[segment_length + i].val = x[i].val;
+        /*x[segment_length + i].val = x[i].val;
         y[segment_length + i].val = y[i].val + segment_coord;
 
         //right upper segment
@@ -178,7 +178,7 @@ void add_segments(unsigned segment_degree, coord_t* x, coord_t* y){
 
         //right lower segment
         x[3*segment_length + i].val = 2*segment_coord - 1 - x[i].val;
-        y[3*segment_length + i].val = segment_coord - 1 - y[i].val;
+        y[3*segment_length + i].val = segment_coord - 1 - y[i].val;*/
     }
 }
 
@@ -188,7 +188,7 @@ void hilbert(unsigned degree, coord_t* x, coord_t* y) {
     x[0].val = 0; y[0].val = 0; x[1].val = 0; y[1].val = 1; x[2].val = 1; y[2].val = 1; x[3].val = 1; y[3].val = 0;
 
     for(unsigned i = 1; i < degree; ++i){
-        //add_segments(i, x, y);
+        add_segments(i, x, y);
     }
 }
 

@@ -101,15 +101,12 @@ int main(int argc, char **argv) {
 //prep x und y
     unsigned long long curve_length = (unsigned long long)1 << (2 * degree);
     x = malloc(sizeof(coord_t)*curve_length);
-    if(x == NULL){
-        printf("fwsefwsefwes\n");
-    }
     y = malloc(sizeof(coord_t)*curve_length);
     
     printf("%lld\n", curve_length);
 
 //hilbert
-    switch (version) {
+    /*switch (version) {
         case 0:
             if(messure_time) {
                 start = clock();
@@ -149,7 +146,7 @@ int main(int argc, char **argv) {
         write_svg(output_file_svg, degree, x, y);
 //save txt file
     if(write_txt_file)
-        write_txt(output_file_txt, degree, x, y);
+        write_txt(output_file_txt, degree, x, y);*/
 
     return 0;
 }

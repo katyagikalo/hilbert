@@ -10,9 +10,7 @@
 #include "main.h"
 
 int main(int argc, char **argv) {
-    coord_t* x;
-    coord_t* y;
-    /*int version = 0;
+    int version = 0;
     bool print_console,messure_time,write_txt_file,write_svg_file;
     print_console=messure_time=write_svg_file=write_txt_file = false;
     char *output_file_svg;
@@ -21,7 +19,8 @@ int main(int argc, char **argv) {
     int count_call = 1;
     clock_t start, end;
 
-
+    coord_t* x;
+    coord_t* y;
 
     int option;
     int option_index = 0;
@@ -99,10 +98,19 @@ int main(int argc, char **argv) {
            (write_svg_file ? output_file_svg : "--nicht gewaehlt--"),
            (write_txt_file ? output_file_txt : "--nicht gewaehlt--"));
 
-//prep x und y*/
+//prep x und y
     unsigned long long curve_length = (unsigned long long)1 << (2 * degree);
     x = malloc(sizeof(coord_t)*curve_length);
     y = malloc(sizeof(coord_t)*curve_length);
+    int a = 0;
+    if(a == 1){
+        start = clock();
+        end = clock();
+        printf("%ld", end - start);
+    }
+    
+    printf("%lld\n", curve_length);
+
 //hilbert
     /*switch (version) {
         case 0:

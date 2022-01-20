@@ -4,7 +4,7 @@
 #include <stddef.h>
 
 typedef struct {
-    unsigned long long val;
+    unsigned val;
 }coord_t;
 
 void print_curve(unsigned degree, coord_t* x, coord_t* y);

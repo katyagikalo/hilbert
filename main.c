@@ -155,7 +155,8 @@ int main(int argc, char **argv) {
 //save txt file
     if(write_txt_file)
         write_txt(output_file_txt, degree, x, y);*/
-    
+    free(x);
+    free(y);
     return 0;
 }
 

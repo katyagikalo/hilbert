@@ -105,7 +105,7 @@ int main(int argc, char **argv) {
     x[0].val = 0;
     y[0].val = 0;
     int a = 0;
-    if(a.val == 1){
+    if(a == 1){
         start = clock();
         end = clock();
         printf("%ld", end - start);

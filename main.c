@@ -173,7 +173,7 @@ void print_curve(unsigned degree, coord_t* x, coord_t* y){
     unsigned long long length = 1 << (2*degree);
     printf("\n\n\n\n\nArray der Koordinaten:\n\n");
     for(unsigned long long i = 0; i < length; ++i) {
-        printf("(%lld,%lld) ", x[i].val, y[i].val);
+        printf("(%d,%d) ", x[i].val, y[i].val);
     }
     printf("\n");
 }
@@ -245,7 +245,7 @@ void write_svg(char* output_file_svg, int degree, coord_t* x, coord_t* y) {
                     "points=\"00 00", win_size, win_size);
 
     for (unsigned long long i = 1; i < length; ++i)
-        fprintf(svg_fp, ",%lld0 %lld0", x[i].val, y[i].val);
+        fprintf(svg_fp, ",%d0 %d0", x[i].val, y[i].val);
 
     fprintf(svg_fp,"\" transform=\"scale(1 -1) translate(0 -%lld0)\"/>\n</svg>\n",win_size);
     fclose(svg_fp);
@@ -263,7 +263,7 @@ void write_txt(char* output_file_txt, int degree, coord_t* x, coord_t *y) {
         return;
     }
     for (unsigned long long i = 0; i < length; ++i)
-        fprintf(txt_fp, "(%lld,%lld)", x[i].val, y[i].val);
+        fprintf(txt_fp, "(%d,%d)", x[i].val, y[i].val);
     fclose(txt_fp);
 }
 

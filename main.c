@@ -104,7 +104,8 @@ int main(int argc, char **argv) {
     y = malloc(sizeof(coord_t)*curve_length);
     x[0].val = 0;
     y[0].val = 0;
-    if(x[0].val == 1){
+    int a = 0;
+    if(a.val == 1){
         start = clock();
         end = clock();
         printf("%ld", end - start);
@@ -154,7 +155,7 @@ int main(int argc, char **argv) {
 //save txt file
     if(write_txt_file)
         write_txt(output_file_txt, degree, x, y);*/
-
+    
     return 0;
 }
 

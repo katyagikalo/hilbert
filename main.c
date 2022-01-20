@@ -107,7 +107,7 @@ int main(int argc, char **argv) {
     if(x[0].val == 1){
         start = clock();
         end = clock();
-        printf("%d", end - start);
+        printf("%ld", end - start);
     }
     
     printf("%lld\n", curve_length);

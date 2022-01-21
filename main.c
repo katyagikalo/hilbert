@@ -160,18 +160,18 @@ int main(int argc, char **argv) {
 
 
 void print_curve(unsigned degree, coord_t* x, coord_t* y){
-    unsigned length = 1 << (2*degree);
+    unsigned long long length = (unsigned long long)1 << (2*degree);
     printf("\n\n\n\n\nArray der Koordinaten:\n\n");
     for(unsigned i = 0; i < length; ++i) {
-        printf("(%d,%d) ", x[i].val, y[i].val);
+        printf("(%lld,%lld) ", x[i].val, y[i].val);
     }
     printf("\n");
 }
 
 
 void add_segments(unsigned segment_degree, coord_t* x, coord_t* y){
-    unsigned segment_length = 1 << (2 * (segment_degree)), segment_coord = (1 << segment_degree);
-    for(unsigned i = 0; i < segment_length; ++i) {
+    unsigned long long segment_length = (unsigned long long)1 << (2 * (segment_degree)), segment_coord = ((unsigned long long)1 << segment_degree);
+    for(unsigned long long i = 0; i < segment_length; ++i) {
         //left upper segment
         x[segment_length + i].val = x[i].val;
         y[segment_length + i].val = y[i].val + segment_coord;
@@ -207,8 +207,8 @@ void hilbert_V1(unsigned degree, coord_t* x, coord_t* y) {
 }
 
 void write_svg(char* output_file_svg, int degree, coord_t* x, coord_t* y) {
-    unsigned length = 1 << (2*degree);
-    unsigned win_size = 1 << degree;
+    unsigned long long length = (unsigned long long)1 << (2*degree);
+    unsigned long long win_size = (unsigned long long)1 << degree;
 
     char file_name[strlen(output_file_svg) + 5];
     FILE* svg_fp = fopen(strcat(strcpy(file_name, output_file_svg),".svg\0"),"w");
@@ -221,23 +221,23 @@ void write_svg(char* output_file_svg, int degree, coord_t* x, coord_t* y) {
     fprintf(svg_fp, "<?xml version=\"1.0\" encoding=\"ISO-8859-1\" standalone=\"no\" ?>\n"
                     "<!DOCTYPE svg PUBLIC \"-//W3C//DTD SVG 20010904//EN\"\n"
                     "\"http://www.w3.org/TR/2001/REC-SVG-20010904/DTD/svg10.dtd\">\n"
-                    "<svg width=\"%d0\" height=\"%d0\" xmlns=\"http://www.w3.org/2000/svg\"\n"
+                    "<svg width=\"%lld0\" height=\"%lld0\" xmlns=\"http://www.w3.org/2000/svg\"\n"
                     "xmlns:xlink=\"http://www.w3.org/1999/xlink\">\n"
                     "<title>Polyline-Element</title>\n"
                     "<desc>Polylinie</desc>\n"
                     "<polyline fill=\"none\" stroke=\"black\" stroke-width=\"1px\"\n"
                     "points=\"00 00", win_size, win_size);
 
-    for (unsigned i = 1; i < length; ++i)
-        fprintf(svg_fp, ",%d0 %d0", x[i].val, y[i].val);
+    for (unsigned long long i = 1; i < length; ++i)
+        fprintf(svg_fp, ",%lld0 %lld0", x[i].val, y[i].val);
 
-    fprintf(svg_fp,"\" transform=\"scale(1 -1) translate(0 -%d0)\"/>\n</svg>\n",win_size);
+    fprintf(svg_fp,"\" transform=\"scale(1 -1) translate(0 -%lld0)\"/>\n</svg>\n",win_size);
     fclose(svg_fp);
 }
 
 
 void write_txt(char* output_file_txt, int degree, coord_t* x, coord_t *y) {
-    unsigned length = 1 << (2*degree);
+    unsigned long long length = (unsigned long long)1 << (2*degree);
 
     char file_name[strlen(output_file_txt) + 5];
     FILE* txt_fp = fopen(strcat(strcpy(file_name, output_file_txt),".txt\0"),"w");
@@ -246,8 +246,8 @@ void write_txt(char* output_file_txt, int degree, coord_t* x, coord_t *y) {
         printf("File kann nicht angelegt werden\n");
         return;
     }
-    for (unsigned i = 0; i < length; ++i)
-        fprintf(txt_fp, "(%d,%d)", x[i].val, y[i].val);
+    for (unsigned long long i = 0; i < length; ++i)
+        fprintf(txt_fp, "(%lld,%lld)", x[i].val, y[i].val);
     fclose(txt_fp);
 }
 

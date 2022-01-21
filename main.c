@@ -105,6 +105,7 @@ int main(int argc, char **argv) {
     if(x == NULL){
         printf("X NULL\n");
     }
+    
     y = malloc(sizeof(coord_t)*curve_length);
     if(y == NULL){
         printf("Y NULL\n");

@@ -109,11 +109,13 @@ int main(int argc, char **argv) {
     unsigned long long curve_length = (unsigned long long)1 << (2 * degree);
     x = malloc(sizeof(coord_t)*curve_length);
     if(x == NULL){
+        printf("x was nulll");
         return -1;
     }
     
     y = malloc(sizeof(coord_t)*curve_length);
     if(y == NULL){
+        printf("y was nulll");
         return -1;
     }
 

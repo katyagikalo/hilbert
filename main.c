@@ -161,7 +161,7 @@ int main(int argc, char **argv) {
 
 void compare(unsigned long long length, coord_t* x1, coord_t* y1, coord_t* x2, coord_t*y2){
     for(unsigned long long i = 0; i < length; i++){
-        if(x1[i] != x2[i] || y1[i] != y2[i]){
+        if(x1[i].val != x2[i].val || y1[i].val != y2[i].val){
             printf("coordinates are not equal! i = %lld, x1 = %lld, x2 = %lld, y1 = %lld, y2 = %lld\n",
                    i, x1[i].val, x2[i].val, y1[i].val, y2[i].val);
         }

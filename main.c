@@ -107,7 +107,7 @@ int main(int argc, char **argv) {
     }
     y = malloc(sizeof(coord_t)*curve_length);
     if(y == NULL){
-        printf("X NULL\n");
+        printf("Y NULL\n");
     }
 
 //hilbert

@@ -252,21 +252,22 @@ void hilbert_V1(unsigned degree, coord_t* x, coord_t* y) {
 
 void add_segments_simd(unsigned segment_degree, coord_t* x, coord_t* y){
     unsigned long long segment_length = (unsigned long long)1 << (2 * (segment_degree));
-    //unsigned segment_coord = (1 << segment_degree), loop_length = segment_length / 4;
+    unsigned /*segment_coord = (1 << segment_degree), */loop_length = segment_length / 4;
     
     __m128i arr_x = _mm_loadu_si128((__m128i const*)(x));
     __m128i arr_y = _mm_loadu_si128((__m128i const*)(y));
-    
-    _mm_storeu_si128((__m128i*)(x + segment_length), arr_x);
-    _mm_storeu_si128((__m128i*)(y + segment_length), arr_y);
-    
-    _mm_storeu_si128((__m128i*)(x + 2*segment_length), arr_x);
-    _mm_storeu_si128((__m128i*)(y + 2*segment_length), arr_y);
-    
-    _mm_storeu_si128((__m128i*)(x + 3*segment_length), arr_x);
-    _mm_storeu_si128((__m128i*)(y + 3*segment_length), arr_y);
-   /* for(unsigned long long i = 0; i < loop_length; i+=4) {
-        arr_x = _mm_loadu_si128((__m128i const*)(x + i));
+   for(unsigned long long i = 0; i < loop_length; i+=4) {
+       
+       _mm_storeu_si128((__m128i*)(x + segment_length + i), arr_x);
+       _mm_storeu_si128((__m128i*)(y + segment_length + i), arr_y);
+       
+       _mm_storeu_si128((__m128i*)(x + 2*segment_length + i), arr_x);
+       _mm_storeu_si128((__m128i*)(y + 2*segment_length + i), arr_y);
+       
+       _mm_storeu_si128((__m128i*)(x + 3*segment_length + i), arr_x);
+       _mm_storeu_si128((__m128i*)(y + 3*segment_length + i), arr_y);
+       
+        /*arr_x = _mm_loadu_si128((__m128i const*)(x + i));
         arr_y = _mm_loadu_si128((__m128i const*)(y + i));
         
         //left upper segment

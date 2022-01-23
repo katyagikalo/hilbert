@@ -249,8 +249,8 @@ void add_segments_simd(unsigned segment_degree, coord_t* x, coord_t* y){
         //unsigned temp = x[i].val;
         //x[i].val = y[i].val;
         //y[i].val = temp;
-        _mm_storeu_si128(x + i, arr_y);
-        _mm_storeu_si128(y + i, arr_x);
+        _mm_storeu_si128((__m128i*)(x + i), arr_y);
+        _mm_storeu_si128((__m128i*)(y + i), arr_x);
 
         //right lower segment
         x_offset = _mm_add_epi32(sc, sc);

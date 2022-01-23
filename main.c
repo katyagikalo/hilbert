@@ -228,7 +228,7 @@ void add_segments_simd(unsigned segment_degree, coord_t* x, coord_t* y){
     __m128i arr_y;
     for(unsigned long long i = 0; i < loop_length; ++i) {
         arr_x = _mm_loadu_si128((__m128i const*)x);
-        arr_y = _mm_loadu_si128((__m128i const*y);
+        arr_y = _mm_loadu_si128((__m128i const*)y);
         
         //left upper segment
         //x[segment_length + i].val = x[i].val;

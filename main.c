@@ -252,7 +252,7 @@ void hilbert_V1(unsigned degree, coord_t* x, coord_t* y) {
 
 void add_segments_simd(unsigned segment_degree, coord_t* x, coord_t* y){
     //unsigned long long segment_length = (unsigned long long)1 << (2 * (segment_degree));
-    unsigned segment_coord = (1 << segment_degree);//, loop_length = segment_length / 4;
+    //unsigned segment_coord = (1 << segment_degree), loop_length = segment_length / 4;
     
     __m128i arr_x = _mm_loadu_si128((__m128i const*)(x));
     __m128i arr_y = _mm_loadu_si128((__m128i const*)(y));

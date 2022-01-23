@@ -232,18 +232,18 @@ void add_segments_simd(unsigned segment_degree, coord_t* x, coord_t* y){
         
         //left upper segment
         //x[segment_length + i].val = x[i].val;
-        _mm_storeu_si128(x + segment_length + i, arr_x);
+        _mm_storeu_si128((__m128i*)(x + segment_length + i), arr_x);
         //y[segment_length + i].val = y[i].val + segment_coord;
         __m128i sc = _mm_set1_epi32(segment_coord);
         __m128i y_offset = _mm_add_epi32(arr_y, sc);
-        _mm_storeu_si128(y + segment_length + i, y_offset);
+        _mm_storeu_si128((__m128i*)(y + segment_length + i), y_offset);
 
         //right upper segment
         //x[2*segment_length + i].val = x[i].val + segment_coord;
         __m128i x_offset = _mm_add_epi32(arr_x, sc);
-        _mm_storeu_si128(x + 2*segment_length + i, x_offset);
+        _mm_storeu_si128((__m128i*)(x + 2*segment_length + i), x_offset);
         //y[2*segment_length + i].val = y[i].val + segment_coord;
-        _mm_storeu_si128(y + 2*segment_length + i, y_offset);
+        _mm_storeu_si128((__m128i*)(y + 2*segment_length + i), y_offset);
 
         //left lower segment
         //unsigned temp = x[i].val;
@@ -257,12 +257,12 @@ void add_segments_simd(unsigned segment_degree, coord_t* x, coord_t* y){
         __m128i neg_one = _mm_set1_epi32(-1);
         x_offset = _mm_add_epi32(x_offset, neg_one);
         x_offset = _mm_sub_epi32(x_offset, arr_x);
-        _mm_storeu_si128(x + 3*segment_length + i, x_offset);
+        _mm_storeu_si128((__m128i*)(x + 3*segment_length + i), x_offset);
         //x[3*segment_length + i].val = 2*segment_coord - 1 - x[i].val;
         y[3*segment_length + i].val = segment_coord - 1 - y[i].val;
         y_offset = _mm_add_epi32(sc, neg_one);
         y_offset = _mm_sub_epi32(y_offset, arr_y);
-        _mm_storeu_si128(y + 3*segment_length + i, y_offset);
+        _mm_storeu_si128((__m128i*)(y + 3*segment_length + i), y_offset);
     }
 }
 

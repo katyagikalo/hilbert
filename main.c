@@ -298,8 +298,8 @@ void add_segments_simd(unsigned segment_degree, coord_t* x, coord_t* y){
 
         y_offset = _mm_sub_epi32(sc, one);
         y_offset = _mm_sub_epi32(y_offset, arr_y);
-        _mm_storeu_si128((__m128i*)(y + 3*segment_length + i), y_offset);
-    }*/
+        _mm_storeu_si128((__m128i*)(y + 3*segment_length + i), y_offset);*/
+    }
 }
 
 void hilbert_V2(unsigned degree, coord_t* x, coord_t* y){

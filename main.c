@@ -258,6 +258,9 @@ void add_segments_simd(unsigned segment_degree, coord_t* x, coord_t* y){
     __m128i arr_y = _mm_loadu_si128((__m128i const*)(y));
    for(unsigned long long i = 0; i < loop_length; i+=4) {
        
+       _mm_storeu_si128((__m128i*)(x + i), arr_x);
+       _mm_storeu_si128((__m128i*)(y + i), arr_y);
+       
        _mm_storeu_si128((__m128i*)(x + segment_length + i), arr_x);
        _mm_storeu_si128((__m128i*)(y + segment_length + i), arr_y);
        

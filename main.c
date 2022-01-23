@@ -133,7 +133,7 @@ int main(int argc, char **argv) {
                 end = clock();
             }
             else {
-                hilbert(degree, x, y);
+                //hilbert(degree, x, y);
             }
             break;
         case 1:
@@ -176,6 +176,29 @@ int main(int argc, char **argv) {
 //save txt file
     if(write_txt_file)
         write_txt(output_file_txt, degree, x, y);
+    
+    coord_t* x1 = malloc(sizeof(coord_t)*curve_length);
+    if(x1 == NULL){
+        printf("x1 was null\n");
+        return -1;
+    }
+    
+    coord_t* y1 = malloc(sizeof(coord_t)*curve_length);
+    if(y1 == NULL){
+        printf("y1 was null\n");
+        return -1;
+    }
+    
+    for(int i = 1; i < degree; i++){
+        hilbert(degree, x, y);
+        hilbert_V2(degree, x1, y1);
+        
+        for(int i = 0; i < curve_length; i++){
+            if(x[i].val != x1[i].val || y[i].val != y1[i].val){
+                printf("elrfqelk\n");
+            }
+        }
+    }
 
     free(x);
     free(y);
@@ -257,18 +280,15 @@ void add_segments_simd(unsigned segment_degree, coord_t* x, coord_t* y){
         //left lower segment
         _mm_storeu_si128((__m128i*)(x + i), arr_y);
         _mm_storeu_si128((__m128i*)(y + i), arr_x);
-
-        
-        arr_x = _mm_loadu_si128((__m128i const*)(x + i));
-        arr_y = _mm_loadu_si128((__m128i const*)(y + i));
         
         //right lower segment
         x_offset = _mm_add_epi32(sc, sc);
         x_offset = _mm_sub_epi32(x_offset, one);
-        x_offset = _mm_sub_epi32(x_offset, arr_x);
+        x_offset = _mm_sub_epi32(x_offset, arr_y);
         _mm_storeu_si128((__m128i*)(x + 3*segment_length + i), x_offset);
+
         y_offset = _mm_sub_epi32(sc, one);
-        y_offset = _mm_sub_epi32(y_offset, arr_y);
+        y_offset = _mm_sub_epi32(y_offset, arr_x);
         _mm_storeu_si128((__m128i*)(y + 3*segment_length + i), y_offset);
     }
 }

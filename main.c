@@ -133,7 +133,7 @@ int main(int argc, char **argv) {
                 end = clock();
             }
             else {
-                hilbert(degree, x, y);
+                //hilbert(degree, x, y);
             }
             break;
         case 1:
@@ -189,10 +189,14 @@ int main(int argc, char **argv) {
         return -1;
     }
     
-    hilbert_V2(degree, x1, y1);
-    for(int i = 0; i < curve_length; i++){
-        if(x[i].val != x1[i].val || y[i].val != y1[i].val){
-            printf("elrfqelk\n");
+    for(int i = 1; i < degree; i++){
+        hilbert(degree, x, y);
+        hilbert_V2(degree, x1, y1);
+        
+        for(int i = 0; i < curve_length; i++){
+            if(x[i].val != x1[i].val || y[i].val != y1[i].val){
+                printf("elrfqelk\n");
+            }
         }
     }
 
@@ -254,28 +258,17 @@ void add_segments_simd(unsigned segment_degree, coord_t* x, coord_t* y){
     unsigned long long segment_length = (unsigned long long)1 << (2 * (segment_degree));
     unsigned segment_coord = (1 << segment_degree);
     
-    __m128i arr_x;// = _mm_loadu_si128((__m128i const*)(x));
-    __m128i arr_y;// = _mm_loadu_si128((__m128i const*)(y));
+    __m128i arr_x;
+    __m128i arr_y;
+    __m128i sc = _mm_set1_epi32(segment_coord);
+    __m128i one = _mm_set1_epi32(1);
    for(unsigned long long i = 0; i < segment_length; i+=4) {
-       
-       /*_mm_storeu_si128((__m128i*)(x + i), arr_x);
-       _mm_storeu_si128((__m128i*)(y + i), arr_y);
-       
-       _mm_storeu_si128((__m128i*)(x + segment_length + i), arr_x);
-       _mm_storeu_si128((__m128i*)(y + segment_length + i), arr_y);
-       
-       _mm_storeu_si128((__m128i*)(x + 2*segment_length + i), arr_x);
-       _mm_storeu_si128((__m128i*)(y + 2*segment_length + i), arr_y);
-       
-       _mm_storeu_si128((__m128i*)(x + 3*segment_length + i), arr_x);
-       _mm_storeu_si128((__m128i*)(y + 3*segment_length + i), arr_y);*/
        
         arr_x = _mm_loadu_si128((__m128i const*)(x + i));
         arr_y = _mm_loadu_si128((__m128i const*)(y + i));
         
         //left upper segment
         _mm_storeu_si128((__m128i*)(x + segment_length + i), arr_x);
-        __m128i sc = _mm_set1_epi32(segment_coord);
         __m128i y_offset = _mm_add_epi32(arr_y, sc);
         _mm_storeu_si128((__m128i*)(y + segment_length + i), y_offset);
 
@@ -294,7 +287,6 @@ void add_segments_simd(unsigned segment_degree, coord_t* x, coord_t* y){
         
         //right lower segment
         x_offset = _mm_add_epi32(sc, sc);
-        __m128i one = _mm_set1_epi32(1);
         x_offset = _mm_sub_epi32(x_offset, one);
         x_offset = _mm_sub_epi32(x_offset, arr_x);
         _mm_storeu_si128((__m128i*)(x + 3*segment_length + i), x_offset);

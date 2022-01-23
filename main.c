@@ -41,7 +41,7 @@ int main(int argc, char **argv) {
         char* ptr;
         switch (option) {
             case 'V' :
-                if (optarg == NULL || (*optarg != '0' && *optarg != '1')) {
+                if (optarg == NULL || (*optarg != '0' && *optarg != '1' && *optarg != '2')) {
                     printf("\n\n\n\nFuer die Version sind nur Version 0(deault) and 1(not implemented yet) verfuegbar\n\n");
                     help_message();
                     return 0;

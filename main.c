@@ -206,7 +206,7 @@ void print_curve(unsigned degree, coord_t* x, coord_t* y){
     unsigned long long length = (unsigned long long)1 << (2*degree);
     printf("\n\n\n\n\nArray der Koordinaten:\n\n");
     for(unsigned long long i = 0; i < length; ++i) {
-        printf("(%d,%d\n) ", x[i].val, y[i].val);
+        printf("(%d,%d)\n", x[i].val, y[i].val);
     }
     printf("\n");
 }

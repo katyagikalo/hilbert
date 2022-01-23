@@ -147,6 +147,17 @@ int main(int argc, char **argv) {
                 hilbert_V1(degree, x, y);
             }
             break;
+        case 2:
+            if(messure_time) {
+                start = clock();
+                for (unsigned i=count_call; i > 0; i--)
+                    hilbert_V2(degree, x, y);
+                end = clock();
+            }
+            else {
+                hilbert_V2(degree, x, y);
+            }
+            break;
         default :
             help_message();
             return 0;

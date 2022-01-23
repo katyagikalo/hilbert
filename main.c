@@ -206,7 +206,7 @@ void print_curve(unsigned degree, coord_t* x, coord_t* y){
     unsigned long long length = (unsigned long long)1 << (2*degree);
     printf("\n\n\n\n\nArray der Koordinaten:\n\n");
     for(unsigned long long i = 0; i < length; ++i) {
-        printf("(%d,%d) ", x[i].val, y[i].val);
+        printf("(%d,%d\n) ", x[i].val, y[i].val);
     }
     printf("\n");
 }
@@ -251,12 +251,15 @@ void hilbert_V1(unsigned degree, coord_t* x, coord_t* y) {
 }
 
 void add_segments_simd(unsigned segment_degree, coord_t* x, coord_t* y){
-    unsigned long long segment_length = (unsigned long long)1 << (2 * (segment_degree));
-    unsigned segment_coord = (1 << segment_degree), loop_length = segment_length / 4;
+    //unsigned long long segment_length = (unsigned long long)1 << (2 * (segment_degree));
+    //unsigned segment_coord = (1 << segment_degree), loop_length = segment_length / 4;
+    segment_degree--;
     
-    __m128i arr_x;
-    __m128i arr_y;
-    for(unsigned long long i = 0; i < loop_length; i+=4) {
+    __m128i arr_x = _mm_loadu_si128((__m128i const*)(x));
+    _mm_storeu_si128((__m128i*)(x + 4), arr_x);
+    __m128i arr_y = _mm_loadu_si128((__m128i const*)(y));
+    _mm_storeu_si128((__m128i*)(y + 4), arr_y);
+   /* for(unsigned long long i = 0; i < loop_length; i+=4) {
         arr_x = _mm_loadu_si128((__m128i const*)(x + i));
         arr_y = _mm_loadu_si128((__m128i const*)(y + i));
         
@@ -289,7 +292,7 @@ void add_segments_simd(unsigned segment_degree, coord_t* x, coord_t* y){
         y_offset = _mm_sub_epi32(sc, one);
         y_offset = _mm_sub_epi32(y_offset, arr_y);
         _mm_storeu_si128((__m128i*)(y + 3*segment_length + i), y_offset);
-    }
+    }*/
 }
 
 void hilbert_V2(unsigned degree, coord_t* x, coord_t* y){

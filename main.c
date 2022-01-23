@@ -5,13 +5,16 @@
 #include <ctype.h>
 #include <string.h>
 #include <time.h>
+#include <xmmintrin.h>
 
 #include "main.h"
 
 void print_curve(unsigned degree, coord_t* x, coord_t* y);
 void add_segments(unsigned degree, coord_t* x, coord_t* y);
+void add_segments_simd(unsigned segment_degree, coord_t* x, coord_t* y);
 void hilbert(unsigned degree, coord_t* x, coord_t* y);
 void hilbert_V1(unsigned degree, coord_t* x, coord_t* y);
+void hilbert_V2(unsigned degree, coord_t* x, coord_t* y);
 void write_svg(char* output_file_svg, int degree, coord_t* x, coord_t* y);
 void write_txt(char* output_file_txt, int degree, coord_t* x, coord_t* y);
 void help_message();
@@ -180,7 +183,8 @@ void print_curve(unsigned degree, coord_t* x, coord_t* y){
 
 
 void add_segments(unsigned segment_degree, coord_t* x, coord_t* y){
-    unsigned long long segment_length = (unsigned long long)1 << (2 * (segment_degree)), segment_coord = (1 << segment_degree);
+    unsigned long long segment_length = (unsigned long long)1 << (2 * (segment_degree));
+    unsigned segment_coord = (1 << segment_degree);
     for(unsigned long long i = 0; i < segment_length; ++i) {
         //left upper segment
         x[segment_length + i].val = x[i].val;
@@ -206,7 +210,7 @@ void hilbert(unsigned degree, coord_t* x, coord_t* y) {
     //curve for degree = 1
     x[0].val = 0; y[0].val = 0; x[1].val = 0; y[1].val = 1; x[2].val = 1; y[2].val = 1; x[3].val = 1; y[3].val = 0;
 
-    for(unsigned i = 1; i < degree; i++){
+    for(unsigned i = 1; i < degree; ++i){
         add_segments(i, x, y);
     }
 }
@@ -214,6 +218,60 @@ void hilbert(unsigned degree, coord_t* x, coord_t* y) {
 
 void hilbert_V1(unsigned degree, coord_t* x, coord_t* y) {
     v_assembly(degree, x, y);
+}
+
+void add_segments_simd(unsigned segment_degree, coord_t* x, coord_t* y){
+    unsigned long long segment_length = (unsigned long long)1 << (2 * (segment_degree));
+    unsigned segment_coord = (1 << segment_degree), loop_length = segment_length / 4;
+    
+    __m128i arr_x;
+    __m128i arr_y;
+    for(unsigned long long i = 0; i < loop_length; ++i) {
+        arr_x = _mm_loadu_si128(x);
+        arr_y = _mm_loadu_si128(y);
+        
+        //left upper segment
+        //x[segment_length + i].val = x[i].val;
+        _mm_storeu_si128(x + segment_length + i, arr_x);
+        //y[segment_length + i].val = y[i].val + segment_coord;
+        __m128i sc = _mm_set1_epi32(segment_coord);
+        __m128i y_offset = _mm_add_epi32(arr_y, sc);
+        _mm_storeu_si128(y + segment_length + i, y_offset);
+
+        //right upper segment
+        //x[2*segment_length + i].val = x[i].val + segment_coord;
+        __m128i x_offset = _mm_add_epi32(arr_x, sc);
+        _mm_storeu_si128(x + 2*segment_length + i, x_offset);
+        //y[2*segment_length + i].val = y[i].val + segment_coord;
+        _mm_storeu_si128(y + 2*segment_length + i, y_offset);
+
+        //left lower segment
+        //unsigned temp = x[i].val;
+        //x[i].val = y[i].val;
+        //y[i].val = temp;
+        _mm_storeu_si128(x + i, arr_y);
+        _mm_storeu_si128(y + i, arr_x);
+
+        //right lower segment
+        x_offset = _mm_add_epi32(sc, sc);
+        __m128i neg_one = _mm_set1_epi32(-1);
+        x_offset = _mm_add_epi32(x_offset, neg_one);
+        x_offset = _mm_sub_epi32(x_offset, arr_x);
+        _mm_storeu_si128(x + 3*segment_length + i, x_offset);
+        //x[3*segment_length + i].val = 2*segment_coord - 1 - x[i].val;
+        y[3*segment_length + i].val = segment_coord - 1 - y[i].val;
+        y_offset = _mm_add_epi32(sc, neg_one);
+        y_offset = _mm_sub_epi32(y_offset, arr_y);
+        _mm_storeu_si128(y + 3*segment_length + i, y_offset);
+    }
+}
+
+void hilbert_V2(unsigned degree, coord_t* x, coord_t* y){
+    x[0].val = 0; y[0].val = 0; x[1].val = 0; y[1].val = 1; x[2].val = 1; y[2].val = 1; x[3].val = 1; y[3].val = 0;
+    
+    for(unsigned i = 1; i < degree; ++i){
+        add_segments_simd(i, x, y);
+    }
 }
 
 void write_svg(char* output_file_svg, int degree, coord_t* x, coord_t* y) {

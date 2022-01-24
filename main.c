@@ -6,43 +6,56 @@
 #include <string.h>
 #include <time.h>
 #include <xmmintrin.h>
+#include <unistd.h>
+#include <pthread.h>
 
 #include "main.h"
 
 void print_curve(unsigned degree, coord_t* x, coord_t* y);
 void add_segments(unsigned degree, coord_t* x, coord_t* y);
 void add_segments_simd(unsigned segment_degree, coord_t* x, coord_t* y);
-void hilbert(unsigned degree, coord_t* x, coord_t* y);
+void hilbert_recursive(unsigned degree, unsigned i, coord_t* x, coord_t* y);
+void * add_segment_left_upper(void * pthread_args);
+void * add_segment_right_upper(void * pthread_args);
+void * add_segment_left_lower(void * pthread_args);
+void * add_segment_right_lower(void * pthread_args);
+void hilbert_V0(unsigned degree, coord_t* x, coord_t* y);
 void hilbert_V1(unsigned degree, coord_t* x, coord_t* y);
 void hilbert_V2(unsigned degree, coord_t* x, coord_t* y);
+void hilbert_V3(unsigned i, coord_t* x, coord_t* y);
+void hilbert_V4(unsigned degree, coord_t* x, coord_t* y);
 void write_svg(char* output_file_svg, int degree, coord_t* x, coord_t* y);
 void write_txt(char* output_file_txt, int degree, coord_t* x, coord_t* y);
 void help_message();
+
+typedef struct{
+    unsigned long long segment_length;
+    unsigned segment_coord;
+    coord_t *x;
+    coord_t *y;
+}pthread_args;
 
 int main(int argc, char **argv) {
     int version = 0;
     bool print_console,messure_time,write_txt_file,write_svg_file;
     print_console=messure_time=write_svg_file=write_txt_file = false;
-    char *output_file_svg;
-    char *output_file_txt;
+    char *output_file_svg, *output_file_txt;
     int degree = 1;
     int count_call = 1;
     clock_t start, end;
-
-    coord_t* x;
-    coord_t* y;
 
     int option;
     int option_index = 0;
     static struct option long_options[] = {
             {"help", no_argument, 0, 'h'}
     };
+
     while ((option = getopt_long(argc, argv, ":V:B::n:o:t:hp",long_options, &option_index)) != -1) {
         char* ptr;
         switch (option) {
             case 'V' :
-                if (optarg == NULL || (*optarg != '0' && *optarg != '1' && *optarg != '2')) {
-                    printf("\n\n\n\nFuer die Version sind nur Version 0(deault) and 1(not implemented yet) verfuegbar\n\n");
+                if (optarg == NULL || (*optarg != '0' && *optarg != '1' && *optarg != '2' && *optarg != '3' && *optarg != '4')) {
+                    printf("\n\n\n\nEs stehen folgende Versionen zur verfuegung:\n\n0 --C ohne Optimierung--\n1 --Assembler ohne SIMD--\n2 --C mit SIMD--\n3 --Rekursiv mit SIMD--\n4 --C Multithreaded ohne SIMD--\n");
                     help_message();
                     return 0;
                 }
@@ -95,7 +108,7 @@ int main(int argc, char **argv) {
     }
 
 //informationen ueber die Optionen und Parametereingabe
-    printf("\n\n\n\n\n"
+    printf("\n\n"
            "Version                  : V%d\n"
            "Grad der Hilbertkurve    : %d\n"
            "Zeitmessung              : %s\n"
@@ -110,13 +123,17 @@ int main(int argc, char **argv) {
 
 //prep x und y
     unsigned long long curve_length = (unsigned long long)1 << (2 * degree);
-    
+
+    coord_t* x;
+
     x = malloc(sizeof(coord_t)*curve_length);
     if(x == NULL){
         printf("x was null\n");
         return -1;
     }
-    
+
+    coord_t* y;
+
     y = malloc(sizeof(coord_t)*curve_length);
     if(y == NULL){
         printf("y was null\n");
@@ -129,11 +146,11 @@ int main(int argc, char **argv) {
             if(messure_time) {
                 start = clock();
                 for (unsigned i=count_call; i > 0; i--)
-                    hilbert(degree, x, y);
+                    hilbert_V0(degree, x, y);
                 end = clock();
             }
             else {
-                hilbert(degree, x, y);
+                hilbert_V0(degree, x, y);
             }
             break;
         case 1:
@@ -158,8 +175,31 @@ int main(int argc, char **argv) {
                 hilbert_V2(degree, x, y);
             }
             break;
+        case 3:
+            if(messure_time) {
+                start = clock();
+                for (unsigned i=count_call; i > 0; i--)
+                    hilbert_V3(degree, x, y);
+                end = clock();
+            }
+            else {
+                hilbert_V3(degree, x, y);
+            }
+            break;
+        case 4:
+            if(messure_time) {
+                start = clock();
+                for (unsigned i=count_call; i > 0; i--)
+                    hilbert_V4(degree, x, y);
+                end = clock();
+            }
+            else {
+                hilbert_V4(degree, x, y);
+            }
+            break;
         default :
             help_message();
+
             return 0;
     }
 
@@ -183,14 +223,7 @@ int main(int argc, char **argv) {
 }
 
 
-void print_curve(unsigned degree, coord_t* x, coord_t* y){
-    unsigned long long length = (unsigned long long)1 << (2*degree);
-    printf("\n\n\n\n\nArray der Koordinaten:\n\n");
-    for(unsigned long long i = 0; i < length; ++i) {
-        printf("(%d,%d) ", x[i].val, y[i].val);
-    }
-    printf("\n");
-}
+
 
 
 void add_segments(unsigned segment_degree, coord_t* x, coord_t* y){
@@ -217,7 +250,7 @@ void add_segments(unsigned segment_degree, coord_t* x, coord_t* y){
 }
 
 
-void hilbert(unsigned degree, coord_t* x, coord_t* y) {
+void hilbert_V0(unsigned degree, coord_t* x, coord_t* y) {
     //curve for degree = 1
     x[0].val = 0; y[0].val = 0; x[1].val = 0; y[1].val = 1; x[2].val = 1; y[2].val = 1; x[3].val = 1; y[3].val = 0;
 
@@ -234,16 +267,16 @@ void hilbert_V1(unsigned degree, coord_t* x, coord_t* y) {
 void add_segments_simd(unsigned segment_degree, coord_t* x, coord_t* y){
     unsigned long long segment_length = (unsigned long long)1 << (2 * (segment_degree));
     unsigned segment_coord = (1 << segment_degree);
-    
+
     __m128i arr_x;
     __m128i arr_y;
     __m128i sc = _mm_set1_epi32(segment_coord);
     __m128i one = _mm_set1_epi32(1);
-   for(unsigned long long i = 0; i < segment_length; i+=4) {
-       
+    for(unsigned long long i = 0; i < segment_length; i+=4) {
+
         arr_x = _mm_loadu_si128((__m128i const*)(x + i));
         arr_y = _mm_loadu_si128((__m128i const*)(y + i));
-        
+
         //left upper segment
         _mm_storeu_si128((__m128i*)(x + segment_length + i), arr_x);
         __m128i y_offset = _mm_add_epi32(arr_y, sc);
@@ -257,7 +290,7 @@ void add_segments_simd(unsigned segment_degree, coord_t* x, coord_t* y){
         //left lower segment
         _mm_storeu_si128((__m128i*)(x + i), arr_y);
         _mm_storeu_si128((__m128i*)(y + i), arr_x);
-        
+
         //right lower segment
         x_offset = _mm_add_epi32(sc, sc);
         x_offset = _mm_sub_epi32(x_offset, one);
@@ -271,10 +304,112 @@ void add_segments_simd(unsigned segment_degree, coord_t* x, coord_t* y){
 
 void hilbert_V2(unsigned degree, coord_t* x, coord_t* y){
     x[0].val = 0; y[0].val = 0; x[1].val = 0; y[1].val = 1; x[2].val = 1; y[2].val = 1; x[3].val = 1; y[3].val = 0;
-    
+
     for(unsigned i = 1; i < degree; ++i){
         add_segments_simd(i, x, y);
     }
+}
+
+void hilbert_recursive(unsigned degree, unsigned i, coord_t* x, coord_t* y){
+    if (degree == i) return;
+
+    else {
+        add_segments_simd(i, x, y);
+    }
+    hilbert_recursive(degree, i+1, x, y);
+}
+
+
+void hilbert_V3(unsigned degree, coord_t* x, coord_t* y){
+    if(degree == 1){
+        x[0].val = 0; y[0].val = 0; x[1].val = 0; y[1].val = 1; x[2].val = 1; y[2].val = 1; x[3].val = 1; y[3].val = 0;
+    }
+    else{
+    //unsigned i = 1;
+        hilbert_V3(degree - 1, x, y);
+        add_segments_simd(degree - 1, x, y);
+    }
+}
+
+
+
+void * add_segment_left_upper(void * args){
+    pthread_args* temp_args = (pthread_args*) args;
+    for(unsigned long long i = 0; i < temp_args->segment_length; ++i) {
+        //left upper segment
+        temp_args->x[temp_args->segment_length + i].val = temp_args->x[i].val;
+        temp_args->y[temp_args->segment_length + i].val = temp_args->y[i].val + temp_args->segment_coord;
+    }
+    return NULL;
+}
+
+void * add_segment_right_upper(void * args){
+    pthread_args* temp_args = (pthread_args*) args;
+    for(unsigned long long i = 0; i < temp_args->segment_length; ++i) {
+        //right upper segment
+        temp_args->x[2*temp_args->segment_length + i].val = temp_args->x[i].val + temp_args->segment_coord;
+        temp_args->y[2*temp_args->segment_length + i].val = temp_args->y[i].val + temp_args->segment_coord;
+    }
+    return NULL;
+}
+
+void * add_segment_left_lower(void * args){
+    pthread_args* temp_args = (pthread_args*) args;
+    for(unsigned long long i = 0; i < temp_args->segment_length; ++i) {
+        //left lower segment
+        unsigned temp = temp_args->x[i].val;
+        temp_args->x[i].val = temp_args->y[i].val;
+        temp_args->y[i].val = temp;
+    }
+    return NULL;
+}
+
+void * add_segment_right_lower(void * args){
+    pthread_args* temp_args = (pthread_args*) args;
+    for(unsigned long long i = 0; i < temp_args->segment_length; ++i) {
+        //right lower segment
+        temp_args->x[3*temp_args->segment_length + i].val = 2*temp_args->segment_coord - 1 - temp_args->x[i].val;
+        temp_args->y[3*temp_args->segment_length + i].val = temp_args->segment_coord - 1 - temp_args->y[i].val;
+    }
+    return NULL;
+}
+
+void hilbert_V4(unsigned degree, coord_t* x, coord_t* y){
+    //curve for degree = 1
+    x[0].val = 0; y[0].val = 0; x[1].val = 0; y[1].val = 1; x[2].val = 1; y[2].val = 1; x[3].val = 1; y[3].val = 0;
+
+    pthread_t tid0;
+    pthread_t tid1;
+    pthread_t tid2;
+    pthread_t tid3;
+
+    pthread_args pthread_args_arr[degree + 1];
+
+    for(unsigned i = 1; i < degree; ++i){
+        pthread_args_arr[i-1].segment_length=(unsigned long long)1 << (2 * i);
+        pthread_args_arr[i-1].segment_coord = (1 << i);
+        pthread_args_arr[i-1].x=x;
+        pthread_args_arr[i-1].y=y;
+
+        pthread_create(&tid0, NULL, add_segment_left_upper, (void *) &pthread_args_arr[i-1]);
+        pthread_create(&tid1, NULL, add_segment_right_upper, (void *) &pthread_args_arr[i-1]);
+        pthread_create(&tid2, NULL, add_segment_left_lower, (void *) &pthread_args_arr[i-1]);
+        pthread_create(&tid3, NULL, add_segment_right_lower, (void *) &pthread_args_arr[i-1]);
+
+        pthread_join(tid0,NULL);
+        pthread_join(tid1,NULL);
+        pthread_join(tid2,NULL);
+        pthread_join(tid3,NULL);
+    }
+}
+
+void print_curve(unsigned degree, coord_t* x, coord_t* y){
+    unsigned long long length = (unsigned long long)1 << (2*degree);
+    printf("\n\n\n\n\nArray der Koordinaten:\n\n");
+    for(unsigned long long i = 0; i < length; ++i) {
+        printf("(%d,%d) ", x[i].val, y[i].val);
+    }
+    printf("\n");
 }
 
 void write_svg(char* output_file_svg, int degree, coord_t* x, coord_t* y) {

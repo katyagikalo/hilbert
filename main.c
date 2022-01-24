@@ -229,23 +229,34 @@ int main(int argc, char **argv) {
 void add_segments(unsigned segment_degree, coord_t* x, coord_t* y){
     unsigned long long segment_length = (unsigned long long)1 << (2 * (segment_degree));
     unsigned segment_coord = (1 << segment_degree);
+    
+    coord_t *vx = x, *vy = y;
+    
+    //2*segment_length
+    unsigned long long d_segment_length = segment_length + segment_length;
+    //3*segment_length
+    unsigned long long t_segment_length = d_segment_length + segment_length;
+    
     for(unsigned long long i = 0; i < segment_length; ++i) {
         //left upper segment
-        x[segment_length + i].val = x[i].val;
-        y[segment_length + i].val = y[i].val + segment_coord;
+        vx[segment_length].val = vx[0].val;
+        vy[segment_length].val = vy[0].val + segment_coord;
 
         //right upper segment
-        x[2*segment_length + i].val = x[i].val + segment_coord;
-        y[2*segment_length + i].val = y[i].val + segment_coord;
+        vx[d_segment_length].val = vx[0].val + segment_coord;
+        vy[d_segment_length].val = vy[0].val + segment_coord;
 
         //left lower segment
-        unsigned temp = x[i].val;
-        x[i].val = y[i].val;
-        y[i].val = temp;
+        unsigned temp = x[0].val;
+        vx[0].val = y[0].val;
+        vy[0].val = temp;
 
         //right lower segment
-        x[3*segment_length + i].val = 2*segment_coord - 1 - x[i].val;
-        y[3*segment_length + i].val = segment_coord - 1 - y[i].val;
+        vx[t_segment_length].val = 2*segment_coord - 1 - x[0].val;
+        vy[t_segment_length].val = segment_coord - 1 - y[0].val;
+        
+        vx += i;
+        vy += i;
     }
 }
 

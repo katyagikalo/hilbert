@@ -289,6 +289,7 @@ void add_segments_simd(unsigned segment_degree, coord_t* x, coord_t* y){
     __m128i arr_x;
     __m128i arr_y;
     __m128i sc = _mm_set1_epi32(segment_coord);
+    __m128i d_sc = _mm_add_epi32(sc, sc);
     __m128i one = _mm_set1_epi32(1);
     
     for(unsigned long long i = 0; i < segment_length; i+=4) {
@@ -311,8 +312,7 @@ void add_segments_simd(unsigned segment_degree, coord_t* x, coord_t* y){
         _mm_storeu_si128((__m128i*)(vy), arr_x);
 
         //right lower segment
-        x_offset = _mm_add_epi32(sc, sc);
-        x_offset = _mm_sub_epi32(x_offset, one);
+        x_offset = _mm_sub_epi32(d_sc, one);
         x_offset = _mm_sub_epi32(x_offset, arr_y);
         _mm_storeu_si128((__m128i*)(vx + t_segment_length), x_offset);
         y_offset = _mm_sub_epi32(sc, one);

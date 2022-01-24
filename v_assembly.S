@@ -47,7 +47,7 @@ segments_loop:
     cmp rcx, r8
     je degrees_loop
 
-    /*mov r9, r8
+    mov r9, r8
     add r9, rcx                             //segment length + i
 
     //left upper segment
@@ -92,7 +92,7 @@ segments_loop:
     movups xmm0, xmm2
     psubd xmm0, xmm1
     psubd xmm0, [rdx + rcx]
-    movups [rdx + r9], xmm0*/
+    movups [rdx + r9], xmm0
 
     add rcx, 16
     

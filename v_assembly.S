@@ -45,7 +45,7 @@ degrees_loop:
 
 segments_loop:
     cmp rcx, r8
-    je degrees_loop
+    jge degrees_loop
 
     mov r9, r8
     add r9, rcx                             //segment length + i

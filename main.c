@@ -47,8 +47,7 @@ int main(int argc, char **argv) {
     int option;
     int option_index = 0;
     static struct option long_options[] = {
-        {"help", no_argument, 0, 'h'},
-        {0,0,0,0}
+            {"help", no_argument, 0, 'h'}
     };
 
     while ((option = getopt_long(argc, argv, ":V:B::n:o:t:hp",long_options, &option_index)) != -1) {
@@ -105,6 +104,10 @@ int main(int argc, char **argv) {
                 fprintf(stderr, "\n\n\n\nFalsche Nutzung von Parametern!\n\n");
                 help_message();
                 return 0;
+        }
+        
+        if(argc - optind != 0){
+            fprintf(stderr, "not an option\n");
         }
     }
 

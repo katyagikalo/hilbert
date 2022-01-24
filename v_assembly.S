@@ -32,7 +32,7 @@ degrees_loop:
     mov r8, 1                               //segment length
     mov rcx, rax
     add rcx, rcx
-    //inc rcx
+    add rcx, 2
     shl r8, cl                              //1 << (2 * (segment degree))
     
     mov rcx, rax
@@ -94,7 +94,7 @@ segments_loop:
     psubd xmm0, [rdx + rcx]
     movups [rdx + r9], xmm0*/
 
-    add rcx, 4
+    add rcx, 16
     
     jmp segments_loop
 

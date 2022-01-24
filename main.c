@@ -352,12 +352,15 @@ void * add_segment_left_upper(void * args){
     __m128i arr_x;
     __m128i arr_y;
     
-    coord_t* vx = temp_args->x + segment_length;
-    coord_t* vy = temp_args->y + segment_length;
     unsigned segment_coord = temp_args->segment_coord;
+    unsigned long long segment_length = temp_args->segment_coord;
+    coord_t* vx = temp_args->x + temp_args->segment_length;
+    coord_t* vy = temp_args->y + temp_args->segment_length;
+    
+    __m128i sc = _mm_set1_epi32(segment_coord);
 
     //left upper segment
-    for(unsigned long long i = 0; i < temp_args->segment_length; i+=4) {
+    for(unsigned long long i = 0; i < segment_length; i+=4) {
         arr_x = _mm_loadu_si128((__m128i const*)(vx));
         arr_y = _mm_loadu_si128((__m128i const*)(vy));
         

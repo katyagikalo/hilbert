@@ -32,7 +32,7 @@ degrees_loop:
     mov r8, 1                               //segment length
     mov rcx, rax
     add rcx, rcx
-    inc rcx
+    //inc rcx
     shl r8, cl                              //1 << (2 * (segment degree))
     
     mov rcx, rax

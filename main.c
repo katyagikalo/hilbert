@@ -105,6 +105,7 @@ int main(int argc, char **argv) {
                 help_message();
                 return 0;
         }
+        help_message();
     }
 
 //informationen ueber die Optionen und Parametereingabe

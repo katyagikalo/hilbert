@@ -1,6 +1,6 @@
 CC = gcc
 CFLAGS = -Wall -Werror
-LDFLAGS = 
+LDFLAGS = -lpthread
 OBJFILES = main.o v_assembly.S
 TARGET = main
 

@@ -47,69 +47,65 @@ int main(int argc, char **argv) {
     int option;
     int option_index = 0;
     static struct option long_options[] = {
-            {"help", no_argument, 0, 'h'}
+        {"help", no_argument, 0, 'h'}
+        {0,0,0,0}
     };
 
-
-    if(argc >= 2) {
-        option = getopt_long(argc, argv, ":V:B::n:o:t:hp", long_options, &option_index);
-        do {
-            char *ptr;
-            switch (option) {
-                case 'V' :
-                    if (optarg == NULL ||
-                        (*optarg != '0' && *optarg != '1' && *optarg != '2' && *optarg != '3' && *optarg != '4')) {
-                        printf("\n\n\n\nEs stehen folgende Versionen zur verfuegung:\n\n0 --C ohne Optimierung--\n1 --Assembler ohne SIMD--\n2 --C mit SIMD--\n3 --Rekursiv mit SIMD--\n4 --C Multithreaded ohne SIMD--\n");
+    while ((option = getopt_long(argc, argv, ":V:B::n:o:t:hp",long_options, &option_index)) != -1) {
+        char* ptr;
+        switch (option) {
+            case 'V' :
+                if (optarg == NULL || (*optarg != '0' && *optarg != '1' && *optarg != '2' && *optarg != '3' && *optarg != '4')) {
+                    printf("\n\n\n\nEs stehen folgende Versionen zur verfuegung:\n\n0 --C ohne Optimierung--\n1 --Assembler ohne SIMD--\n2 --C mit SIMD--\n3 --Rekursiv mit SIMD--\n4 --C Multithreaded ohne SIMD--\n");
+                    help_message();
+                    return 0;
+                }
+                version = atoi(optarg);
+                break;
+            case 'B' :
+                messure_time = true;
+                if (optarg != NULL)
+                    count_call = atoi(optarg);
+                break;
+            case 'n' :
+                ptr = optarg;
+                while (*ptr) {
+                    if (!isdigit(*ptr)) {
+                        printf("\n\n\n\nFuer den Grad der Hilbertkurve wird ein int als Eingabe erwartet.\n");
                         help_message();
                         return 0;
                     }
-                    version = atoi(optarg);
-                    break;
-                case 'B' :
-                    messure_time = true;
-                    if (optarg != NULL)
-                        count_call = atoi(optarg);
-                    break;
-                case 'n' :
-                    ptr = optarg;
-                    while (*ptr) {
-                        if (!isdigit(*ptr)) {
-                            printf("\n\n\n\nFuer den Grad der Hilbertkurve wird ein int als Eingabe erwartet.\n");
-                            help_message();
-                            return 0;
-                        }
-                        ptr++;
-                    }
-                    degree = atoi(optarg);
-                    break;
-                case 'o' :
-                    if (optarg != NULL) {
-                        write_svg_file = true;
-                        output_file_svg = optarg;
-                    }
-                    break;
-                case 't' :
-                    if (optarg != NULL) {
-                        write_txt_file = true;
-                        output_file_txt = optarg;
-                    }
-                    break;
-                case 'p' :
-                    print_console = true;
-                    break;
-                case 'h' :
-                    help_message();
-                    return 0;
-                case '?' :
-                    fprintf(stderr, "\n\n\n\nParameter %c nicht erkannt.\n\n", optopt);
-                    help_message();
-                    return 0;
-                default :
-                    fprintf(stderr, "\n\n\n\nFalsche Nutzung von Parametern!\n\n");
-                    help_message();
-                    return 0;
-            }
-        }while ((option = getopt_long(argc, argv, ":V:B::n:o:t:hp", long_options, &option_index)) != -1);
+                    ptr++;
+                }
+                degree = atoi(optarg);
+                break;
+            case 'o' :
+                if (optarg != NULL) {
+                    write_svg_file = true;
+                    output_file_svg = optarg;
+                }
+                break;
+            case 't' :
+                if (optarg != NULL) {
+                    write_txt_file = true;
+                    output_file_txt = optarg;
+                }
+                break;
+            case 'p' :
+                print_console = true;
+                break;
+            case 'h' :
+                help_message();
+                return 0;
+            case '?' :
+                fprintf(stderr, "\n\n\n\nParameter %c nicht erkannt.\n\n", optopt);
+                help_message();
+                return 0;
+            default :
+                fprintf(stderr, "\n\n\n\nFalsche Nutzung von Parametern!\n\n");
+                help_message();
+                return 0;
+        }
     }
 
 //informationen ueber die Optionen und Parametereingabe

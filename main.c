@@ -353,9 +353,9 @@ void * add_segment_left_upper(void * args){
     __m128i arr_y;
     
     unsigned segment_coord = temp_args->segment_coord;
-    unsigned long long segment_length = temp_args->segment_coord;
-    coord_t* vx = temp_args->x + temp_args->segment_length;
-    coord_t* vy = temp_args->y + temp_args->segment_length;
+    unsigned long long segment_length = temp_args->segment_length;
+    coord_t* vx = temp_args->x + segment_length;
+    coord_t* vy = temp_args->y + segment_length;
     
     __m128i sc = _mm_set1_epi32(segment_coord);
 

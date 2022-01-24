@@ -105,10 +105,10 @@ int main(int argc, char **argv) {
                 help_message();
                 return 0;
         }
-        
-        if(argc - optind != 0){
-            fprintf(stderr, "not an option\n");
-        }
+    }
+    
+    if(argc - optind != 0){
+        fprintf(stderr, "not an option\n");
     }
 
 //informationen ueber die Optionen und Parametereingabe

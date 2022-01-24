@@ -47,7 +47,7 @@ int main(int argc, char **argv) {
     int option;
     int option_index = 0;
     static struct option long_options[] = {
-            {"help", no_argument, 0, 'h'}
+            //{"help", no_argument, 0, 'h'}
     };
 
     while ((option = getopt_long(argc, argv, ":V:B::n:o:t:hp",long_options, &option_index)) != -1) {
@@ -321,14 +321,11 @@ void hilbert_recursive(unsigned degree, unsigned i, coord_t* x, coord_t* y){
 
 
 void hilbert_V3(unsigned degree, coord_t* x, coord_t* y){
-    if(degree == 1){
-        x[0].val = 0; y[0].val = 0; x[1].val = 0; y[1].val = 1; x[2].val = 1; y[2].val = 1; x[3].val = 1; y[3].val = 0;
-    }
-    else{
-    //unsigned i = 1;
-        hilbert_V3(degree - 1, x, y);
-        add_segments_simd(degree - 1, x, y);
-    }
+    x[0].val = 0; y[0].val = 0; x[1].val = 0; y[1].val = 1; x[2].val = 1; y[2].val = 1; x[3].val = 1; y[3].val = 0;
+
+    unsigned i = 1;
+
+    hilbert_recursive(degree, i, x, y);
 }
 
 

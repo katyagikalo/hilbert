@@ -299,25 +299,19 @@ void add_segments_simd(unsigned segment_degree, coord_t* x, coord_t* y){
 
         //left upper segment
         _mm_storeu_si128((__m128i*)(vx + segment_length), arr_x);
-        __m128i y_offset = _mm_add_epi32(arr_y, sc);
-        _mm_storeu_si128((__m128i*)(vy + segment_length), y_offset);
+        _mm_storeu_si128((__m128i*)(vy + segment_length), _mm_add_epi32(arr_y, sc));
 
         //right upper segment
-        __m128i x_offset = _mm_add_epi32(arr_x, sc);
-        _mm_storeu_si128((__m128i*)(vx + d_segment_length), x_offset);
-        _mm_storeu_si128((__m128i*)(vy + d_segment_length), y_offset);
+        _mm_storeu_si128((__m128i*)(vx + d_segment_length), _mm_add_epi32(arr_x, sc));
+        _mm_storeu_si128((__m128i*)(vy + d_segment_length), _mm_add_epi32(arr_y, sc));
 
         //left lower segment
         _mm_storeu_si128((__m128i*)(vx), arr_y);
         _mm_storeu_si128((__m128i*)(vy), arr_x);
 
         //right lower segment
-        x_offset = _mm_sub_epi32(d_sc, one);
-        x_offset = _mm_sub_epi32(x_offset, arr_y);
-        _mm_storeu_si128((__m128i*)(vx + t_segment_length), x_offset);
-        y_offset = _mm_sub_epi32(sc, one);
-        y_offset = _mm_sub_epi32(y_offset, arr_x);
-        _mm_storeu_si128((__m128i*)(vy + t_segment_length), y_offset);
+        _mm_storeu_si128((__m128i*)(vx + t_segment_length), _mm_sub_epi32(_mm_sub_epi32(d_sc, one), arr_y));
+        _mm_storeu_si128((__m128i*)(vy + t_segment_length), _mm_sub_epi32(_mm_sub_epi32(sc, one), arr_x));
         
         vx+=4;
         vy+=4;
@@ -354,10 +348,27 @@ void hilbert_V3(unsigned degree, coord_t* x, coord_t* y){
 
 void * add_segment_left_upper(void * args){
     pthread_args* temp_args = (pthread_args*) args;
-    for(unsigned long long i = 0; i < temp_args->segment_length; ++i) {
+    
+    __m128i arr_x;
+    __m128i arr_y;
+    
+    coord_t* vx = temp_args->x + segment_length;
+    coord_t* vy = temp_args->y + segment_length;
+    unsigned segment_coord = temp_args->segment_coord;
+
+    //left upper segment
+    for(unsigned long long i = 0; i < temp_args->segment_length; i+=4) {
+        arr_x = _mm_loadu_si128((__m128i const*)(vx));
+        arr_y = _mm_loadu_si128((__m128i const*)(vy));
+        
+        _mm_storeu_si128((__m128i*)(vx), arr_x);
+        _mm_storeu_si128((__m128i*)(vy), _mm_add_epi32(arr_y, sc));
+        
+        vx+=4;
+        vy+=4;
         //left upper segment
-        temp_args->x[temp_args->segment_length + i].val = temp_args->x[i].val;
-        temp_args->y[temp_args->segment_length + i].val = temp_args->y[i].val + temp_args->segment_coord;
+        /*temp_args->x[temp_args->segment_length + i].val = temp_args->x[i].val;
+        temp_args->y[temp_args->segment_length + i].val = temp_args->y[i].val + temp_args->segment_coord;*/
     }
     return NULL;
 }

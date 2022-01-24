@@ -32,6 +32,7 @@ degrees_loop:
     mov r8, 1                               //segment length
     mov rcx, rax
     add rcx, rcx
+    inc rcx
     shl r8, cl                              //1 << (2 * (segment degree))
     
     mov rcx, rax
@@ -49,7 +50,6 @@ segments_loop:
 
     //left upper segment
     mov r11, r8                             //segment length + i
-    imul r11, 4
     add r11, rcx
 
     movups xmm0, [rsi + rcx]                 //x[i] .. x[i+3]
@@ -62,7 +62,6 @@ segments_loop:
     //right upper segment
     mov r11, r8                             //2 * segment length + i
     imul r11, 2
-    imul r11, 4
     add r11, rcx
 
     movups xmm0, [rsi + rcx]                 //x[i] .. x[i+3]
@@ -83,7 +82,6 @@ segments_loop:
     //right lower segment
     mov r11, r8                             //3 * segment length + i
     imul r11, 3
-    imul r11, 4
     add r11, rcx
 
     mov r10, 1

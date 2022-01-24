@@ -348,29 +348,10 @@ void hilbert_V3(unsigned degree, coord_t* x, coord_t* y){
 
 void * add_segment_left_upper(void * args){
     pthread_args* temp_args = (pthread_args*) args;
-    
-    __m128i arr_x, arr_y;
-    
-    unsigned segment_coord = temp_args->segment_coord;
-    unsigned long long segment_length = temp_args->segment_length;
-    coord_t* vx = temp_args->x;
-    coord_t* vy = temp_args->y;
-    
-    __m128i sc = _mm_set1_epi32(segment_coord);
-
-    //left upper segment
-    for(unsigned long long i = 0; i < segment_length; i+=4) {
-        arr_x = _mm_loadu_si128((__m128i const*)(vx));
-        arr_y = _mm_loadu_si128((__m128i const*)(vy));
-        
-        _mm_storeu_si128((__m128i*)(vx + segment_length), arr_x);
-        _mm_storeu_si128((__m128i*)(vy + segment_length), _mm_add_epi32(arr_y, sc));
-        
-        vx+=4;
-        vy+=4;
+    for(unsigned long long i = 0; i < temp_args->segment_length; ++i) {
         //left upper segment
-        /*temp_args->x[temp_args->segment_length + i].val = temp_args->x[i].val;
-        temp_args->y[temp_args->segment_length + i].val = temp_args->y[i].val + temp_args->segment_coord;*/
+        temp_args->x[temp_args->segment_length + i].val = temp_args->x[i].val;
+        temp_args->y[temp_args->segment_length + i].val = temp_args->y[i].val + temp_args->segment_coord;
     }
     return NULL;
 }

@@ -46,35 +46,37 @@ degrees_loop:
 segments_loop:
     cmp rcx, r8
     je degrees_loop
+    
+    add rsi, rcx
+    add rdx, rcx
 
-    mov r9, r8
-    add r9, rcx                             //segment length + i
-
+    mov r9, r8                              //segment length
+    
     //left upper segment
-    movups xmm0, [rsi + rcx]                 //x[i] .. x[i+3]
+    movups xmm0, [rsi]                 //x[i] .. x[i+3]
     movups [rsi + r9], xmm0
 
-    movups xmm0, [rdx + rcx]                 //y[i] .. y[i+3]
+    movups xmm0, [rdx]                 //y[i] .. y[i+3]
     paddd xmm0, xmm2                        //y[i] + segment_coord .. y[i+3] + segment_coord
     movups [rdx + r9], xmm0
 
     //right upper segment
-    add r9, r8                             //2 * segment length + i
+    add r9, r8                             //2 * segment length
 
-    movups xmm0, [rsi + rcx]                 //x[i] .. x[i+3]
+    movups xmm0, [rsi]                 //x[i] .. x[i+3]
     paddd xmm0, xmm2
     movups [rsi + r9], xmm0
 
-    movups xmm0, [rdx + rcx]                 //y[i] .. y[i+3]
+    movups xmm0, [rdx]                 //y[i] .. y[i+3]
     paddd xmm0, xmm2                        //y[i] + segment_coord .. y[i+3] + segment_coord
     movups [rdx + r9], xmm0
 
     //left lower segment
-    movups xmm0, [rsi + rcx]                 //x[i] .. x[i+3]
-    movups xmm1, [rdx + rcx]                 //y[i] .. y[i+3]
+    movups xmm0, [rsi]                 //x[i] .. x[i+3]
+    movups xmm1, [rdx]                 //y[i] .. y[i+3]
 
-    movups [rsi + rcx], xmm1
-    movups [rdx + rcx], xmm0
+    movups [rsi], xmm1
+    movups [rdx], xmm0
 
     //right lower segment
     add r9, r8                             //3 * segment length + i
@@ -86,12 +88,12 @@ segments_loop:
     movups xmm0, xmm2
     paddd xmm0, xmm0
     psubd xmm0, xmm1
-    psubd xmm0, [rsi + rcx]
+    psubd xmm0, [rsi]
     movups [rsi + r9], xmm0
 
     movups xmm0, xmm2
     psubd xmm0, xmm1
-    psubd xmm0, [rdx + rcx]
+    psubd xmm0, [rdx]
     movups [rdx + r9], xmm0
 
     add rcx, 16

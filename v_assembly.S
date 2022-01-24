@@ -42,35 +42,32 @@ degrees_loop:
     pshufd xmm2, xmm2, 0x00
 
     xor rcx, rcx                            //loop counter
-    xor r9, r9
 
 segments_loop:
     cmp rcx, r8
     je degrees_loop
 
-    //left upper segment
-    mov r11, r8                             //segment length + i
-    add r11, rcx
+    mov r9, r8
+    add r9, rcx                             //segment length + i
 
+    //left upper segment
     movups xmm0, [rsi + rcx]                 //x[i] .. x[i+3]
-    movups [rsi + r11], xmm0
+    movups [rsi + r9], xmm0
 
     movups xmm0, [rdx + rcx]                 //y[i] .. y[i+3]
     paddd xmm0, xmm2                        //y[i] + segment_coord .. y[i+3] + segment_coord
-    movups [rdx + r11], xmm0
+    movups [rdx + r9], xmm0
 
     //right upper segment
-    mov r11, r8                             //2 * segment length + i
-    imul r11, 2
-    add r11, rcx
+    add r9, r8                             //2 * segment length + i
 
     movups xmm0, [rsi + rcx]                 //x[i] .. x[i+3]
     paddd xmm0, xmm2
-    movups [rsi + r11], xmm0
+    movups [rsi + r9], xmm0
 
     movups xmm0, [rdx + rcx]                 //y[i] .. y[i+3]
     paddd xmm0, xmm2                        //y[i] + segment_coord .. y[i+3] + segment_coord
-    movups [rdx + r11], xmm0
+    movups [rdx + r9], xmm0
 
     //left lower segment
     movups xmm0, [rsi + rcx]                 //x[i] .. x[i+3]
@@ -80,9 +77,7 @@ segments_loop:
     movups [rdx + rcx], xmm0
 
     //right lower segment
-    mov r11, r8                             //3 * segment length + i
-    imul r11, 3
-    add r11, rcx
+    add r9, r8                             //3 * segment length + i
 
     mov r10, 1
     movd xmm1, r10

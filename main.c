@@ -109,6 +109,7 @@ int main(int argc, char **argv) {
     
     if(argc - optind != 0){
         fprintf(stderr, "not an option\n");
+        return -1;
     }
 
 //informationen ueber die Optionen und Parametereingabe

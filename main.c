@@ -286,8 +286,8 @@ void add_segments_simd(unsigned segment_degree, coord_t* x, coord_t* y){
     //3*segment_length
     unsigned long long t_segment_length = d_segment_length + segment_length;
     
-    __m128i arr_x;
-    __m128i arr_y;
+    __m128i arr_x, arr_y;
+    
     __m128i sc = _mm_set1_epi32(segment_coord);
     __m128i d_sc = _mm_add_epi32(sc, sc);
     __m128i one = _mm_set1_epi32(1);
@@ -349,13 +349,12 @@ void hilbert_V3(unsigned degree, coord_t* x, coord_t* y){
 void * add_segment_left_upper(void * args){
     pthread_args* temp_args = (pthread_args*) args;
     
-    __m128i arr_x;
-    __m128i arr_y;
+    __m128i arr_x, arr_y;
     
     unsigned segment_coord = temp_args->segment_coord;
     unsigned long long segment_length = temp_args->segment_length;
-    coord_t* vx = temp_args->x + segment_length;
-    coord_t* vy = temp_args->y + segment_length;
+    coord_t* vx = temp_args->x;
+    coord_t* vy = temp_args->y;
     
     __m128i sc = _mm_set1_epi32(segment_coord);
 
@@ -364,8 +363,8 @@ void * add_segment_left_upper(void * args){
         arr_x = _mm_loadu_si128((__m128i const*)(vx));
         arr_y = _mm_loadu_si128((__m128i const*)(vy));
         
-        _mm_storeu_si128((__m128i*)(vx), arr_x);
-        _mm_storeu_si128((__m128i*)(vy), _mm_add_epi32(arr_y, sc));
+        _mm_storeu_si128((__m128i*)(vx + segment_length), arr_x);
+        _mm_storeu_si128((__m128i*)(vy + segment_length), _mm_add_epi32(arr_y, sc));
         
         vx+=4;
         vy+=4;

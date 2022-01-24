@@ -247,13 +247,13 @@ void add_segments(unsigned segment_degree, coord_t* x, coord_t* y){
         vy[d_segment_length].val = vy[0].val + segment_coord;
 
         //left lower segment
-        unsigned temp = x[0].val;
-        vx[0].val = y[0].val;
+        unsigned temp = vx[0].val;
+        vx[0].val = vy[0].val;
         vy[0].val = temp;
 
         //right lower segment
-        vx[t_segment_length].val = 2*segment_coord - 1 - x[0].val;
-        vy[t_segment_length].val = segment_coord - 1 - y[0].val;
+        vx[t_segment_length].val = 2*segment_coord - 1 - vx[0].val;
+        vy[t_segment_length].val = segment_coord - 1 - vy[0].val;
         
         vx += i;
         vy += i;

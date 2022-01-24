@@ -94,7 +94,7 @@ segments_loop:
     psubd xmm0, [rdx + rcx]
     movups [rdx + r9], xmm0*/
 
-    add rcx, 16
+    add rcx, 4
     
     jmp segments_loop
 

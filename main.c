@@ -230,8 +230,6 @@ void add_segments(unsigned segment_degree, coord_t* x, coord_t* y){
     unsigned long long segment_length = (unsigned long long)1 << (2 * (segment_degree));
     unsigned segment_coord = (1 << segment_degree);
     
-    coord_t *vx = x, *vy = y;
-    
     //2*segment_length
     unsigned long long d_segment_length = segment_length + segment_length;
     //3*segment_length
@@ -239,24 +237,21 @@ void add_segments(unsigned segment_degree, coord_t* x, coord_t* y){
     
     for(unsigned long long i = 0; i < segment_length; ++i) {
         //left upper segment
-        vx[segment_length].val = vx[0].val;
-        vy[segment_length].val = vy[0].val + segment_coord;
+        x[segment_length + i].val = x[i].val;
+        y[segment_length + i].val = y[i].val + segment_coord;
 
         //right upper segment
-        vx[d_segment_length].val = vx[0].val + segment_coord;
-        vy[d_segment_length].val = vy[0].val + segment_coord;
+        x[d_segment_length].val = x[i].val + segment_coord;
+        y[d_segment_length].val = y[i].val + segment_coord;
 
         //left lower segment
-        unsigned temp = vx[0].val;
-        vx[0].val = vy[0].val;
-        vy[0].val = temp;
+        unsigned temp = x[i].val;
+        x[i].val = y[i].val;
+        y[i].val = temp;
 
         //right lower segment
-        vx[t_segment_length].val = 2*segment_coord - 1 - vx[0].val;
-        vy[t_segment_length].val = segment_coord - 1 - vy[0].val;
-        
-        vx++;
-        vy++;
+        x[t_segment_length + i].val = 2*segment_coord - 1 - x[i].val;
+        y[t_segment_length + i].val = segment_coord - 1 - y[i].val;
     }
 }
 
@@ -278,8 +273,6 @@ void hilbert_V1(unsigned degree, coord_t* x, coord_t* y) {
 void add_segments_simd(unsigned segment_degree, coord_t* x, coord_t* y){
     unsigned long long segment_length = (unsigned long long)1 << (2 * (segment_degree));
     unsigned segment_coord = (1 << segment_degree);
-
-    coord_t *vx = x, *vy = y;
     
     //2*segment_length
     unsigned long long d_segment_length = segment_length + segment_length;
@@ -294,27 +287,24 @@ void add_segments_simd(unsigned segment_degree, coord_t* x, coord_t* y){
     
     for(unsigned long long i = 0; i < segment_length; i+=4) {
 
-        arr_x = _mm_loadu_si128((__m128i const*)(vx));
-        arr_y = _mm_loadu_si128((__m128i const*)(vy));
+        arr_x = _mm_loadu_si128((__m128i const*)(x + i));
+        arr_y = _mm_loadu_si128((__m128i const*)(y + i));
 
         //left upper segment
-        _mm_storeu_si128((__m128i*)(vx + segment_length), arr_x);
-        _mm_storeu_si128((__m128i*)(vy + segment_length), _mm_add_epi32(arr_y, sc));
+        _mm_storeu_si128((__m128i*)(x + segment_length + i), arr_x);
+        _mm_storeu_si128((__m128i*)(y + segment_length + i), _mm_add_epi32(arr_y, sc));
 
         //right upper segment
-        _mm_storeu_si128((__m128i*)(vx + d_segment_length), _mm_add_epi32(arr_x, sc));
-        _mm_storeu_si128((__m128i*)(vy + d_segment_length), _mm_add_epi32(arr_y, sc));
+        _mm_storeu_si128((__m128i*)(x + d_segment_length + i), _mm_add_epi32(arr_x, sc));
+        _mm_storeu_si128((__m128i*)(y + d_segment_length + i), _mm_add_epi32(arr_y, sc));
 
         //left lower segment
-        _mm_storeu_si128((__m128i*)(vx), arr_y);
-        _mm_storeu_si128((__m128i*)(vy), arr_x);
+        _mm_storeu_si128((__m128i*)(x + i), arr_y);
+        _mm_storeu_si128((__m128i*)(y + i), arr_x);
 
         //right lower segment
-        _mm_storeu_si128((__m128i*)(vx + t_segment_length), _mm_sub_epi32(_mm_sub_epi32(d_sc, one), arr_y));
-        _mm_storeu_si128((__m128i*)(vy + t_segment_length), _mm_sub_epi32(_mm_sub_epi32(sc, one), arr_x));
-        
-        vx+=4;
-        vy+=4;
+        _mm_storeu_si128((__m128i*)(x + t_segment_length + i), _mm_sub_epi32(_mm_sub_epi32(d_sc, one), arr_y));
+        _mm_storeu_si128((__m128i*)(y + t_segment_length + i), _mm_sub_epi32(_mm_sub_epi32(sc, one), arr_x));
     }
 }
 

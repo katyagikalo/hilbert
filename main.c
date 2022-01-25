@@ -273,6 +273,8 @@ void hilbert_V1(unsigned degree, coord_t* x, coord_t* y) {
 void add_segments_simd(unsigned segment_degree, coord_t* x, coord_t* y){
     unsigned long long segment_length = (unsigned long long)1 << (2 * (segment_degree));
     unsigned segment_coord = (1 << segment_degree);
+
+    coord_t *vx = x, *vy = y;
     
     //2*segment_length
     unsigned long long d_segment_length = segment_length + segment_length;
@@ -287,24 +289,27 @@ void add_segments_simd(unsigned segment_degree, coord_t* x, coord_t* y){
     
     for(unsigned long long i = 0; i < segment_length; i+=4) {
 
-        arr_x = _mm_loadu_si128((__m128i const*)(x + i));
-        arr_y = _mm_loadu_si128((__m128i const*)(y + i));
+        arr_x = _mm_loadu_si128((__m128i const*)(vx));
+        arr_y = _mm_loadu_si128((__m128i const*)(vy));
 
         //left upper segment
-        _mm_storeu_si128((__m128i*)(x + segment_length + i), arr_x);
-        _mm_storeu_si128((__m128i*)(y + segment_length + i), _mm_add_epi32(arr_y, sc));
+        _mm_storeu_si128((__m128i*)(vx + segment_length), arr_x);
+        _mm_storeu_si128((__m128i*)(vy + segment_length), _mm_add_epi32(arr_y, sc));
 
         //right upper segment
-        _mm_storeu_si128((__m128i*)(x + d_segment_length + i), _mm_add_epi32(arr_x, sc));
-        _mm_storeu_si128((__m128i*)(y + d_segment_length + i), _mm_add_epi32(arr_y, sc));
+        _mm_storeu_si128((__m128i*)(vx + d_segment_length), _mm_add_epi32(arr_x, sc));
+        _mm_storeu_si128((__m128i*)(vy + d_segment_length), _mm_add_epi32(arr_y, sc));
 
         //left lower segment
-        _mm_storeu_si128((__m128i*)(x + i), arr_y);
-        _mm_storeu_si128((__m128i*)(y + i), arr_x);
+        _mm_storeu_si128((__m128i*)(vx), arr_y);
+        _mm_storeu_si128((__m128i*)(vy), arr_x);
 
         //right lower segment
-        _mm_storeu_si128((__m128i*)(x + t_segment_length + i), _mm_sub_epi32(_mm_sub_epi32(d_sc, one), arr_y));
-        _mm_storeu_si128((__m128i*)(y + t_segment_length + i), _mm_sub_epi32(_mm_sub_epi32(sc, one), arr_x));
+        _mm_storeu_si128((__m128i*)(vx + t_segment_length), _mm_sub_epi32(_mm_sub_epi32(d_sc, one), arr_y));
+        _mm_storeu_si128((__m128i*)(vy + t_segment_length), _mm_sub_epi32(_mm_sub_epi32(sc, one), arr_x));
+        
+        vx+=4;
+        vy+=4;
     }
 }
 

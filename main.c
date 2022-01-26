@@ -418,6 +418,8 @@ void * add_segments_multithreaded(void * args){
         vx++;
         vy++;
     }
+    
+    return NULL;
 }
 
 void hilbert_V4(unsigned degree, coord_t* x, coord_t* y){

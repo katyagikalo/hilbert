@@ -345,7 +345,7 @@ void hilbert_V3(unsigned degree, coord_t* x, coord_t* y){
 void * add_segments_simd_multithreaded(void * args){
     pthread_args* temp_args = (pthread_args*) args;
 
-    coord_t *vx = temp_args->x, *vy = temp_args->y;
+    coord_t *vx = temp_args->x + temp_args->start, *vy = temp_args->y + temp_args->start;
 
     //2*segment_length
     unsigned long long d_segment_length = 2 * temp_args->segment_length;
@@ -358,9 +358,6 @@ void * add_segments_simd_multithreaded(void * args){
     __m128i d_sc = _mm_add_epi32(sc, sc);
     __m128i one = _mm_set1_epi32(1);
     
-    vx+=temp_args->start;
-    vy+=temp_args->start;
-
     for(unsigned long long i = temp_args->start; i < temp_args->end; i+=4) {
 
         arr_x = _mm_loadu_si128((__m128i const*)(vx));

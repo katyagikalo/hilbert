@@ -363,24 +363,24 @@ void * add_segments_simd_multithreaded(void * args){
 
     for(unsigned long long i = temp_args->start; i < temp_args->end; i+=4) {
 
-        arr_x = _mm_loadu_si128((__m128i const*)(vx + i));
-        arr_y = _mm_loadu_si128((__m128i const*)(vy + i));
+        arr_x = _mm_loadu_si128((__m128i const*)(vx));
+        arr_y = _mm_loadu_si128((__m128i const*)(vy));
 
         //left upper segment
-        _mm_storeu_si128((__m128i*)(vx + temp_args->segment_length + i), arr_x);
-        _mm_storeu_si128((__m128i*)(vy + temp_args->segment_length + i), _mm_add_epi32(arr_y, sc));
+        _mm_storeu_si128((__m128i*)(vx + temp_args->segment_length), arr_x);
+        _mm_storeu_si128((__m128i*)(vy + temp_args->segment_length), _mm_add_epi32(arr_y, sc));
 
         //right upper segment
-        _mm_storeu_si128((__m128i*)(vx + d_segment_length + i), _mm_add_epi32(arr_x, sc));
-        _mm_storeu_si128((__m128i*)(vy + d_segment_length + i), _mm_add_epi32(arr_y, sc));
+        _mm_storeu_si128((__m128i*)(vx + d_segment_length), _mm_add_epi32(arr_x, sc));
+        _mm_storeu_si128((__m128i*)(vy + d_segment_length), _mm_add_epi32(arr_y, sc));
 
         //left lower segment
-        _mm_storeu_si128((__m128i*)(vx + i), arr_y);
-        _mm_storeu_si128((__m128i*)(vy + i), arr_x);
+        _mm_storeu_si128((__m128i*)(vx), arr_y);
+        _mm_storeu_si128((__m128i*)(vy), arr_x);
 
         //right lower segment
-        _mm_storeu_si128((__m128i*)(vx + t_segment_length + i), _mm_sub_epi32(_mm_sub_epi32(d_sc, one), arr_y));
-        _mm_storeu_si128((__m128i*)(vy + t_segment_length + i), _mm_sub_epi32(_mm_sub_epi32(sc, one), arr_x));
+        _mm_storeu_si128((__m128i*)(vx + t_segment_length), _mm_sub_epi32(_mm_sub_epi32(d_sc, one), arr_y));
+        _mm_storeu_si128((__m128i*)(vy + t_segment_length), _mm_sub_epi32(_mm_sub_epi32(sc, one), arr_x));
         
         vx+=4;
         vy+=4;

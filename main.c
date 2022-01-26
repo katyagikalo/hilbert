@@ -391,6 +391,9 @@ void * add_segments_multithreaded(void * args){
     unsigned long long d_segment_length = 2 * temp_args->segment_length;
     //3*segment_length
     unsigned long long t_segment_length = d_segment_length + temp_args->segment_length;
+    
+    vx+=temp_args->start;
+    vy+=temp_args->start;
 
     for(unsigned long long i = temp_args->start; i < temp_args->end; ++i) {
         //left upper segment
@@ -419,7 +422,7 @@ void * add_segments_multithreaded(void * args){
 
 void hilbert_V4(unsigned degree, coord_t* x, coord_t* y){
     
-    unsigned THREADS = 1;
+    unsigned THREADS = 2;
 
     //curve for degree = 1
     x[0].val = 0; y[0].val = 0; x[1].val = 0; y[1].val = 1; x[2].val = 1; y[2].val = 1; x[3].val = 1; y[3].val = 0;

@@ -462,11 +462,11 @@ void hilbert_V4(unsigned degree, coord_t* x, coord_t* y){
         unsigned long long segment_length = (unsigned long long) 1 << (2 * i);
         unsigned segment_coord = 1 << i, step = segment_length/THREADS;
         
-        for(unsigned j = 0; i < THREADS; ++i) {
-            pthread_args_arr[i].segment_length = segment_length;
-            pthread_args_arr[i].segment_coord = segment_coord;
-            pthread_args_arr[i].start = i * step;
-            pthread_args_arr[i].end = step + i*step;
+        for(unsigned j = 0; j < THREADS; ++j) {
+            pthread_args_arr[j].segment_length = segment_length;
+            pthread_args_arr[j].segment_coord = segment_coord;
+            pthread_args_arr[j].start = j * step;
+            pthread_args_arr[j].end = step + j*step;
         }
         
         for (unsigned j = 0; j < THREADS; ++j) {

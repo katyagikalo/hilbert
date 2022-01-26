@@ -379,7 +379,7 @@ void * add_segments_simd_multithreaded(void * args){
         _mm_storeu_si128((__m128i*)(vx + t_segment_length), _mm_sub_epi32(_mm_sub_epi32(d_sc, one), arr_y));
         _mm_storeu_si128((__m128i*)(vy + t_segment_length), _mm_sub_epi32(_mm_sub_epi32(sc, one), arr_x));
         
-        ptint_curve(2, vx, vy);
+        print_curve(2, vx, vy);
         
         vx+=4;
         vy+=4;

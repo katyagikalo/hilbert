@@ -357,6 +357,9 @@ void * add_segments_simd_multithreaded(void * args){
     __m128i sc = _mm_set1_epi32(temp_args->segment_coord);
     __m128i d_sc = _mm_add_epi32(sc, sc);
     __m128i one = _mm_set1_epi32(1);
+    
+    vx+=temp_args->start;
+    vy+=temp_args->start;
 
     for(unsigned long long i = temp_args->start; i < temp_args->end; i+=4) {
 
@@ -451,7 +454,7 @@ void hilbert_V4(unsigned degree, coord_t* x, coord_t* y){
         }
         
         for (unsigned j = 0; j < THREADS; ++j) {
-            pthread_create(&thread_array[j], NULL, add_segments_multithreaded, (void *) &pthread_args_arr[j]);
+            pthread_create(&thread_array[j], NULL, add_segments_simd_multithreaded, (void *) &pthread_args_arr[j]);
         }
         
         for (unsigned j = 0; j < THREADS; ++j) {

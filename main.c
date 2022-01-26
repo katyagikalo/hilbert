@@ -227,14 +227,14 @@ int main(int argc, char **argv) {
 void add_segments(unsigned segment_degree, coord_t* x, coord_t* y){
     unsigned long long segment_length = (unsigned long long)1 << (2 * (segment_degree));
     unsigned segment_coord = (1 << segment_degree);
-    
+
     coord_t *vx = x, *vy = y;
-    
+
     //2*segment_length
     unsigned long long d_segment_length = segment_length + segment_length;
     //3*segment_length
     unsigned long long t_segment_length = d_segment_length + segment_length;
-    
+
     for(unsigned long long i = 0; i < segment_length; ++i) {
         //left upper segment
         vx[segment_length].val = vx[0].val;
@@ -252,7 +252,7 @@ void add_segments(unsigned segment_degree, coord_t* x, coord_t* y){
         //right lower segment
         vx[t_segment_length].val = 2*segment_coord - 1 - vx[0].val;
         vy[t_segment_length].val = segment_coord - 1 - vy[0].val;
-        
+
         vx++;
         vy++;
     }

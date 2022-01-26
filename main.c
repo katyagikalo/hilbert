@@ -418,7 +418,7 @@ void * add_segments_multithreaded(void * args){
 
 void hilbert_V4(unsigned degree, coord_t* x, coord_t* y){
     
-    unsigned THREADS = 2;
+    unsigned THREADS = 4;
 
     //curve for degree = 1
     x[0].val = 0; y[0].val = 0; x[1].val = 0; y[1].val = 1; x[2].val = 1; y[2].val = 1; x[3].val = 1; y[3].val = 0;
@@ -447,7 +447,7 @@ void hilbert_V4(unsigned degree, coord_t* x, coord_t* y){
         }
         
         for (unsigned j = 0; j < THREADS; ++j) {
-            pthread_create(&thread_array[j], NULL, add_segments_simd_multithreaded, (void *) &pthread_args_arr[j]);
+            pthread_create(&thread_array[j], NULL, add_segments_multithreaded, (void *) &pthread_args_arr[j]);
         }
         
         for (unsigned j = 0; j < THREADS; ++j) {

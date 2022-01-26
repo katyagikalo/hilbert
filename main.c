@@ -439,18 +439,18 @@ void hilbert_V4(unsigned degree, coord_t* x, coord_t* y){
     pthread_args_arr[0].start = 0;
     pthread_args_arr[0].end = 4;
     
-    /*pthread_args_arr[1].segment_length = (unsigned long long) 1 << (2 * 1);
+    pthread_args_arr[1].segment_length = (unsigned long long) 1 << (2 * 1);
     pthread_args_arr[1].segment_coord = (1 << 1);
     pthread_args_arr[1].x = x;
     pthread_args_arr[1].y = y;
     pthread_args_arr[1].start = 2;
-    pthread_args_arr[1].end = 4;*/
+    pthread_args_arr[1].end = 4;
     
     pthread_create(&thread_array[0], NULL, add_segments_multithreaded, (void *) &pthread_args_arr[0]);
-    //pthread_create(&thread_array[1], NULL, add_segments_multithreaded, (void *) &pthread_args_arr[1]);
+    pthread_create(&thread_array[1], NULL, add_segments_multithreaded, (void *) &pthread_args_arr[1]);
     
     pthread_join(thread_array[0], NULL);
-    //pthread_join(thread_array[1], NULL);
+    pthread_join(thread_array[1], NULL);
     
     //create threads
     /*pthread_t thread_array[THREADS];

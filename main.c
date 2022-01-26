@@ -390,7 +390,7 @@ void * add_segments_multithreaded(void * args){
     pthread_args* temp_args = (pthread_args*) args;
 
 
-    coord_t *vx = temp_args->x, *vy = temp_args->y;
+    //coord_t *vx = temp_args->x, *vy = temp_args->y;
 
     //2*segment_length
     unsigned long long d_segment_length = 2 * temp_args->segment_length;

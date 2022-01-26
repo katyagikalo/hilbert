@@ -381,6 +381,8 @@ void * add_segments_simd_multithreaded(void * args){
         
         vx+=4;
         vy+=4;
+        
+        printf("%n", i);
     }
     return NULL;
 }

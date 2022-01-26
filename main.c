@@ -435,7 +435,7 @@ void hilbert_V4(unsigned degree, coord_t* x, coord_t* y){
     //create thread_arguments_array
     pthread_args pthread_args_arr[THREADS][degree];
 
-    for(unsigned i = 1; i <= 6; ++i) {
+    for(unsigned i = 0; i < degree; ++i) {
         for (unsigned t = 0; t < THREADS; t++) {
             pthread_args_arr[t][i - 1].segment_length = (unsigned long long) 1 << (2 * i);
             pthread_args_arr[t][i - 1].segment_coord = (1 << i);

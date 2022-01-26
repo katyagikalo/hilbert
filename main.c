@@ -437,7 +437,7 @@ void hilbert_V4(unsigned degree, coord_t* x, coord_t* y){
     pthread_args_arr[0].x = x;
     pthread_args_arr[0].y = y;
     pthread_args_arr[0].start = 0;
-    pthread_args_arr[0].end = 4;
+    pthread_args_arr[0].end = 2;
     
     pthread_args_arr[1].segment_length = (unsigned long long) 1 << (2 * 1);
     pthread_args_arr[1].segment_coord = (1 << 1);

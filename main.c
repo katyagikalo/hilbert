@@ -429,22 +429,22 @@ void hilbert_V4(unsigned degree, coord_t* x, coord_t* y){
     //curve for degree = 1
     x[0].val = 0; y[0].val = 0; x[1].val = 0; y[1].val = 1; x[2].val = 1; y[2].val = 1; x[3].val = 1; y[3].val = 0;
     
-    pthread_t thread_array[2];
-    pthread_args pthread_args_arr[2];
+    pthread_t thread_array[THREADS];
+    pthread_args pthread_args_arr[THREADS];
     
-    pthread_args_arr[0].segment_length = (unsigned long long) 1 << (2 * i);
-    pthread_args_arr[0].segment_coord = (1 << i);
+    pthread_args_arr[0].segment_length = (unsigned long long) 1 << (2 * 1);
+    pthread_args_arr[0].segment_coord = (1 << 1);
     pthread_args_arr[0].x = x;
     pthread_args_arr[0].y = y;
     pthread_args_arr[0].start = 0;
-    pthread_args_arr[0].end = 31;
+    pthread_args_arr[0].end = 1;
     
-    pthread_args_arr[1].segment_length = (unsigned long long) 1 << (2 * i);
-    pthread_args_arr[1].segment_coord = (1 << i);
+    pthread_args_arr[1].segment_length = (unsigned long long) 1 << (2 * 1);
+    pthread_args_arr[1].segment_coord = (1 << 1);
     pthread_args_arr[1].x = x;
     pthread_args_arr[1].y = y;
-    pthread_args_arr[1].start = 32;
-    pthread_args_arr[1].end = 64;
+    pthread_args_arr[1].start = 2;
+    pthread_args_arr[1].end = 4;
     
     pthread_create(&thread_array[0], NULL, add_segments_multithreaded, (void *) &pthread_args_arr[0]);
     pthread_create(&thread_array[1], NULL, add_segments_multithreaded, (void *) &pthread_args_arr[1]);\

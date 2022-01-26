@@ -432,30 +432,10 @@ void hilbert_V4(unsigned degree, coord_t* x, coord_t* y){
     //create thread_arguments_array
     pthread_args pthread_args_arr[THREADS];
     
-    /*pthread_args_arr[0].segment_length = (unsigned long long) 1 << (2 * 1);
-    pthread_args_arr[0].segment_coord = (1 << 1);
-    pthread_args_arr[0].x = x;
-    pthread_args_arr[0].y = y;
-    pthread_args_arr[0].start = 0;
-    pthread_args_arr[0].end = 2;
-    
-    pthread_args_arr[1].segment_length = (unsigned long long) 1 << (2 * 1);
-    pthread_args_arr[1].segment_coord = (1 << 1);
-    pthread_args_arr[1].x = x;
-    pthread_args_arr[1].y = y;
-    pthread_args_arr[1].start = 2;
-    pthread_args_arr[1].end = 4;
-    
-    pthread_create(&thread_array[0], NULL, add_segments_multithreaded, (void *) &pthread_args_arr[0]);
-    pthread_create(&thread_array[1], NULL, add_segments_multithreaded, (void *) &pthread_args_arr[1]);
-    
-    pthread_join(thread_array[0], NULL);
-    pthread_join(thread_array[1], NULL);*/
     for(unsigned i = 0; i < THREADS; ++i) {
         pthread_args_arr[i].x = x;
         pthread_args_arr[i].y = y;
     }
-
 
     //calculate
     for(unsigned i = 1; i < degree; ++i) { //i=temp_degree segment_length = 2^2*i
@@ -470,7 +450,7 @@ void hilbert_V4(unsigned degree, coord_t* x, coord_t* y){
         }
         
         for (unsigned j = 0; j < THREADS; ++j) {
-            pthread_create(&thread_array[j], NULL, add_segments_multithreaded, (void *) &pthread_args_arr[j]);
+            pthread_create(&thread_array[j], NULL, add_segments_simd_multithreaded, (void *) &pthread_args_arr[j]);
         }
         
         for (unsigned j = 0; j < THREADS; ++j) {

@@ -442,9 +442,11 @@ void hilbert_V4(unsigned degree, coord_t* x, coord_t* y){
         pthread_args_arr[i].x = x;
         pthread_args_arr[i].y = y;
     }
+    
+    add_segments_simd(2, x, y);
 
     //calculate
-    for(unsigned i = 1; i < degree; ++i) { //i=temp_degree segment_length = 2^2*i
+    for(unsigned i = 2; i < degree; ++i) { //i=temp_degree segment_length = 2^2*i
         unsigned long long segment_length = (unsigned long long) 1 << (2 * i);
         unsigned segment_coord = 1 << i, step = segment_length/THREADS;
         

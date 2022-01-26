@@ -11,19 +11,18 @@
 
 #include "main.h"
 
-void print_curve(unsigned degree, coord_t* x, coord_t* y);
+
 void add_segments(unsigned degree, coord_t* x, coord_t* y);
 void add_segments_simd(unsigned segment_degree, coord_t* x, coord_t* y);
 void hilbert_recursive(unsigned degree, unsigned i, coord_t* x, coord_t* y);
-void * add_segment_left_upper(void * pthread_args);
-void * add_segment_right_upper(void * pthread_args);
-void * add_segment_left_lower(void * pthread_args);
-void * add_segment_right_lower(void * pthread_args);
+
 void hilbert_V0(unsigned degree, coord_t* x, coord_t* y);
 void hilbert_V1(unsigned degree, coord_t* x, coord_t* y);
 void hilbert_V2(unsigned degree, coord_t* x, coord_t* y);
 void hilbert_V3(unsigned i, coord_t* x, coord_t* y);
 void hilbert_V4(unsigned degree, coord_t* x, coord_t* y);
+
+void print_curve(unsigned degree, coord_t* x, coord_t* y);
 void write_svg(char* output_file_svg, int degree, coord_t* x, coord_t* y);
 void write_txt(char* output_file_txt, int degree, coord_t* x, coord_t* y);
 void help_message();
@@ -31,6 +30,8 @@ void help_message();
 typedef struct{
     unsigned long long segment_length;
     unsigned segment_coord;
+    unsigned start;
+    unsigned end;
     coord_t *x;
     coord_t *y;
 }pthread_args;
@@ -223,9 +224,6 @@ int main(int argc, char **argv) {
 }
 
 
-
-
-
 void add_segments(unsigned segment_degree, coord_t* x, coord_t* y){
     unsigned long long segment_length = (unsigned long long)1 << (2 * (segment_degree));
     unsigned segment_coord = (1 << segment_degree);
@@ -272,7 +270,7 @@ void hilbert_V0(unsigned degree, coord_t* x, coord_t* y) {
 
 
 void hilbert_V1(unsigned degree, coord_t* x, coord_t* y) {
-    v_assembly(degree, x, y);
+//    v_assembly(degree, x, y);
 }
 
 void add_segments_simd(unsigned segment_degree, coord_t* x, coord_t* y){
@@ -280,18 +278,18 @@ void add_segments_simd(unsigned segment_degree, coord_t* x, coord_t* y){
     unsigned segment_coord = (1 << segment_degree);
 
     coord_t *vx = x, *vy = y;
-    
+
     //2*segment_length
     unsigned long long d_segment_length = segment_length + segment_length;
     //3*segment_length
     unsigned long long t_segment_length = d_segment_length + segment_length;
-    
+
     __m128i arr_x, arr_y;
-    
+
     __m128i sc = _mm_set1_epi32(segment_coord);
     __m128i d_sc = _mm_add_epi32(sc, sc);
     __m128i one = _mm_set1_epi32(1);
-    
+
     for(unsigned long long i = 0; i < segment_length; i+=4) {
 
         arr_x = _mm_loadu_si128((__m128i const*)(vx));
@@ -312,7 +310,7 @@ void add_segments_simd(unsigned segment_degree, coord_t* x, coord_t* y){
         //right lower segment
         _mm_storeu_si128((__m128i*)(vx + t_segment_length), _mm_sub_epi32(_mm_sub_epi32(d_sc, one), arr_y));
         _mm_storeu_si128((__m128i*)(vy + t_segment_length), _mm_sub_epi32(_mm_sub_epi32(sc, one), arr_x));
-        
+
         vx+=4;
         vy+=4;
     }
@@ -344,77 +342,126 @@ void hilbert_V3(unsigned degree, coord_t* x, coord_t* y){
     hilbert_recursive(degree, i, x, y);
 }
 
-
-
-void * add_segment_left_upper(void * args){
+void * add_segments_simd_multithreaded(void * args){
     pthread_args* temp_args = (pthread_args*) args;
-    for(unsigned long long i = 0; i < temp_args->segment_length; ++i) {
+
+    coord_t *vx = temp_args->x, *vy = temp_args->y;
+
+    //2*segment_length
+    unsigned long long d_segment_length = 2 * temp_args->segment_length;
+    //3*segment_length
+    unsigned long long t_segment_length = d_segment_length + temp_args->segment_length;
+
+    __m128i arr_x, arr_y;
+
+    __m128i sc = _mm_set1_epi32(temp_args->segment_coord);
+    __m128i d_sc = _mm_add_epi32(sc, sc);
+    __m128i one = _mm_set1_epi32(1);
+
+    for(unsigned long long i = temp_args->start; i < temp_args->end; i+=4) {
+
+        arr_x = _mm_loadu_si128((__m128i const*)(vx));
+        arr_y = _mm_loadu_si128((__m128i const*)(vy));
+
         //left upper segment
-        temp_args->x[temp_args->segment_length + i].val = temp_args->x[i].val;
-        temp_args->y[temp_args->segment_length + i].val = temp_args->y[i].val + temp_args->segment_coord;
-    }
-    return NULL;
-}
+        _mm_storeu_si128((__m128i*)(vx + temp_args->segment_length), arr_x);
+        _mm_storeu_si128((__m128i*)(vy + temp_args->segment_length), _mm_add_epi32(arr_y, sc));
 
-void * add_segment_right_upper(void * args){
-    pthread_args* temp_args = (pthread_args*) args;
-    for(unsigned long long i = 0; i < temp_args->segment_length; ++i) {
         //right upper segment
-        temp_args->x[2*temp_args->segment_length + i].val = temp_args->x[i].val + temp_args->segment_coord;
-        temp_args->y[2*temp_args->segment_length + i].val = temp_args->y[i].val + temp_args->segment_coord;
-    }
-    return NULL;
-}
+        _mm_storeu_si128((__m128i*)(vx + d_segment_length), _mm_add_epi32(arr_x, sc));
+        _mm_storeu_si128((__m128i*)(vy + d_segment_length), _mm_add_epi32(arr_y, sc));
 
-void * add_segment_left_lower(void * args){
-    pthread_args* temp_args = (pthread_args*) args;
-    for(unsigned long long i = 0; i < temp_args->segment_length; ++i) {
         //left lower segment
-        unsigned temp = temp_args->x[i].val;
-        temp_args->x[i].val = temp_args->y[i].val;
-        temp_args->y[i].val = temp;
+        _mm_storeu_si128((__m128i*)(vx), arr_y);
+        _mm_storeu_si128((__m128i*)(vy), arr_x);
+
+        //right lower segment
+        _mm_storeu_si128((__m128i*)(vx + t_segment_length), _mm_sub_epi32(_mm_sub_epi32(d_sc, one), arr_y));
+        _mm_storeu_si128((__m128i*)(vy + t_segment_length), _mm_sub_epi32(_mm_sub_epi32(sc, one), arr_x));
+
+        vx+=4;
+        vy+=4;
     }
     return NULL;
 }
 
-void * add_segment_right_lower(void * args){
+void * add_segments_multithreaded(void * args){
+
     pthread_args* temp_args = (pthread_args*) args;
-    for(unsigned long long i = 0; i < temp_args->segment_length; ++i) {
+
+
+    coord_t *vx = temp_args->x, *vy = temp_args->y;
+
+    //2*segment_length
+    unsigned long long d_segment_length = 2 * temp_args->segment_length;
+    //3*segment_length
+    unsigned long long t_segment_length = d_segment_length + temp_args->segment_length;
+
+    for(unsigned long long i = temp_args->start; i < temp_args->end; ++i) {
+        //left upper segment
+        vx[temp_args->segment_length].val = vx[0].val;
+        vy[temp_args->segment_length].val = vy[0].val + temp_args->segment_coord;
+
+        //right upper segment
+        vx[d_segment_length].val = vx[0].val + temp_args->segment_coord;
+        vy[d_segment_length].val = vy[0].val + temp_args->segment_coord;
+
+        //left lower segment
+        unsigned temp = vx[0].val;
+        vx[0].val = vy[0].val;
+        vy[0].val = temp;
+
         //right lower segment
-        temp_args->x[3*temp_args->segment_length + i].val = 2*temp_args->segment_coord - 1 - temp_args->x[i].val;
-        temp_args->y[3*temp_args->segment_length + i].val = temp_args->segment_coord - 1 - temp_args->y[i].val;
+        vx[t_segment_length].val = 2 * temp_args->segment_coord - 1 - vx[0].val;
+        vy[t_segment_length].val = temp_args->segment_coord - 1 - vy[0].val;
+
+        vx++;
+        vy++;
     }
-    return NULL;
 }
 
 void hilbert_V4(unsigned degree, coord_t* x, coord_t* y){
+
+    unsigned THREADS = 2;
+
     //curve for degree = 1
     x[0].val = 0; y[0].val = 0; x[1].val = 0; y[1].val = 1; x[2].val = 1; y[2].val = 1; x[3].val = 1; y[3].val = 0;
 
-    pthread_t tid0;
-    pthread_t tid1;
-    pthread_t tid2;
-    pthread_t tid3;
+    //create threads
+    pthread_t thread_array[THREADS];
 
-    pthread_args pthread_args_arr[degree + 1];
+    //create thread_arguments_array
+    pthread_args pthread_args_arr[THREADS][degree];
 
-    for(unsigned i = 1; i < degree; ++i){
-        pthread_args_arr[i-1].segment_length=(unsigned long long)1 << (2 * i);
-        pthread_args_arr[i-1].segment_coord = (1 << i);
-        pthread_args_arr[i-1].x=x;
-        pthread_args_arr[i-1].y=y;
+    for(unsigned i = 1; i <= degree; ++i) {
+        for (unsigned t = 0; t < THREADS; t++) {
+            pthread_args_arr[t][i - 1].segment_length = (unsigned long long) 1 << (2 * i);
+            pthread_args_arr[t][i - 1].segment_coord = (1 << i);
+            pthread_args_arr[t][i - 1].x = x;
+            pthread_args_arr[t][i - 1].y = y;
 
-        pthread_create(&tid0, NULL, add_segment_left_upper, (void *) &pthread_args_arr[i-1]);
-        pthread_create(&tid1, NULL, add_segment_right_upper, (void *) &pthread_args_arr[i-1]);
-        pthread_create(&tid2, NULL, add_segment_left_lower, (void *) &pthread_args_arr[i-1]);
-        pthread_create(&tid3, NULL, add_segment_right_lower, (void *) &pthread_args_arr[i-1]);
+            pthread_args_arr[t][i - 1].start = t * pthread_args_arr[t][i - 1].segment_length / THREADS;
+            pthread_args_arr[t][i - 1].end = t * pthread_args_arr[t][i - 1].segment_length / THREADS + (pthread_args_arr[t][i - 1].segment_length / THREADS - 1);
+        }
+    }
 
-        pthread_join(tid0,NULL);
-        pthread_join(tid1,NULL);
-        pthread_join(tid2,NULL);
-        pthread_join(tid3,NULL);
+
+    //calculate
+    for(unsigned i = 1; i < degree; ++i) { //i=temp_degree segment_length = 2^2*i
+
+        if (i <= 2) {
+            add_segments_simd(i, x, y);
+        } else {
+            for (unsigned c = 0; c < THREADS; c++) {
+                pthread_create(&thread_array[c], NULL, add_segments_multithreaded,(void *) &pthread_args_arr[c][i - 1]);
+            }
+            for (unsigned j = 0; j < THREADS; j++) {
+                pthread_join(thread_array[j], NULL);
+            }
+        }
     }
 }
+
 
 void print_curve(unsigned degree, coord_t* x, coord_t* y){
     unsigned long long length = (unsigned long long)1 << (2*degree);
@@ -454,7 +501,6 @@ void write_svg(char* output_file_svg, int degree, coord_t* x, coord_t* y) {
     fclose(svg_fp);
 }
 
-
 void write_txt(char* output_file_txt, int degree, coord_t* x, coord_t *y) {
     unsigned long long length = (unsigned long long)1 << (2*degree);
 
@@ -469,7 +515,6 @@ void write_txt(char* output_file_txt, int degree, coord_t* x, coord_t *y) {
         fprintf(txt_fp, "(%d,%d)", x[i].val, y[i].val);
     fclose(txt_fp);
 }
-
 
 void help_message() {
     printf("\nDefaultwerte sind: -V0 -n1\n\n"

@@ -436,7 +436,7 @@ void hilbert_V4(unsigned degree, coord_t* x, coord_t* y){
         return;
     }
     
-    add_segments_simd(2, x, y);
+    add_segments_simd(1, x, y);
     
     if(degree == 2){
         return;

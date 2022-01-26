@@ -399,21 +399,21 @@ void * add_segments_multithreaded(void * args){
 
     for(unsigned long long i = temp_args->start; i < temp_args->end; ++i) {
         //left upper segment
-        x[temp_args->segment_length + i].val = x[i].val;
-        y[temp_args->segment_length + i].val = y[i].val + temp_args->segment_coord;
+        temp_args->x[temp_args->segment_length + i].val = temp_args->x[i].val;
+        temp_args->y[temp_args->segment_length + i].val = temp_args->y[i].val + temp_args->segment_coord;
 
         //right upper segment
-        x[d_segment_length + i].val = x[i].val + temp_args->segment_coord;
-        y[d_segment_length + i].val = y[i].val + temp_args->segment_coord;
+        temp_args->x[d_segment_length + i].val = temp_args->x[i].val + temp_args->segment_coord;
+        temp_args->y[d_segment_length + i].val = temp_args->y[i].val + temp_args->segment_coord;
 
         //left lower segment
-        unsigned temp = x[i].val;
-        x[i].val = y[i].val;
-        y[i].val = temp;
+        unsigned temp = temp_args->x[i].val;
+        temp_args->x[i].val = temp_args->y[i].val;
+        temp_args->y[i].val = temp;
 
         //right lower segment
-        x[t_segment_length + i].val = 2 * temp_args->segment_coord - 1 - x[i].val;
-        y[t_segment_length + i].val = temp_args->segment_coord - 1 - y[i].val;
+        temp_args->x[t_segment_length + i].val = 2 * temp_args->segment_coord - 1 - temp_args->x[i].val;
+        temp_args->y[t_segment_length + i].val = temp_args->segment_coord - 1 - temp_args->y[i].val;
     }
     
     return NULL;

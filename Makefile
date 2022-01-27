@@ -7,7 +7,6 @@ TARGET = main
 all: $(TARGET)
 
 $(TARGET): $(OBJFILES)
-    $(CC) $(CFLAGS) -o $(TARGET) $(OBJFILES) $(LDFLAGS)
+	$(CC) $(CFLAGS) -o $(TARGET) $(OBJFILES) $(LDFLAGS)
 clean:
-    rm -f *.o $(TARGET) *~ *.txt *.svg
-    
+	rm -f *.o $(TARGET) *~ *.txt *.svg

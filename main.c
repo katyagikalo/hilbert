@@ -139,8 +139,8 @@ int main(int argc, char **argv) {
 //informationen ueber die Optionen und Parametereingabe
     print_parameter(parameter_args);
 
-    //choose_version(parameter_args);
-    hilbert_V0(parameter_args.degree, parameter_args.x, parameter_args.y);
+    choose_version(parameter_args);
+    
     if(print_console)
         print_curve(degree, x, y);
 

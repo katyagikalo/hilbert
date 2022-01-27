@@ -162,6 +162,7 @@ int main(int argc, char **argv) {
 }
 
 void choose_version(parameter parameter_args) {
+    printf("%d\n", parameter_args.version);
     switch (parameter_args.version) {
         case 0:
             if (parameter_args.messure_time) {

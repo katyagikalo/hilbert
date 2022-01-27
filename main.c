@@ -165,7 +165,7 @@ void choose_version(parameter parameter_args) {
     switch (parameter_args.version) {
         case 0:
             if (parameter_args.messure_time) {
-                //clock_gettime(CLOCK_MONOTONIC, parameter_args.start);
+                clock_gettime(CLOCK_MONOTONIC, parameter_args.start);
                 for (unsigned i=parameter_args.count_call; i > 0; i--)
                     hilbert_V0(parameter_args.degree, parameter_args.x, parameter_args.y);
                 //clock_gettime(CLOCK_MONOTONIC, parameter_args.end);

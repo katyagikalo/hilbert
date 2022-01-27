@@ -176,10 +176,10 @@ void choose_version(parameter parameter_args) {
             break;
          case 1:
              if (parameter_args.messure_time) {
-                 clock_gettime(CLOCK_MONOTONIC, &parameter_args.start);
+                 clock_gettime(CLOCK_MONOTONIC, parameter_args.start);
                  for (unsigned i=parameter_args.count_call; i > 0; i--)
                      hilbert_V1(parameter_args.degree, parameter_args.x, parameter_args.y);
-                 clock_gettime(CLOCK_MONOTONIC, &parameter_args.end);
+                 clock_gettime(CLOCK_MONOTONIC, parameter_args.end);
              }
              else {
                  hilbert_V1(parameter_args.degree, parameter_args.x, parameter_args.y);
@@ -187,10 +187,10 @@ void choose_version(parameter parameter_args) {
              break;
          case 2:
              if (parameter_args.messure_time) {
-                 clock_gettime(CLOCK_MONOTONIC, &parameter_args.start);
+                 clock_gettime(CLOCK_MONOTONIC, parameter_args.start);
                  for (unsigned i=parameter_args.count_call; i > 0; i--)
                      hilbert_V2(parameter_args.degree, parameter_args.x, parameter_args.y);
-                 clock_gettime(CLOCK_MONOTONIC, &parameter_args.end);
+                 clock_gettime(CLOCK_MONOTONIC, parameter_args.end);
              }
              else {
                  hilbert_V2(parameter_args.degree, parameter_args.x, parameter_args.y);
@@ -198,10 +198,10 @@ void choose_version(parameter parameter_args) {
              break;
          case 3:
              if (parameter_args.messure_time) {
-                 clock_gettime(CLOCK_MONOTONIC, &parameter_args.start);
+                 clock_gettime(CLOCK_MONOTONIC, parameter_args.start);
                  for (unsigned i=parameter_args.count_call; i > 0; i--)
                      hilbert_V3(parameter_args.degree, parameter_args.x, parameter_args.y);
-                 clock_gettime(CLOCK_MONOTONIC, &parameter_args.end);
+                 clock_gettime(CLOCK_MONOTONIC, parameter_args.end);
              }
              else {
                  hilbert_V3(parameter_args.degree, parameter_args.x, parameter_args.y);
@@ -209,10 +209,10 @@ void choose_version(parameter parameter_args) {
              break;
          case 4:
              if (parameter_args.messure_time) {
-                 clock_gettime(CLOCK_MONOTONIC, &parameter_args.start);
+                 clock_gettime(CLOCK_MONOTONIC, parameter_args.start);
                  for (unsigned i=parameter_args.count_call; i > 0; i--)
                      hilbert_V4(parameter_args.degree, parameter_args.x, parameter_args.y);
-                 clock_gettime(CLOCK_MONOTONIC, &parameter_args.end);
+                 clock_gettime(CLOCK_MONOTONIC, parameter_args.end);
              }
              else {
                  hilbert_V4(parameter_args.degree, parameter_args.x, parameter_args.y);
@@ -220,10 +220,10 @@ void choose_version(parameter parameter_args) {
              break;
              case 5:
              if (parameter_args.messure_time) {
-                 clock_gettime(CLOCK_MONOTONIC, &parameter_args.start);
+                 clock_gettime(CLOCK_MONOTONIC, parameter_args.start);
                  for (unsigned i=parameter_args.count_call; i > 0; i--)
                      hilbert_V5(parameter_args.degree, parameter_args.x, parameter_args.y);
-                 clock_gettime(CLOCK_MONOTONIC, &parameter_args.end);
+                 clock_gettime(CLOCK_MONOTONIC, parameter_args.end);
              }
              else {
                  hilbert_V5(parameter_args.degree, parameter_args.x, parameter_args.y);

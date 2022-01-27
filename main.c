@@ -146,7 +146,7 @@ int main(int argc, char **argv) {
 
 //messure time
     if(messure_time){
-        print_time(parameter_args.start, parameter_args.end);
+        //print_time(parameter_args.start, parameter_args.end);
         //printf("\n\n\n\nGenutzte Prozessorzeit: %f Sekunden\n\n\n\n",((double) (end - start)) / CLOCKS_PER_SEC);
     }
 //save svg file
@@ -162,12 +162,10 @@ int main(int argc, char **argv) {
 }
 
 void choose_version(parameter parameter_args) {
-    printf("%d\n", parameter_args.version);
     switch (parameter_args.version) {
         case 0:
             if (parameter_args.messure_time) {
                 clock_gettime(CLOCK_MONOTONIC, parameter_args.start);
-                printf("%ld\n", parameter_args.start->tv_sec);
                 for (unsigned i=parameter_args.count_call; i > 0; i--)
                     hilbert_V0(parameter_args.degree, parameter_args.x, parameter_args.y);
                 clock_gettime(CLOCK_MONOTONIC, parameter_args.end);

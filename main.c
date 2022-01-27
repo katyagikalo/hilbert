@@ -14,7 +14,7 @@
 #include "hilbert.h"
 
 
-void print_time(struct timespec start, struct timespec end);
+void print_time(struct timespec *start, struct timespec *end);
 void choose_version(parameter parameter_args);
 
 int main(int argc, char **argv) {

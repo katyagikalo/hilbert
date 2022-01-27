@@ -232,8 +232,8 @@ void choose_version(parameter parameter_args) {
     }
 }
 
-void print_time(struct timespec start, struct timespec end) {
-     double elapsed = (end.tv_sec - start.tv_sec);
-     elapsed += (end.tv_nsec - start.tv_nsec) / 1000000000.0;
+void print_time(struct timespec *start, struct *timespec end) {
+     double elapsed = (end->tv_sec - start->tv_sec);
+     elapsed += (end->tv_nsec - start->tv_nsec) / 1000000000.0;
      printf("Zeitmessung ergibt: %f Sekunden\n", elapsed);
 }

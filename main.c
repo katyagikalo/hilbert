@@ -158,8 +158,8 @@ int main(int argc, char **argv) {
 
     free(x);
     free(y);
-    free(start);
-    free(end);
+    free(parameter_args.start);
+    free(parameter_args.end);
     return 0;
 }
 

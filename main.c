@@ -146,7 +146,7 @@ int main(int argc, char **argv) {
 
 //messure time
     if(messure_time){
-        //print_time(parameter_args.start, parameter_args.end);
+        print_time(parameter_args.start, parameter_args.end);
         //printf("\n\n\n\nGenutzte Prozessorzeit: %f Sekunden\n\n\n\n",((double) (end - start)) / CLOCKS_PER_SEC);
     }
 //save svg file

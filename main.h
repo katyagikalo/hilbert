@@ -15,6 +15,6 @@ typedef struct {
     coord_t *x, *y;
 }parameter;
 
-double v_assembly(unsigned degree, coord_t x, coord_t* y);
+double v_assembly(unsigned degree, coord_t* x, coord_t* y);
 
 #endif

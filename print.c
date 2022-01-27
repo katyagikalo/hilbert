@@ -3,11 +3,7 @@
 #include <stdbool.h>
 
 #include "main.h"
-
-void print_curve(unsigned degree, coord_t* x, coord_t* y);
-void write_svg(char* output_file_svg, int degree, coord_t* x, coord_t* y);
-void write_txt(char* output_file_txt, int degree, coord_t* x, coord_t* y);
-void help_message();
+#include "print.h"
 
 void print_parameter(parameter parameter_args){
     printf("Version                  : V%d\n"
@@ -30,6 +26,12 @@ void print_curve(unsigned degree, coord_t* x, coord_t* y){
         printf("(%d,%d) ", x[i].val, y[i].val);
     }
     printf("\n");
+}
+
+void print_time(struct timespec *start, struct timespec *end) {
+     double elapsed = (end->tv_sec - start->tv_sec);
+     elapsed += (end->tv_nsec - start->tv_nsec) / 1000000000.0;
+     printf("Zeitmessung ergibt: %f Sekunden\n", elapsed);
 }
 
 void write_svg(char* output_file_svg, int degree, coord_t* x, coord_t* y) {

@@ -13,8 +13,6 @@
 #include "print.h"
 #include "hilbert.h"
 
-
-void print_time(struct timespec *start, struct timespec *end);
 void choose_version(parameter parameter_args);
 
 int main(int argc, char **argv) {
@@ -234,10 +232,4 @@ void choose_version(parameter parameter_args) {
         default :
             help_message();
     }
-}
-
-void print_time(struct timespec *start, struct timespec *end) {
-     double elapsed = (end->tv_sec - start->tv_sec);
-     elapsed += (end->tv_nsec - start->tv_nsec) / 1000000000.0;
-     printf("Zeitmessung ergibt: %f Sekunden\n", elapsed);
 }

@@ -10,3 +10,4 @@ $(TARGET): $(OBJFILES)
     $(CC) $(CFLAGS) -o $(TARGET) $(OBJFILES) $(LDFLAGS)
 clean:
     rm -f *.o $(TARGET) *~ *.txt *.svg
+    

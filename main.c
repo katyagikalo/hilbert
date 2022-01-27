@@ -10,53 +10,42 @@
 #include <pthread.h>
 
 #include "main.h"
+#include "print.h"
+#include "hilbert.h"
 
 
-void add_segments(unsigned degree, coord_t* x, coord_t* y);
-void add_segments_simd(unsigned segment_degree, coord_t* x, coord_t* y);
-void hilbert_recursive(unsigned degree, unsigned i, coord_t* x, coord_t* y);
-
-void hilbert_V0(unsigned degree, coord_t* x, coord_t* y);
-void hilbert_V1(unsigned degree, coord_t* x, coord_t* y);
-void hilbert_V2(unsigned degree, coord_t* x, coord_t* y);
-void hilbert_V3(unsigned i, coord_t* x, coord_t* y);
-void hilbert_V4(unsigned degree, coord_t* x, coord_t* y);
-
-void print_curve(unsigned degree, coord_t* x, coord_t* y);
-void write_svg(char* output_file_svg, int degree, coord_t* x, coord_t* y);
-void write_txt(char* output_file_txt, int degree, coord_t* x, coord_t* y);
-void help_message();
-
-typedef struct{
-    unsigned long long segment_length;
-    unsigned segment_coord;
-    unsigned start;
-    unsigned end;
-    coord_t *x;
-    coord_t *y;
-}pthread_args;
+void print_time(struct timespec start, struct timespec end);
+void choose_version(parameter parameter_args);
 
 int main(int argc, char **argv) {
     int version = 0;
-    bool print_console,messure_time,write_txt_file,write_svg_file;
-    print_console=messure_time=write_svg_file=write_txt_file = false;
+    bool print_console,messure_time,write_txt_file,write_svg_file, test_all;
+    print_console=messure_time=write_svg_file=write_txt_file=test_all = false;
     char *output_file_svg, *output_file_txt;
     int degree = 1;
     int count_call = 1;
-    clock_t start, end;
-
+    //clock_t start, end;
+    
     int option;
     int option_index = 0;
     static struct option long_options[] = {
-            {"help", no_argument, 0, 'h'}
+            {"help", no_argument, 0, 'h'},
+            {"test_all", no_argument, 0, 'b'}
     };
 
     while ((option = getopt_long(argc, argv, ":V:B::n:o:t:hp",long_options, &option_index)) != -1) {
         char* ptr;
         switch (option) {
             case 'V' :
-                if (optarg == NULL || (*optarg != '0' && *optarg != '1' && *optarg != '2' && *optarg != '3' && *optarg != '4')) {
-                    printf("\n\n\n\nEs stehen folgende Versionen zur verfuegung:\n\n0 --C ohne Optimierung--\n1 --Assembler ohne SIMD--\n2 --C mit SIMD--\n3 --Rekursiv mit SIMD--\n4 --C Multithreaded ohne SIMD--\n");
+                if (optarg == NULL || (*optarg != '0' && *optarg != '1' && *optarg != '2' && *optarg != '3' && *optarg != '4' && *optarg != '5')) {
+                    printf("\n\n\n\nEs stehen folgende Versionen zur verfuegung:\n\n"
+                                    "0 --C ohne Optimierung--\n"
+                                    "1 --Assembler mit SIMD--\n"
+                                    "2 --C mit SIMD--\n"
+                                    "3 --Rekursiv mit SIMD--\n"
+                                    "4 --C Multithreaded mit SIMD--\n"
+                                    "5 --C Multithreaded ohne SIMD--");
+                    
                     help_message();
                     return 0;
                 }
@@ -94,6 +83,9 @@ int main(int argc, char **argv) {
             case 'p' :
                 print_console = true;
                 break;
+            case 'b' :
+                test_all = true;
+                break;
             case 'h' :
                 help_message();
                 return 0;
@@ -108,24 +100,11 @@ int main(int argc, char **argv) {
         }
     }
 
-//informationen ueber die Optionen und Parametereingabe
-    printf("\n\n"
-           "Version                  : V%d\n"
-           "Grad der Hilbertkurve    : %d\n"
-           "Zeitmessung              : %s\n"
-           "Funktionsaufrufe         : %d\n"
-           "AusgabeArray auf Konsole : %s\n"
-           "SVG_Ausgabedatei         : %s\n"
-           "TXT_Ausgabedatei         : %s\n",
-           version, degree, (messure_time ? "ja" : "nein"), count_call,
-           (print_console ? "ja" : "nein"),
-           (write_svg_file ? output_file_svg : "--nicht gewaehlt--"),
-           (write_txt_file ? output_file_txt : "--nicht gewaehlt--"));
-
-//prep x und y
+    
+    //prep x und y
     unsigned long long curve_length = (unsigned long long)1 << (2 * degree);
 
-    coord_t* x;
+    coord_t *x;
 
     x = malloc(sizeof(coord_t)*curve_length);
     if(x == NULL){
@@ -133,84 +112,39 @@ int main(int argc, char **argv) {
         return -1;
     }
 
-    coord_t* y;
+    coord_t *y;
 
     y = malloc(sizeof(coord_t)*curve_length);
     if(y == NULL){
         printf("y was null\n");
         return -1;
     }
+    
+    parameter parameter_args;
+    parameter_args.degree = degree;
+    parameter_args.version = version;
+    parameter_args.messure_time = messure_time;
+    parameter_args.write_svg_file = write_svg_file;
+    parameter_args.write_txt_file = write_txt_file;
+    parameter_args.print_console = print_console;
+    parameter_args.count_call = count_call;
+    parameter_args.output_file_svg = output_file_svg;
+    parameter_args.output_file_txt = output_file_txt;
 
-//hilbert
-    switch (version) {
-        case 0:
-            if(messure_time) {
-                start = clock();
-                for (unsigned i=count_call; i > 0; i--)
-                    hilbert_V0(degree, x, y);
-                end = clock();
-            }
-            else {
-                hilbert_V0(degree, x, y);
-            }
-            break;
-        case 1:
-            if(messure_time) {
-                start = clock();
-                for (unsigned i=count_call; i > 0; i--)
-                    hilbert_V1(degree, x, y);
-                end = clock();
-            }
-            else {
-                hilbert_V1(degree, x, y);
-            }
-            break;
-        case 2:
-            if(messure_time) {
-                start = clock();
-                for (unsigned i=count_call; i > 0; i--)
-                    hilbert_V2(degree, x, y);
-                end = clock();
-            }
-            else {
-                hilbert_V2(degree, x, y);
-            }
-            break;
-        case 3:
-            if(messure_time) {
-                start = clock();
-                for (unsigned i=count_call; i > 0; i--)
-                    hilbert_V3(degree, x, y);
-                end = clock();
-            }
-            else {
-                hilbert_V3(degree, x, y);
-            }
-            break;
-        case 4:
-            if(messure_time) {
-                start = clock();
-                for (unsigned i=count_call; i > 0; i--)
-                    hilbert_V4(degree, x, y);
-                end = clock();
-            }
-            else {
-                hilbert_V4(degree, x, y);
-            }
-            break;
-        default :
-            help_message();
+    
+//informationen ueber die Optionen und Parametereingabe
+    print_parameter(parameter_args);
 
-            return 0;
-    }
-
+    //choose_version(parameter_args);
+    hilbert_V0(parameter_args.degree, parameter_args.x, parameter_args.y);
     if(print_console)
         print_curve(degree, x, y);
 
 //messure time
-    if(messure_time)
-        printf("\n\n\n\nZeitmessung ergibt: %f Sekunden\n\n\n\n",((double) (end - start)) / CLOCKS_PER_SEC);
-
+    if(messure_time){
+        print_time(parameter_args.start, parameter_args.end);
+        //printf("\n\n\n\nGenutzte Prozessorzeit: %f Sekunden\n\n\n\n",((double) (end - start)) / CLOCKS_PER_SEC);
+    }
 //save svg file
     if(write_svg_file)
         write_svg(output_file_svg, degree, x, y);
@@ -223,328 +157,81 @@ int main(int argc, char **argv) {
     return 0;
 }
 
-
-void add_segments(unsigned segment_degree, coord_t* x, coord_t* y){
-    unsigned long long segment_length = (unsigned long long)1 << (2 * (segment_degree));
-    unsigned segment_coord = (1 << segment_degree);
-
-    coord_t *vx = x, *vy = y;
-
-    //2*segment_length
-    unsigned long long d_segment_length = segment_length + segment_length;
-    //3*segment_length
-    unsigned long long t_segment_length = d_segment_length + segment_length;
-
-    for(unsigned long long i = 0; i < segment_length; ++i) {
-        //left upper segment
-        vx[segment_length].val = vx[0].val;
-        vy[segment_length].val = vy[0].val + segment_coord;
-
-        //right upper segment
-        vx[d_segment_length].val = vx[0].val + segment_coord;
-        vy[d_segment_length].val = vy[0].val + segment_coord;
-
-        //left lower segment
-        unsigned temp = vx[0].val;
-        vx[0].val = vy[0].val;
-        vy[0].val = temp;
-
-        //right lower segment
-        vx[t_segment_length].val = 2*segment_coord - 1 - vx[0].val;
-        vy[t_segment_length].val = segment_coord - 1 - vy[0].val;
-
-        vx++;
-        vy++;
+void choose_version(parameter parameter_args) {
+    switch (parameter_args.version) {
+        case 0:
+            if (parameter_args.messure_time) {
+                clock_gettime(CLOCK_MONOTONIC, &parameter_args.start);
+                for (unsigned i=parameter_args.count_call; i > 0; i--)
+                    hilbert_V0(parameter_args.degree, parameter_args.x, parameter_args.y);
+                clock_gettime(CLOCK_MONOTONIC, &parameter_args.end);
+            }
+            else {
+                hilbert_V0(parameter_args.degree, parameter_args.x, parameter_args.y);
+            }
+            break;
+//         case 1:
+//             if (parameter_args.messure_time) {
+//                 clock_gettime(CLOCK_MONOTONIC, &parameter_args.start);
+//                 for (unsigned i=parameter_args.count_call; i > 0; i--)
+//                     hilbert_V1(parameter_args.degree, parameter_args.x, parameter_args.y);
+//                 clock_gettime(CLOCK_MONOTONIC, &parameter_args.end);
+//             }
+//             else {
+//                 hilbert_V1(parameter_args.degree, parameter_args.x, parameter_args.y);
+//             }
+//             break;
+//         case 2:
+//             if (parameter_args.messure_time) {
+//                 clock_gettime(CLOCK_MONOTONIC, &parameter_args.start);
+//                 for (unsigned i=parameter_args.count_call; i > 0; i--)
+//                     hilbert_V2(parameter_args.degree, parameter_args.x, parameter_args.y);
+//                 clock_gettime(CLOCK_MONOTONIC, &parameter_args.end);
+//             }
+//             else {
+//                 hilbert_V2(parameter_args.degree, parameter_args.x, parameter_args.y);
+//             }
+//             break;
+//         case 3:
+//             if (parameter_args.messure_time) {
+//                 clock_gettime(CLOCK_MONOTONIC, &parameter_args.start);
+//                 for (unsigned i=parameter_args.count_call; i > 0; i--)
+//                     hilbert_V3(parameter_args.degree, parameter_args.x, parameter_args.y);
+//                 clock_gettime(CLOCK_MONOTONIC, &parameter_args.end);
+//             }
+//             else {
+//                 hilbert_V3(parameter_args.degree, parameter_args.x, parameter_args.y);
+//             }
+//             break;
+//         case 4:
+//             if (parameter_args.messure_time) {
+//                 clock_gettime(CLOCK_MONOTONIC, &parameter_args.start);
+//                 for (unsigned i=parameter_args.count_call; i > 0; i--)
+//                     hilbert_V4(parameter_args.degree, parameter_args.x, parameter_args.y);
+//                 clock_gettime(CLOCK_MONOTONIC, &parameter_args.end);
+//             }
+//             else {
+//                 hilbert_V4(parameter_args.degree, parameter_args.x, parameter_args.y);
+//             }
+//             break;
+//             case 5:
+//             if (parameter_args.messure_time) {
+//                 clock_gettime(CLOCK_MONOTONIC, &parameter_args.start);
+//                 for (unsigned i=parameter_args.count_call; i > 0; i--)
+//                     hilbert_V5(parameter_args.degree, parameter_args.x, parameter_args.y);
+//                 clock_gettime(CLOCK_MONOTONIC, &parameter_args.end);
+//             }
+//             else {
+//                 hilbert_V5(parameter_args.degree, parameter_args.x, parameter_args.y);
+//             }
+//             break;
+        default :
+            help_message();
     }
 }
 
-
-void hilbert_V0(unsigned degree, coord_t* x, coord_t* y) {
-    //curve for degree = 1
-    x[0].val = 0; y[0].val = 0; x[1].val = 0; y[1].val = 1; x[2].val = 1; y[2].val = 1; x[3].val = 1; y[3].val = 0;
-
-    for(unsigned i = 1; i < degree; ++i){
-        add_segments(i, x, y);
-    }
-}
-
-
-void hilbert_V1(unsigned degree, coord_t* x, coord_t* y) {
-//    v_assembly(degree, x, y);
-}
-
-void add_segments_simd(unsigned segment_degree, coord_t* x, coord_t* y){
-    unsigned long long segment_length = (unsigned long long)1 << (2 * (segment_degree));
-    unsigned segment_coord = (1 << segment_degree);
-
-    coord_t *vx = x, *vy = y;
-
-    //2*segment_length
-    unsigned long long d_segment_length = segment_length + segment_length;
-    //3*segment_length
-    unsigned long long t_segment_length = d_segment_length + segment_length;
-
-    __m128i arr_x, arr_y;
-
-    __m128i sc = _mm_set1_epi32(segment_coord);
-    __m128i d_sc = _mm_add_epi32(sc, sc);
-    __m128i one = _mm_set1_epi32(1);
-
-    for(unsigned long long i = 0; i < segment_length; i+=4) {
-
-        arr_x = _mm_loadu_si128((__m128i const*)(vx));
-        arr_y = _mm_loadu_si128((__m128i const*)(vy));
-
-        //left upper segment
-        _mm_storeu_si128((__m128i*)(vx + segment_length), arr_x);
-        _mm_storeu_si128((__m128i*)(vy + segment_length), _mm_add_epi32(arr_y, sc));
-
-        //right upper segment
-        _mm_storeu_si128((__m128i*)(vx + d_segment_length), _mm_add_epi32(arr_x, sc));
-        _mm_storeu_si128((__m128i*)(vy + d_segment_length), _mm_add_epi32(arr_y, sc));
-
-        //left lower segment
-        _mm_storeu_si128((__m128i*)(vx), arr_y);
-        _mm_storeu_si128((__m128i*)(vy), arr_x);
-
-        //right lower segment
-        _mm_storeu_si128((__m128i*)(vx + t_segment_length), _mm_sub_epi32(_mm_sub_epi32(d_sc, one), arr_y));
-        _mm_storeu_si128((__m128i*)(vy + t_segment_length), _mm_sub_epi32(_mm_sub_epi32(sc, one), arr_x));
-
-        vx+=4;
-        vy+=4;
-    }
-}
-
-void hilbert_V2(unsigned degree, coord_t* x, coord_t* y){
-    x[0].val = 0; y[0].val = 0; x[1].val = 0; y[1].val = 1; x[2].val = 1; y[2].val = 1; x[3].val = 1; y[3].val = 0;
-
-    for(unsigned i = 1; i < degree; ++i){
-        add_segments_simd(i, x, y);
-    }
-}
-
-void hilbert_recursive(unsigned degree, unsigned i, coord_t* x, coord_t* y){
-    if (degree == i) return;
-
-    else {
-        add_segments_simd(i, x, y);
-    }
-    hilbert_recursive(degree, i+1, x, y);
-}
-
-
-void hilbert_V3(unsigned degree, coord_t* x, coord_t* y){
-    x[0].val = 0; y[0].val = 0; x[1].val = 0; y[1].val = 1; x[2].val = 1; y[2].val = 1; x[3].val = 1; y[3].val = 0;
-
-    unsigned i = 1;
-
-    hilbert_recursive(degree, i, x, y);
-}
-
-void * add_segments_simd_multithreaded(void * args){
-    pthread_args* temp_args = (pthread_args*) args;
-
-    coord_t *vx = temp_args->x + temp_args->start, *vy = temp_args->y + temp_args->start;
-
-    //2*segment_length
-    unsigned long long d_segment_length = 2 * temp_args->segment_length;
-    //3*segment_length
-    unsigned long long t_segment_length = d_segment_length + temp_args->segment_length;
-
-    __m128i arr_x, arr_y;
-
-    __m128i sc = _mm_set1_epi32(temp_args->segment_coord);
-    __m128i d_sc = _mm_add_epi32(sc, sc);
-    __m128i one = _mm_set1_epi32(1);
-    
-    for(unsigned long long i = temp_args->start; i < temp_args->end; i+=4) {
-
-        arr_x = _mm_loadu_si128((__m128i const*)(vx));
-        arr_y = _mm_loadu_si128((__m128i const*)(vy));
-
-        //left upper segment
-        _mm_storeu_si128((__m128i*)(vx + temp_args->segment_length), arr_x);
-        _mm_storeu_si128((__m128i*)(vy + temp_args->segment_length), _mm_add_epi32(arr_y, sc));
-
-        //right upper segment
-        _mm_storeu_si128((__m128i*)(vx + d_segment_length), _mm_add_epi32(arr_x, sc));
-        _mm_storeu_si128((__m128i*)(vy + d_segment_length), _mm_add_epi32(arr_y, sc));
-
-        //left lower segment
-        _mm_storeu_si128((__m128i*)(vx), arr_y);
-        _mm_storeu_si128((__m128i*)(vy), arr_x);
-
-        //right lower segment
-        _mm_storeu_si128((__m128i*)(vx + t_segment_length), _mm_sub_epi32(_mm_sub_epi32(d_sc, one), arr_y));
-        _mm_storeu_si128((__m128i*)(vy + t_segment_length), _mm_sub_epi32(_mm_sub_epi32(sc, one), arr_x));
-        
-        vx+=4;
-        vy+=4;
-    }
-    return NULL;
-}
-
-void * add_segments_multithreaded(void * args){
-    pthread_args* temp_args = (pthread_args*) args;
-
-    coord_t *vx = temp_args->x, *vy = temp_args->y;
-
-    //2*segment_length
-    unsigned long long d_segment_length = 2 * temp_args->segment_length;
-    //3*segment_length
-    unsigned long long t_segment_length = d_segment_length + temp_args->segment_length;
-    
-    vx+=temp_args->start;
-    vy+=temp_args->start;
-
-    for(unsigned long long i = temp_args->start; i < temp_args->end; ++i) {
-        //left upper segment
-        vx[temp_args->segment_length].val = vx[0].val;
-        vy[temp_args->segment_length].val = vy[0].val + temp_args->segment_coord;
-
-        //right upper segment
-        vx[d_segment_length].val = vx[0].val + temp_args->segment_coord;
-        vy[d_segment_length].val = vy[0].val + temp_args->segment_coord;
-
-        //left lower segment
-        unsigned temp = vx[0].val;
-        vx[0].val = vy[0].val;
-        vy[0].val = temp;
-
-        //right lower segment
-        vx[t_segment_length].val = 2 * temp_args->segment_coord - 1 - vx[0].val;
-        vy[t_segment_length].val = temp_args->segment_coord - 1 - vy[0].val;
-        
-        vx++;
-        vy++;
-    }
-    
-    return NULL;
-}
-
-void hilbert_V4(unsigned degree, coord_t* x, coord_t* y){
-    
-    unsigned THREADS = 2;
-
-    //curve for degree = 1
-    x[0].val = 0; y[0].val = 0; x[1].val = 0; y[1].val = 1; x[2].val = 1; y[2].val = 1; x[3].val = 1; y[3].val = 0;
-    
-    if(degree == 1){
-        return;
-    }
-    
-    add_segments_simd(1, x, y);
-    
-    if(degree == 2){
-        return;
-    }
-    
-    //create threads
-    pthread_t thread_array[THREADS];
-    
-    //create thread_arguments_array
-    pthread_args pthread_args_arr[THREADS];
-    
-    for(unsigned i = 0; i < THREADS; ++i) {
-        pthread_args_arr[i].x = x;
-        pthread_args_arr[i].y = y;
-    }
-
-    //calculate
-    for(unsigned i = 2; i < degree; ++i) { //i=temp_degree segment_length = 2^2*i
-        unsigned long long segment_length = (unsigned long long) 1 << (2 * i);
-        unsigned segment_coord = 1 << i, step = segment_length/THREADS;
-        
-        for(unsigned j = 0; j < THREADS; ++j) {
-            pthread_args_arr[j].segment_length = segment_length;
-            pthread_args_arr[j].segment_coord = segment_coord;
-            pthread_args_arr[j].start = j * step;
-            pthread_args_arr[j].end = step + j*step;
-        }
-        
-        for (unsigned j = 0; j < THREADS; ++j) {
-            pthread_create(&thread_array[j], NULL, add_segments_simd_multithreaded, (void *) &pthread_args_arr[j]);
-        }
-        
-        for (unsigned j = 0; j < THREADS; ++j) {
-            pthread_join(thread_array[j], NULL);
-        }
-    }
-}
-
-
-void print_curve(unsigned degree, coord_t* x, coord_t* y){
-    unsigned long long length = (unsigned long long)1 << (2*degree);
-    printf("\n\n\n\n\nArray der Koordinaten:\n\n");
-    for(unsigned long long i = 0; i < length; ++i) {
-        printf("(%d,%d) ", x[i].val, y[i].val);
-    }
-    printf("\n");
-}
-
-void write_svg(char* output_file_svg, int degree, coord_t* x, coord_t* y) {
-    unsigned long long length = (unsigned long long)1 << (2*degree);
-    unsigned win_size = 1 << degree;
-
-    char file_name[strlen(output_file_svg) + 5];
-    FILE* svg_fp = fopen(strcat(strcpy(file_name, output_file_svg),".svg\0"),"w");
-
-    if (svg_fp == NULL) {
-        printf("File kann nicht angelegt werden\n");
-        return;
-    }
-
-    fprintf(svg_fp, "<?xml version=\"1.0\" encoding=\"ISO-8859-1\" standalone=\"no\" ?>\n"
-                    "<!DOCTYPE svg PUBLIC \"-//W3C//DTD SVG 20010904//EN\"\n"
-                    "\"http://www.w3.org/TR/2001/REC-SVG-20010904/DTD/svg10.dtd\">\n"
-                    "<svg width=\"%d0\" height=\"%d0\" xmlns=\"http://www.w3.org/2000/svg\"\n"
-                    "xmlns:xlink=\"http://www.w3.org/1999/xlink\">\n"
-                    "<title>Polyline-Element</title>\n"
-                    "<desc>Polylinie</desc>\n"
-                    "<polyline fill=\"none\" stroke=\"black\" stroke-width=\"1px\"\n"
-                    "points=\"00 00", win_size, win_size);
-
-    for (unsigned long long i = 1; i < length; ++i)
-        fprintf(svg_fp, ",%d0 %d0", x[i].val, y[i].val);
-
-    fprintf(svg_fp,"\" transform=\"scale(1 -1) translate(0 -%d0)\"/>\n</svg>\n",win_size);
-    fclose(svg_fp);
-}
-
-void write_txt(char* output_file_txt, int degree, coord_t* x, coord_t *y) {
-    unsigned long long length = (unsigned long long)1 << (2*degree);
-
-    char file_name[strlen(output_file_txt) + 5];
-    FILE* txt_fp = fopen(strcat(strcpy(file_name, output_file_txt),".txt\0"),"w");
-
-    if (txt_fp == NULL) {
-        printf("File kann nicht angelegt werden\n");
-        return;
-    }
-    for (unsigned long long i = 0; i < length; ++i)
-        fprintf(txt_fp, "(%d,%d)", x[i].val, y[i].val);
-    fclose(txt_fp);
-}
-
-void help_message() {
-    printf("\nDefaultwerte sind: -V0 -n1\n\n"
-           "./main [-V<int>] [-B<int>] [-n<int>] [-o<file>] [-h] [--help]\n\n"
-           "Options:\n"
-           "  -V<int>        --Version                                <int>   -> V0 bis V1\n"
-           "  -B<int>[opt]   --Laufzeitmessung                        <int>   -> Anzahl Aufrufe\n"
-           "  -n<int>        --Grad der Hilbertkurve                  <int>   -> Grad der Hilbertkurve\n"
-           "  -p             --Koordinatenausgabe auf Konsole\n"
-           "  -o<file>       --SVG Ausgabedatei                       <file>  -> Name der SVG Ausgabedatei\n"
-           "  -t<file)       --txt Ausgabedatei                       <file>  -> Name der txt Ausgabedatei\n"
-           "  -h             --Hilfe\n"
-           "  --help         --Hilfe\n\n\n"
-           "Beispielaufrufe:   ./main -h\n"
-           "                   ./main --help\n"
-           "                   ./main\n"
-           "                   ./main -B -n4\n"
-           "                   ./main -o file_name -n5\n"
-           "                   ./main -V1 -B5 -n3 -o file_name\n"
-           "                   ./main -V0 -B12 -n4 -o my_hilbert_svg -t my_hilbert_txt\n\n\n"
-           "Wird eine Option mit Optionsargument doppelt aufgerufen, so wird das letzte Optionsargument verwendet.\n\n\n\n");
+void print_time(struct timespec start, struct timespec end) {
+     double elapsed = (end.tv_sec - start.tv_sec);
+     elapsed += (end.tv_nsec - start.tv_nsec) / 1000000000.0;
+     printf("Zeitmessung ergibt: %f Sekunden\n", elapsed);
 }

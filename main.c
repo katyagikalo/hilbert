@@ -132,8 +132,8 @@ int main(int argc, char **argv) {
     parameter_args.output_file_txt = output_file_txt;
     parameter_args.x = x;
     parameter_args.y = y;
-    parameter_args.start = NULL;
-    parameter_args.end = NULL;
+    parameter_args.start = 0;
+    parameter_args.end = 10;
 
     
 //informationen ueber die Optionen und Parametereingabe

@@ -132,8 +132,8 @@ int main(int argc, char **argv) {
     parameter_args.output_file_txt = output_file_txt;
     parameter_args.x = x;
     parameter_args.y = y;
-    parameter_args.start = NULL;
-    parameter_args.end = NULL;
+    parameter_args.start = malloc(sizeof(struct timespec));
+    parameter_args.end = malloc(sizeof(struct timespec));
 
     
 //informationen ueber die Optionen und Parametereingabe
@@ -158,6 +158,8 @@ int main(int argc, char **argv) {
 
     free(x);
     free(y);
+    free(start);
+    free(end);
     return 0;
 }
 
@@ -168,7 +170,7 @@ void choose_version(parameter parameter_args) {
                 clock_gettime(CLOCK_MONOTONIC, parameter_args.start);
                 for (unsigned i=parameter_args.count_call; i > 0; i--)
                     hilbert_V0(parameter_args.degree, parameter_args.x, parameter_args.y);
-                //clock_gettime(CLOCK_MONOTONIC, parameter_args.end);
+                clock_gettime(CLOCK_MONOTONIC, parameter_args.end);
             }
             else {
                 hilbert_V0(parameter_args.degree, parameter_args.x, parameter_args.y);

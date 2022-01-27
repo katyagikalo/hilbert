@@ -130,6 +130,8 @@ int main(int argc, char **argv) {
     parameter_args.count_call = count_call;
     parameter_args.output_file_svg = output_file_svg;
     parameter_args.output_file_txt = output_file_txt;
+    parameter_args.x = x;
+    parameter_args.y = y;
 
     
 //informationen ueber die Optionen und Parametereingabe

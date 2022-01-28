@@ -31,7 +31,7 @@ v_assembly:
     movd xmm2, rcx
     pshufd xmm2, xmm2, 0x00                 //segment_coord .. segment_coord
 
-    mov r10, 1
+    mov r10, 1921
     movd xmm3, r10
     pshufd xmm3, xmm3, 0x00                 //1 .. 1
 

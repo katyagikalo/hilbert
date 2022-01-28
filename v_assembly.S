@@ -73,7 +73,7 @@ segments_loop:
     movups [rdx + rdi], xmm0
 
     movups xmm0, xmm2
-    psubd xmm0, xmm1
+    psubd xmm0, xmm3
     psubd xmm0, [rsi + r8]                  //segment_coord - 1 - y[i] .. segment_coord - 1 - y[i+4]
     movups [rsi + rdi], xmm0
 

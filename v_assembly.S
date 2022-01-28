@@ -42,7 +42,7 @@ segments_loop:
     movups xmm0, [rdx + r8]                 //x[i] .. x[i+3]
     movups xmm1, [rsi + r8]                 //y[i] .. y[i+3]
     
-    mov rdi, rax
+    /*mov rdi, rax
     add rdi, r8                             //segment_length + i
 
     //left lower segment
@@ -61,7 +61,7 @@ segments_loop:
     paddd xmm0, xmm2                        //x[i] + segment_coord .. x[i+3] + segment_coord
     movups [rdx + rdi], xmm0
 
-    movups [rsi + rdi], xmm1
+    movups [rsi + rdi], xmm1*/
 
     //right lower segment
     add rdi, rax                            //3*segment_length + i

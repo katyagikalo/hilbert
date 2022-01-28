@@ -9,12 +9,10 @@ typedef struct {
 
 typedef struct {
     int degree, version, count_call;
-    bool messure_time, write_svg_file, write_txt_file, print_console;
+    bool messure_time, write_svg_file, write_txt_file, print_console, test_all, test_time;
     char *output_file_svg, *output_file_txt;
     struct timespec *start, *end;
     coord_t *x, *y;
 }parameter;
-
-double v_assembly(unsigned degree, coord_t* x, coord_t* y);
 
 #endif

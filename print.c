@@ -2,22 +2,42 @@
 #include <string.h>
 #include <stdbool.h>
 #include <time.h>
+#include <sys/types.h>
+#include <sys/stat.h>
+#include <unistd.h>
 
 #include "main.h"
 #include "print.h"
 
 void print_parameter(parameter parameter_args){
-    printf("Version                  : V%d\n"
-           "Grad der Hilbertkurve    : %d\n"
-           "Zeitmessung              : %s\n"
-           "Funktionsaufrufe         : %d\n"
-           "AusgabeArray auf Konsole : %s\n"
-           "SVG_Ausgabedatei         : %s\n"
-           "TXT_Ausgabedatei         : %s\n",
-           parameter_args.version, parameter_args.degree, (parameter_args.messure_time ? "ja" : "nein"), parameter_args.count_call,
-           (parameter_args.print_console ? "ja" : "nein"),
-           (parameter_args.write_svg_file ? parameter_args.output_file_svg : "--nicht gewaehlt--"),
-           (parameter_args.write_txt_file ? parameter_args.output_file_txt : "--nicht gewaehlt--"));
+    if (parameter_args.test_all){
+        printf( "\nVersion                  : Benchmark all Versions and create files\n");
+    }
+    else if (parameter_args.test_time) {
+        printf( "\nVersion                  : Benchmark all Versions\n");
+    }
+    else {
+        printf(   "\nVersion                  : V%d\n",parameter_args.version);
+    }
+    
+    printf("Grad der Hilbertkurve    : %d\n",parameter_args.degree);
+    
+    if (parameter_args.test_time || parameter_args.test_all) {
+        printf("Zeitmessung              : ja\n\n\n");
+    }
+    else {
+        printf("Zeitmessung              : %s\n",
+            (parameter_args.messure_time ? "ja" : "nein"));
+    }
+    
+    if (!parameter_args.test_all && !parameter_args.test_time)
+        printf("Funktionsaufrufe         : %d\n"
+               "AusgabeArray auf Konsole : %s\n"
+               "SVG_Ausgabedatei         : %s\n"
+               "TXT_Ausgabedatei         : %s\n\n\n",
+               parameter_args.count_call, (parameter_args.print_console ? "ja" : "nein"),
+               (parameter_args.write_svg_file ? parameter_args.output_file_svg : "--nicht gewaehlt--"),
+               (parameter_args.write_txt_file ? parameter_args.output_file_txt : "--nicht gewaehlt--"));
 }
 
 void print_curve(unsigned degree, coord_t* x, coord_t* y){
@@ -29,24 +49,51 @@ void print_curve(unsigned degree, coord_t* x, coord_t* y){
     printf("\n");
 }
 
-void print_time(struct timespec *start, struct timespec *end) {
-     double elapsed = (end->tv_sec - start->tv_sec);
-     elapsed += (end->tv_nsec - start->tv_nsec) / 1000000000.0;
-     printf("Zeitmessung ergibt: %f Sekunden\n", elapsed);
+
+void print_time(struct timespec start, struct timespec end) {
+     double elapsed = (end.tv_sec - start.tv_sec);
+     elapsed += (end.tv_nsec - start.tv_nsec) / 1000000000.0;
+     printf("%f Sekunden\n", elapsed);    
 }
 
-void write_svg(char* output_file_svg, int degree, coord_t* x, coord_t* y) {
-    unsigned long long length = (unsigned long long)1 << (2*degree);
-    unsigned win_size = 1 << degree;
+void create_folder(char path[]){
+    struct stat st_0 = {0};
+    
+    if (stat(path, &st_0) == -1)
+        mkdir(path, 0700);
+}
 
-    char file_name[strlen(output_file_svg) + 5];
-    FILE* svg_fp = fopen(strcat(strcpy(file_name, output_file_svg),".svg\0"),"w");
 
+void write_svg(char *path, char *output_file_svg, int degree, coord_t* x, coord_t* y) {
+
+    FILE *svg_fp;
+    
+    if (path == NULL) {
+        char path_file[strlen(output_file_svg) + 5];
+        strcpy(path_file, output_file_svg);
+        
+        svg_fp = fopen(strcat(path_file, ".svg\0"),"w");
+    }
+
+    else {
+        char file_name[strlen(output_file_svg)];
+        char path_file[strlen(output_file_svg) + strlen(path) + 6];
+        strcpy(file_name, output_file_svg);
+        strcpy(path_file, path);
+        strcat(path_file, "/");
+        strcat(path_file, file_name);
+        
+        svg_fp = fopen(strcat(path_file,".svg\0"),"w");
+    }
+    
     if (svg_fp == NULL) {
         printf("File kann nicht angelegt werden\n");
         return;
     }
 
+    unsigned long long length = (unsigned long long)1 << (2*degree);
+    unsigned win_size = 1 << degree;
+    
     fprintf(svg_fp, "<?xml version=\"1.0\" encoding=\"ISO-8859-1\" standalone=\"no\" ?>\n"
                     "<!DOCTYPE svg PUBLIC \"-//W3C//DTD SVG 20010904//EN\"\n"
                     "\"http://www.w3.org/TR/2001/REC-SVG-20010904/DTD/svg10.dtd\">\n"
@@ -64,16 +111,35 @@ void write_svg(char* output_file_svg, int degree, coord_t* x, coord_t* y) {
     fclose(svg_fp);
 }
 
-void write_txt(char* output_file_txt, int degree, coord_t* x, coord_t *y) {
-    unsigned long long length = (unsigned long long)1 << (2*degree);
+void write_txt(char *path, char *output_file_txt, int degree, coord_t* x, coord_t* y) {
 
-    char file_name[strlen(output_file_txt) + 5];
-    FILE* txt_fp = fopen(strcat(strcpy(file_name, output_file_txt),".txt\0"),"w");
+    FILE *txt_fp;
+    
+    if (path == NULL) {
+        char path_file[strlen(output_file_txt) + 5];
+        strcpy(path_file, output_file_txt);
+        
+        txt_fp = fopen(strcat(path_file, ".txt\0"),"w");
+    }
 
+    else {
+        char file_name[strlen(output_file_txt)];
+        char path_file[strlen(output_file_txt) + strlen(path) + 6];
+        strcpy(file_name, output_file_txt);
+        strcpy(path_file, path);
+        strcat(path_file, "/");
+        strcat(path_file, file_name);
+        
+        txt_fp = fopen(strcat(path_file,".txt\0"),"w");
+    }
+    
     if (txt_fp == NULL) {
         printf("File kann nicht angelegt werden\n");
         return;
     }
+    
+    unsigned long long length = (unsigned long long)1 << (2*degree);
+    
     for (unsigned long long i = 0; i < length; ++i)
         fprintf(txt_fp, "(%d,%d)", x[i].val, y[i].val);
     fclose(txt_fp);

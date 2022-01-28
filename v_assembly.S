@@ -16,22 +16,10 @@ v_assembly:
     cmp rax, 0
     jle end
 
-    mov qword ptr [rdx], 0                  //x[0]
-    mov qword ptr [rsi], 0                  //y[0]
-
-    mov qword ptr [rdx + 4], 0              //x[1]
-    mov qword ptr [rsi + 4], 1              //y[1]
-
-    mov qword ptr [rdx + 8], 1              //x[2]
-    mov qword ptr [rsi + 8], 1              //y[2]
-
-    mov qword ptr [rdx + 12], 1             //x[3]
-    mov qword ptr [rsi + 12], 0             //y[3]
-
     movd xmm2, rcx
     pshufd xmm2, xmm2, 0x00                 //segment_coord .. segment_coord
 
-    mov r10, 1921
+    mov r10, 1
     movd xmm3, r10
     pshufd xmm3, xmm3, 0x00                 //1 .. 1
 
@@ -42,7 +30,7 @@ segments_loop:
     movups xmm0, [rdx + r8]                 //x[i] .. x[i+3]
     movups xmm1, [rsi + r8]                 //y[i] .. y[i+3]
     
-    /*mov rdi, rax
+    mov rdi, rax
     add rdi, r8                             //segment_length + i
 
     //left lower segment
@@ -61,7 +49,7 @@ segments_loop:
     paddd xmm0, xmm2                        //x[i] + segment_coord .. x[i+3] + segment_coord
     movups [rdx + rdi], xmm0
 
-    movups [rsi + rdi], xmm1*/
+    movups [rsi + rdi], xmm1
 
     //right lower segment
     add rdi, rax                            //3*segment_length + i

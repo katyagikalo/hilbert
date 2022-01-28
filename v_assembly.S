@@ -7,11 +7,11 @@
 
 v_assembly:
     mov rax, qword ptr [rsp]                //segment_length
-    mov rcx, dword ptr [rsp + 8]            //segment_coord
-    mov r8, dword ptr [rsp + 12]            //start
-    mov r9, dword ptr [rsp + 16]            //end
-    mov rdx, dword ptr [rsp + 20]           //x
-    mov rsi, dword ptr [rsp + 24]           //y
+    mov rcxl, dword ptr [rsp + 8]            //segment_coord
+    mov r8l, dword ptr [rsp + 12]            //start
+    mov r9l, dword ptr [rsp + 16]            //end
+    mov rdxl, dword ptr [rsp + 20]           //x
+    mov rsil, dword ptr [rsp + 24]           //y
 
     cmp rax, 0
     jle end

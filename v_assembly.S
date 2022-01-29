@@ -38,18 +38,18 @@ segments_loop:
     movups [rsi + r8], xmm0
 
     //left upper segment
-    movups [rdx + rdi], xmm0
+    movups [rdx + 4*rdi], xmm0
 
     paddd xmm1, xmm2                        //y[i] + segment_coord .. y[i+3] + segment_coord
-    movups [rsi + rdi], xmm1
+    movups [rsi + 4*rdi], xmm1
 
     //right upper segment
     add rdi, rax                            //2*segment_length + i
 
     paddd xmm0, xmm2                        //x[i] + segment_coord .. x[i+3] + segment_coord
-    movups [rdx + rdi], xmm0
+    movups [rdx + 4*rdi], xmm0
 
-    movups [rsi + rdi], xmm1
+    movups [rsi + 4*rdi], xmm1
 
     //right lower segment
     add rdi, rax                            //3*segment_length + i
@@ -58,12 +58,12 @@ segments_loop:
     paddd xmm0, xmm0
     psubd xmm0, xmm3
     psubd xmm0, [rdx + r8]                  //2*segment_coord - 1 - x[i] .. 2*segment_coord - 1 - x[i+4]
-    movups [rdx + rdi], xmm0
+    movups [rdx + 4*rdi], xmm0
 
     movups xmm0, xmm2
     psubd xmm0, xmm3
     psubd xmm0, [rsi + r8]                  //segment_coord - 1 - y[i] .. segment_coord - 1 - y[i+4]
-    movups [rsi + rdi], xmm0
+    movups [rsi + 4*rdi], xmm0
 
     add rcx, 16
     

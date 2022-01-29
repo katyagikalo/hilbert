@@ -16,6 +16,9 @@ v_assembly:
     mov edx, dword ptr [rsp + 20]           //x
     mov edi, dword ptr [rsp + 24]           //y
 
+    mov rdx, rax
+    mov rdi, rcx
+
     cmp rax, 0
     jle end
 
@@ -35,10 +38,10 @@ segments_loop:
     cmp r8, r9
     je end
 
-    movups xmm0, [rdx + r8]                 //x[i] .. x[i+3]
+    /*movups xmm0, [rdx + r8]                 //x[i] .. x[i+3]
     movups xmm1, [rdi + r8]                 //y[i] .. y[i+3]
     
-    /*mov rsi, rax
+    mov rsi, rax
     add rsi, r8                             //segment_length + i
 
     //left lower segment

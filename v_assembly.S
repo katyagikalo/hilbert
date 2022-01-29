@@ -8,7 +8,7 @@
 v_assembly:
     mov rax, qword ptr [rsp]                //segment_length
     mov ecx, dword ptr [rsp + 8]            //segment_coord
-    mov r8d, dword ptr [rsp + 12]           //start
+    mov r8d, dword ptr [rsp + 12]            //start
     mov r9d, dword ptr [rsp + 16]           //end
     mov edx, dword ptr [rsp + 20]           //x
     mov edi, dword ptr [rsp + 24]           //y
@@ -23,7 +23,7 @@ v_assembly:
     movd xmm3, r10
     pshufd xmm3, xmm3, 0x00                 //1 .. 1
 
-segments_loop:
+/*segments_loop:
     cmp r8, r9
     je end
 
@@ -38,18 +38,18 @@ segments_loop:
     movups [rsi + r8], xmm0
 
     //left upper segment
-    movups [rdx + 4*rdi], xmm0
+    movups [rdx + rdi], xmm0
 
     paddd xmm1, xmm2                        //y[i] + segment_coord .. y[i+3] + segment_coord
-    movups [rsi + 4*rdi], xmm1
+    movups [rsi + rdi], xmm1
 
     //right upper segment
     add rdi, rax                            //2*segment_length + i
 
     paddd xmm0, xmm2                        //x[i] + segment_coord .. x[i+3] + segment_coord
-    movups [rdx + 4*rdi], xmm0
+    movups [rdx + rdi], xmm0
 
-    movups [rsi + 4*rdi], xmm1
+    movups [rsi + rdi], xmm1
 
     //right lower segment
     add rdi, rax                            //3*segment_length + i
@@ -58,16 +58,16 @@ segments_loop:
     paddd xmm0, xmm0
     psubd xmm0, xmm3
     psubd xmm0, [rdx + r8]                  //2*segment_coord - 1 - x[i] .. 2*segment_coord - 1 - x[i+4]
-    movups [rdx + 4*rdi], xmm0
+    movups [rdx + rdi], xmm0
 
     movups xmm0, xmm2
     psubd xmm0, xmm3
     psubd xmm0, [rsi + r8]                  //segment_coord - 1 - y[i] .. segment_coord - 1 - y[i+4]
-    movups [rsi + 4*rdi], xmm0
+    movups [rsi + rdi], xmm0
 
     add rcx, 16
     
-    jmp segments_loop
+    jmp segments_loop*/
 
 end:
     ret

@@ -74,11 +74,11 @@ segments_loop:
     movups xmm0, xmm2
     psubd xmm0, xmm3
     psubd xmm0, [rsi + r8]                  //segment_coord - 1 - y[i] .. segment_coord - 1 - y[i+4]
-    movups [rdi + rsi], xmm0*/
+    movups [rdi + rsi], xmm0
 
     add r8, 16
     
-    jmp segments_loop
+    jmp segments_loop*/
 
 end:
     ret

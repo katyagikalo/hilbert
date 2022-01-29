@@ -12,8 +12,8 @@ v_assembly:
     //mov rcx, qword ptr [rsp + 24]           //segment_coord
     //mov r8, qword ptr [rsp + 32]            //start
     //mov r9, qword ptr [rsp + 40]            //end
-
-    mov dword ptr [edx], 0
+    xor eax, eax
+    mov dword ptr [edx], eax
    // mov qword ptr [edi], 1
 
     /*cmp rax, 0

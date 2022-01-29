@@ -6,6 +6,9 @@
 .align 16
 
 v_assembly:
+    xor rdx, rdx
+    xor rdi, rdi
+
     mov rax, qword ptr [rsp]                //segment_length
     mov ecx, dword ptr [rsp + 8]            //segment_coord
     mov r8d, dword ptr [rsp + 12]           //start
@@ -33,42 +36,42 @@ segments_loop:
     je end
 
     movups xmm0, [rdx + r8]                 //x[i] .. x[i+3]
-    movups xmm1, [rsi + r8]                 //y[i] .. y[i+3]
+    movups xmm1, [rdi + r8]                 //y[i] .. y[i+3]
     
-    mov rdi, rax
-    add rdi, r8                             //segment_length + i
+    mov rsi, rax
+    add rsi, r8                             //segment_length + i
 
     //left lower segment
     /*movups [rdx + r8], xmm1
-    movups [rsi + r8], xmm0
+    movups [rdi + r8], xmm0
 
     //left upper segment
-    movups [rdx + rdi], xmm0
+    movups [rdx + rsi], xmm0
 
     paddd xmm1, xmm2                        //y[i] + segment_coord .. y[i+3] + segment_coord
-    movups [rsi + rdi], xmm1
+    movups [rdi + rsi], xmm1
 
     //right upper segment
-    add rdi, rax                            //2*segment_length + i
+    add rsi, rax                            //2*segment_length + i
 
     paddd xmm0, xmm2                        //x[i] + segment_coord .. x[i+3] + segment_coord
-    movups [rdx + rdi], xmm0
+    movups [rdx + rsi], xmm0
 
-    movups [rsi + rdi], xmm1
+    movups [rdi + rsi], xmm1
 
     //right lower segment
-    add rdi, rax                            //3*segment_length + i
+    add rsi, rax                            //3*segment_length + i
     
     movups xmm0, xmm2
     paddd xmm0, xmm0
     psubd xmm0, xmm3
     psubd xmm0, [rdx + r8]                  //2*segment_coord - 1 - x[i] .. 2*segment_coord - 1 - x[i+4]
-    movups [rdx + rdi], xmm0
+    movups [rdx + rsi], xmm0
 
     movups xmm0, xmm2
     psubd xmm0, xmm3
     psubd xmm0, [rsi + r8]                  //segment_coord - 1 - y[i] .. segment_coord - 1 - y[i+4]
-    movups [rsi + rdi], xmm0*/
+    movups [rdi + rsi], xmm0*/
 
     add r8, 16
     

@@ -62,7 +62,7 @@ void hilbert_V0(unsigned degree, coord_t* x, coord_t* y) {
 
 void hilbert_V1(unsigned degree, coord_t* x, coord_t* y) {
     
-    //unsigned const THREADS = 2;
+    unsigned const THREADS = 1;
     unsigned const START_MULTITHREADING = 2;
     
     //curve for degree = 1
@@ -74,28 +74,15 @@ void hilbert_V1(unsigned degree, coord_t* x, coord_t* y) {
 
     
     //calc without Multitreading
-    for (unsigned d = 1; d < degree; d++) {
+    for (unsigned d=1; d<degree; d++) {
         if (d == START_MULTITHREADING){
             break;
         }
         add_segments_simd(d, x, y);
     }
     
-    unsigned long long segment_length = (unsigned long long) 1 << (2 * (degree-1));
-    unsigned segment_coord = 1 << (degree-1);
-    
-    struct pthread_args args = malloc(sizeof(struct pthread_args));
-    args->x = x;
-    args->y = y;
-    args->segment_length = segment_length;
-    args->segment_coord = segment_coord;
-    args->start = 0;
-    args->end = segment_length;
-    
-    v_assembly(args);
-    
     //create threads
-    /*pthread_t thread_array[THREADS];
+    pthread_t thread_array[THREADS];
     
     //create thread_arguments_array
     pthread_args pthread_args_arr[THREADS];
@@ -124,7 +111,7 @@ void hilbert_V1(unsigned degree, coord_t* x, coord_t* y) {
         for (unsigned j = 0; j < THREADS; ++j) {
             pthread_join(thread_array[j], NULL);
         }
-    }*/
+    }
 }
 
 void add_segments_simd(unsigned segment_degree, coord_t* x, coord_t* y){

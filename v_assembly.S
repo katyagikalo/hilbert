@@ -13,8 +13,8 @@ v_assembly:
     mov ecx, dword ptr [rsp + 8]            //segment_coord
     mov r8d, dword ptr [rsp + 12]           //start
     mov r9d, dword ptr [rsp + 16]           //end
-    mov edx, dword ptr [rsp + 20]           //x
-    mov edi, dword ptr [rsp + 24]           //y
+    mov rdx, qword ptr [rsp + 20]           //x
+    mov rdi, qword ptr [rsp + 24]           //y
 
     cmp rax, 0
     jle end

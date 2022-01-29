@@ -19,7 +19,7 @@ v_assembly:
     mov qword ptr [rdx], r8
     mov qword ptr [rdi], r9
 
-    cmp rax, 0
+    /*cmp rax, 0
     jle end
 
     movd xmm2, rcx
@@ -38,7 +38,7 @@ segments_loop:
     cmp r8, r9
     je end
 
-    /*movups xmm0, [rdx + r8]                 //x[i] .. x[i+3]
+    movups xmm0, [rdx + r8]                 //x[i] .. x[i+3]
     movups xmm1, [rdi + r8]                 //y[i] .. y[i+3]
     
     mov rsi, rax

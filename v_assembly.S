@@ -10,14 +10,14 @@ v_assembly:
     xor rdi, rdi
 
     mov rax, qword ptr [rsp]                //segment_length
-    mov ecx, dword ptr [rsp + 8]            //segment_coord
-    mov r8d, dword ptr [rsp + 12]           //start
-    mov r9d, dword ptr [rsp + 16]           //end
-    mov edx, dword ptr [rsp + 20]           //x
-    mov edi, dword ptr [rsp + 24]           //y
+    mov ecx, qword ptr [rsp + 8]            //segment_coord
+    mov r8, qword ptr [rsp + 16]            //start
+    mov r9, qword ptr [rsp + 24]            //end
+    mov rdx, qword ptr [rsp + 32]           //x
+    mov rdi, qword ptr [rsp + 40]           //y
 
-    mov dword ptr [edx], r8d
-    mov dword ptr [edi], r9d
+    mov qword ptr [rdx], r8
+    mov qword ptr [rdi], r9
 
     cmp rax, 0
     jle end

@@ -11,13 +11,13 @@ v_assembly:
 
     mov rdx, qword ptr [rsp]                //x
     mov rdi, qword ptr [rsp + 8]            //y
-    mov rax, qword ptr [rsp + 16]           //segment_length
-    mov rcx, qword ptr [rsp + 24]           //segment_coord
-    mov r8, qword ptr [rsp + 32]            //start
-    mov r9, qword ptr [rsp + 40]            //end
+    //mov rax, qword ptr [rsp + 16]           //segment_length
+    //mov rcx, qword ptr [rsp + 24]           //segment_coord
+    //mov r8, qword ptr [rsp + 32]            //start
+    //mov r9, qword ptr [rsp + 40]            //end
 
-    mov qword ptr [rdx], r8
-    mov qword ptr [rdi], r9
+    mov qword ptr [rdx], 0
+    mov qword ptr [rdi], 1
 
     /*cmp rax, 0
     jle end

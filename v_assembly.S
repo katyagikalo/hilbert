@@ -6,7 +6,7 @@
 .align 16
 
 v_assembly:
-    mov rdx, qword ptr [rsp]                //x
+    mov rdx, rsp                //x
     //mov edi, dword ptr [rsp + 4]            //y
     //mov rax, qword ptr [rsp + 16]           //segment_length
     //mov rcx, qword ptr [rsp + 24]           //segment_coord

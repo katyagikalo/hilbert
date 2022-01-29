@@ -62,8 +62,8 @@ void hilbert_V0(unsigned degree, coord_t* x, coord_t* y) {
 
 void hilbert_V1(unsigned degree, coord_t* x, coord_t* y) {
     
-    unsigned const THREADS = 32;
-    unsigned const START_MULTITHREADING = 7;
+    unsigned const THREADS = 2;
+    unsigned const START_MULTITHREADING = 2;
     
     //curve for degree = 1
     x[0].val = 0; y[0].val = 0; x[1].val = 0; y[1].val = 1; x[2].val = 1; y[2].val = 1; x[3].val = 1; y[3].val = 0;
@@ -71,6 +71,7 @@ void hilbert_V1(unsigned degree, coord_t* x, coord_t* y) {
     if(degree == 1){
         return;
     }
+
     
     //calc without Multitreading
     for (unsigned d=1; d<degree; d++) {
@@ -91,7 +92,7 @@ void hilbert_V1(unsigned degree, coord_t* x, coord_t* y) {
         pthread_args_arr[i].y = y;
     }
 
-    //calculate
+    //calculate*
     for(unsigned i = START_MULTITHREADING; i < degree; ++i) {
         unsigned long long segment_length = (unsigned long long) 1 << (2 * i);
         unsigned segment_coord = 1 << i, step = segment_length/THREADS;

@@ -6,12 +6,12 @@
 #include "hilbert.h"
 
 typedef struct{
+    coord_t *x;
+    coord_t *y;
     unsigned long long segment_length;
     unsigned segment_coord;
     unsigned start;
     unsigned end;
-    coord_t *x;
-    coord_t *y;
 }pthread_args;
 
 void add_segments(unsigned segment_degree, coord_t* x, coord_t* y){

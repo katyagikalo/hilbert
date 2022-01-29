@@ -10,7 +10,7 @@ v_assembly:
     xor rdi, rdi
 
     mov rax, qword ptr [rsp]                //segment_length
-    mov ecx, qword ptr [rsp + 8]            //segment_coord
+    mov rcx, qword ptr [rsp + 8]            //segment_coord
     mov r8, qword ptr [rsp + 16]            //start
     mov r9, qword ptr [rsp + 24]            //end
     mov rdx, qword ptr [rsp + 32]           //x

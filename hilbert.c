@@ -105,7 +105,7 @@ void hilbert_V1(unsigned degree, coord_t* x, coord_t* y) {
         }
         
         for (unsigned j = 0; j < THREADS; ++j) {
-            pthread_create(&thread_array[j], NULL, v_assembly, (void *) &pthread_args_arr[j]);
+            pthread_create(&thread_array[j], NULL, v_assembly, &pthread_args_arr[j]);
         }
         
         for (unsigned j = 0; j < THREADS; ++j) {

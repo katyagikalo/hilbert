@@ -11,7 +11,7 @@ void add_segments(unsigned degree, coord_t* x, coord_t* y);
 void add_segments_simd(unsigned segment_degree, coord_t* x, coord_t* y);
 void * add_segments_simd_multithreaded(void * args);
 void * add_segments_multithreaded(void * args);
-void * v_assembly(void * args);
+void * v_assembly(pthread_args * args);
 
 #endif
 

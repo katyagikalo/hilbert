@@ -13,7 +13,7 @@ v_assembly:
     //mov r8, qword ptr [rsp + 32]            //start
     //mov r9, qword ptr [rsp + 40]            //end
 
-    mov qword ptr [rdx], 0
+    //mov qword ptr [rdx], 0
    // mov qword ptr [edi], 1
 
     /*cmp rax, 0

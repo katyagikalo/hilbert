@@ -6,17 +6,14 @@
 .align 16
 
 v_assembly:
-    xor rdx, rdx
-    xor rdi, rdi
-
-    mov edx, dword ptr [rsp]                //x
+    mov rdx, dword ptr [rsp]                //x
     //mov edi, dword ptr [rsp + 4]            //y
     //mov rax, qword ptr [rsp + 16]           //segment_length
     //mov rcx, qword ptr [rsp + 24]           //segment_coord
     //mov r8, qword ptr [rsp + 32]            //start
     //mov r9, qword ptr [rsp + 40]            //end
 
-    mov qword ptr [edx], 0
+    mov qword ptr [rdx], 0
    // mov qword ptr [edi], 1
 
     /*cmp rax, 0

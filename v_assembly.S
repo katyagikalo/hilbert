@@ -16,8 +16,8 @@ v_assembly:
     mov edx, dword ptr [rsp + 20]           //x
     mov edi, dword ptr [rsp + 24]           //y
 
-    mov dword ptr [rdx], r8d
-    mov dword ptr [rdi], r9d
+    mov dword ptr [edx], r8d
+    mov dword ptr [edi], r9d
 
     cmp rax, 0
     jle end

@@ -32,7 +32,7 @@ segments_loop:
     cmp r8, r9
     je end
 
-    /*movups xmm0, [rdx + r8]                 //x[i] .. x[i+3]
+    movups xmm0, [rdx + r8]                 //x[i] .. x[i+3]
     movups xmm1, [rsi + r8]                 //y[i] .. y[i+3]
     
     mov rdi, rax
@@ -68,7 +68,7 @@ segments_loop:
     movups xmm0, xmm2
     psubd xmm0, xmm3
     psubd xmm0, [rsi + r8]                  //segment_coord - 1 - y[i] .. segment_coord - 1 - y[i+4]
-    movups [rsi + rdi], xmm0*/
+    movups [rsi + rdi], xmm0
 
     add r8, 16
     

@@ -39,7 +39,7 @@ degrees_loop:
     mov r9, 1
     shl r9, cl                              //1 << segment degree
     movd xmm2, r9
-    pshufd xmm2, xmm2, 0x00                 
+    pshufd xmm2, xmm2, 0x00                 //segment coordinate .. segment coordinate
 
     mov r10, 1
     movd xmm3, r10
@@ -81,12 +81,12 @@ segments_loop:
     movups xmm0, xmm2
     paddd xmm0, xmm0
     psubd xmm0, xmm3
-    psubd xmm0, [rsi + rcx]
+    psubd xmm0, [rsi + rcx]                 //2 * segment coordinate - 1 - x[i] .. 2 * segment coordinate - 1 - x[i+3]
     movups [rsi + r9], xmm0
 
     movups xmm0, xmm2
     psubd xmm0, xmm3
-    psubd xmm0, [rdx + rcx]
+    psubd xmm0, [rdx + rcx]                 //segment coordinate - 1 - y[i] .. segment coordinate - 1 - y[i+3]
     movups [rdx + r9], xmm0
 
     add rcx, 16

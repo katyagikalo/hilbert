@@ -5,18 +5,9 @@
 #include "main.h"
 #include "hilbert.h"
 
-typedef struct{
-    unsigned long long segment_length;
-    unsigned segment_coord;
-    unsigned start;
-    unsigned end;
-    coord_t *x;
-    coord_t *y;
-}pthread_args;
-
 void add_segments(unsigned segment_degree, coord_t* x, coord_t* y){
     unsigned long long segment_length = (unsigned long long)1 << (2 * (segment_degree));
-    unsigned segment_coord = (1 << segment_degree);
+    unsigned segment_coord = (1 << segment_degree), wx, wy;
 
     coord_t *vx = x, *vy = y;
 
@@ -26,8 +17,8 @@ void add_segments(unsigned segment_degree, coord_t* x, coord_t* y){
     unsigned long long t_segment_length = d_segment_length + segment_length;
 
     for(unsigned long long i = 0; i < segment_length; ++i) {
-        unsigned wx = vx[0].val;
-        unsigned wy = vy[0].val;
+        wx = vx[0].val;
+        wy = vy[0].val;
         
         //left upper segment
         vx[segment_length].val = wx;
@@ -185,11 +176,11 @@ void * add_segments_multithreaded(void * args){
     vx+=temp_args->start;
     vy+=temp_args->start;
 
-    unsigned seg_coord = temp_args->segment_coord;
+    unsigned seg_coord = temp_args->segment_coord, wx, wy;
     
     for(unsigned long long i = temp_args->start; i < temp_args->end; ++i) {
-        unsigned wx = vx[0].val;
-        unsigned wy = vy[0].val;
+        wx = vx[0].val;
+        wy = vy[0].val;
         
         //left upper segment
         vx[temp_args->segment_length].val = wx;

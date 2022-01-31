@@ -1,5 +1,6 @@
 #include <stdio.h>
 #include <stdlib.h>
+#include <stddef.h>
 #include <getopt.h>
 #include <unistd.h>
 #include <stdbool.h>
@@ -12,14 +13,9 @@
 #include <sys/types.h>
 #include <sys/stat.h>
 
-
 #include "main.h"
 #include "print.h"
 #include "hilbert.h"
-
-
-void choose_version(parameter parameter_args);
-void test_func(parameter parameter_args);
 
 int main(int argc, char **argv) {
     

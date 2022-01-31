@@ -1,7 +1,5 @@
-#ifndef V_ASSEMBLY_H
-#define V_ASSEMBLY_H
-
-#include <stddef.h>
+#ifndef MAIN_H
+#define MAIN_H
 
 typedef struct {
     unsigned val;
@@ -14,5 +12,8 @@ typedef struct {
     struct timespec *start, *end;
     coord_t *x, *y;
 }parameter;
+
+void choose_version(parameter parameter_args);
+void test_func(parameter parameter_args);
 
 #endif

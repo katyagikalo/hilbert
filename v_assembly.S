@@ -42,7 +42,7 @@ degrees_loop:
     mov rcx, rax
     mov r9, 1
     shl r9, cl                              //1 << segment degree
-    movd xmm2, r9
+    movd xmm3, r9
     pshufd xmm3, xmm3, 0x00                 //segment coordinate .. segment coordinate
 
     xor rcx, rcx                            //loop counter

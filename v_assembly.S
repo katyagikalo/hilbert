@@ -33,17 +33,17 @@ degrees_loop:
     cmp rax, rdi
     je end
     
-    mov r8, 1                               //segment length
     mov rcx, rax
-    add rcx, rcx
-    add rcx, 2
-    shl r8, cl                              //1 << (2 * (segment degree) + 2)
-    
-    mov rcx, rax
+
     mov r9, 1
     shl r9, cl                              //1 << segment degree
     movd xmm3, r9
     pshufd xmm3, xmm3, 0x00                 //segment coordinate .. segment coordinate
+
+    mov r8, 1                               //segment length
+    add rcx, rcx
+    add rcx, 2
+    shl r8, cl                              //1 << (2 * (segment degree) + 2)
 
     xor rcx, rcx                            //loop counter
 

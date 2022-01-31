@@ -23,6 +23,10 @@ v_assembly:
     mov dword ptr [rsi + 12], 1             //x[3]
     mov dword ptr [rdx + 12], 0             //y[3]
 
+    mov r10, 1
+    movd xmm2, r10
+    pshufd xmm2, xmm2, 0x00                 //1 1 1 1
+
 degrees_loop:
     inc rax
 
@@ -39,11 +43,7 @@ degrees_loop:
     mov r9, 1
     shl r9, cl                              //1 << segment degree
     movd xmm2, r9
-    pshufd xmm2, xmm2, 0x00                 //segment coordinate .. segment coordinate
-
-    mov r10, 1
-    movd xmm3, r10
-    pshufd xmm3, xmm3, 0x00                 //1 1 1 1
+    pshufd xmm3, xmm3, 0x00                 //segment coordinate .. segment coordinate
 
     xor rcx, rcx                            //loop counter
 
@@ -64,13 +64,13 @@ segments_loop:
     //left upper segment
     movups [rsi + r9], xmm0
 
-    paddd xmm1, xmm2                        //y[i] + segment coordinate .. y[i+3] + segment coordinate
+    paddd xmm1, xmm3                        //y[i] + segment coordinate .. y[i+3] + segment coordinate
     movups [rdx + r9], xmm1
 
     //right upper segment
     add r9, r8                              //2 * segment length + i
 
-    paddd xmm0, xmm2                        //x[i] + segment coordinate .. x[i+3] + segment coordinate
+    paddd xmm0, xmm3                        //x[i] + segment coordinate .. x[i+3] + segment coordinate
     movups [rsi + r9], xmm0
 
     movups [rdx + r9], xmm1
@@ -78,14 +78,14 @@ segments_loop:
     //right lower segment
     add r9, r8                              //3 * segment length + i
 
-    movups xmm0, xmm2
+    movups xmm0, xmm3
     paddd xmm0, xmm0
-    psubd xmm0, xmm3
+    psubd xmm0, xmm2
     psubd xmm0, [rsi + rcx]                 //2 * segment coordinate - 1 - x[i] .. 2 * segment coordinate - 1 - x[i+3]
     movups [rsi + r9], xmm0
 
-    movups xmm0, xmm2
-    psubd xmm0, xmm3
+    movups xmm0, xmm3
+    psubd xmm0, xmm2
     psubd xmm0, [rdx + rcx]                 //segment coordinate - 1 - y[i] .. segment coordinate - 1 - y[i+3]
     movups [rdx + r9], xmm0
 

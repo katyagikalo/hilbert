@@ -7,6 +7,7 @@
 
 v_assembly_multithreaded:
     mov dword ptr [rdi], 8
+    mov dword ptr [rsi], 16
     ret
 
 

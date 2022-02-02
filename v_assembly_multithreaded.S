@@ -38,8 +38,8 @@ segments_loop:
     movups xmm1, [rdx + r8]                 //y[i] .. y[i+3]
 
     //left lower segment
-    movups [rsi + r8d], xmm1
-    movups [rdx + r8d], xmm0
+    movups [rsi + r8], xmm1
+    movups [rdx + r8], xmm0
 
     mov r10, rax                            //segment length
     add r10, r8

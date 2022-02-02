@@ -10,11 +10,6 @@ typedef struct{
     unsigned long long end;
 }pthread_args;
 
-typedef struct{
-    coord_t *x;
-    coord_t *y;
-}pthread_args_temp;
-
 
 void hilbert_V0(unsigned degree, coord_t* x, coord_t* y);
 void hilbert_V1(unsigned degree, coord_t* x, coord_t* y);

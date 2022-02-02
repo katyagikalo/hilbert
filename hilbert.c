@@ -8,7 +8,7 @@
 
 void hilbert_V0(unsigned degree, coord_t* x, coord_t* y) {
     degree--;
-    pthread_args_temp arr = malloc(sizeof(pthread_args_temp));
+    pthread_args_temp arr = {.x = x, .y = y};
     arr.x = x;
     arr.y = y;
     v_assembly_multithreaded((void *) &arr);

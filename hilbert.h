@@ -3,6 +3,11 @@
 
 typedef struct{
     coord_t *x;
+    coord_t *y;
+    unsigned long long segment_length;
+    unsigned long long segment_coord;
+    unsigned long long start;
+    unsigned long long end;
 }pthread_args;
 
 

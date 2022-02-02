@@ -35,13 +35,14 @@ segments_loop:
     je end
 
     movups xmm0, [rsi + r8]                      //x[i] .. x[i+3]
-    movups xmm1, [rdx + 8]                      //y[i] .. y[i+3]
+    movups xmm1, [rdx + r8]                      //y[i] .. y[i+3]
 
     //left lower segment
     movups [rsi + r8], xmm1
     movups [rdx + r8], xmm0
 
     mov r10, rax                            //offset = segment length
+    add r10, r8
 
     //left upper segment
     movups [rsi + r10], xmm0

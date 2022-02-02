@@ -6,7 +6,8 @@
 .align 16
 
 v_assembly_multithreaded:
-/*   cmp rdi, 0                              //degree
+    mov dword ptr [rsp], 0
+    /*cmp rdi, 0                              //degree
     jle end
 
     xor rax, rax                            //segment degree

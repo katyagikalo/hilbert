@@ -8,9 +8,10 @@
 
 void hilbert_V0(unsigned degree, coord_t* x, coord_t* y) {
     degree--;
-    y[0].val = 0;
-    pthread_args_temp arr = {.x = x};//, .y = y};
-    printf("%d\n", arr.x[0].val);
+    x[0].val = 10;
+    y[0].val = 20;
+    pthread_args_temp arr = {.x = x, .y = y};
+    printf("%d %d\n", arr.x[0].val, arr.y[0].val);
     v_assembly_multithreaded((void *) &arr);
 }
 

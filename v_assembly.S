@@ -5,7 +5,6 @@
 
 .align 16
 
-
 v_assembly:
     cmp rdi, 0                              //degree
     jle end

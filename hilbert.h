@@ -12,7 +12,7 @@ typedef struct{
 
 typedef struct{
     coord_t *x;
-    coord_t *y;
+    //coord_t *y;
 }pthread_args_temp;
 
 

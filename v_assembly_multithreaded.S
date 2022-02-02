@@ -5,7 +5,7 @@
 
 .align 16
 
-v_assembly:
+v_assembly_multithreaded:
 /*   cmp rdi, 0                              //degree
     jle end
 

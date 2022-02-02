@@ -6,8 +6,8 @@ typedef struct{
     coord_t *y;
     unsigned long long segment_length;
     unsigned segment_coord;
-    unsigned start;
-    unsigned end;
+    unsigned long long start;
+    unsigned long long end;
 }pthread_args;
 
 

@@ -49,7 +49,7 @@ int main(int argc, char **argv) {
         char* ptr;
         switch (option) {
             case 'V' :
-                if (optarg == NULL || (*optarg != '0' && *optarg != '1' && *optarg != '2' && *optarg != '3' && *optarg != '4' && *optarg != '5')) {
+                if (optarg == NULL || (*optarg != '0' && *optarg != '1' && *optarg != '2' && *optarg != '3' && *optarg != '4' && *optarg != '5' && *optarg != '6')) {
                     printf("\n\n\n\nEs stehen folgende Versionen zur verfuegung:\n\n"
                                     "Default waehlt die schnellste Variante anhand vom Grad n aus\n"
                                     "0 --Assembler mit SIMD--\n"
@@ -290,6 +290,17 @@ void choose_version(parameter parameter_args) {
             }
             else {
                 hilbert_V5(parameter_args.degree, parameter_args.x, parameter_args.y);
+            }
+            break;
+        case 6:
+            if (parameter_args.messure_time) {
+                clock_gettime(CLOCK_MONOTONIC, parameter_args.start);
+                for (unsigned i=parameter_args.count_call; i > 0; i--)
+                    hilbert_V5(parameter_args.degree, parameter_args.x, parameter_args.y);
+                clock_gettime(CLOCK_MONOTONIC, parameter_args.end);
+            }
+            else {
+                hilbert_V6(parameter_args.degree, parameter_args.x, parameter_args.y);
             }
             break;
         default :

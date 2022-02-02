@@ -50,7 +50,7 @@ segments_loop:
     paddd xmm1, xmm3
     movups [rdx + r10], xmm1
 
-    /*//right upper segment
+    //right upper segment
     add r10, rax                            //2 * segment length
 
     paddd xmm0, xmm3
@@ -70,7 +70,7 @@ segments_loop:
     movups xmm0, xmm3
     psubd xmm0, xmm2
     psubd xmm0, [rdx + r8]
-    movups [rdx + r10], xmm0*/
+    movups [rdx + r10], xmm0
 
     add r8, 16
     

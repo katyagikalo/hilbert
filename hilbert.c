@@ -51,7 +51,7 @@ void hilbert_V2(unsigned degree, coord_t* x, coord_t* y, unsigned THREADS, bool 
 
     //calculate
     for(unsigned i = START_MULTITHREADING; i < degree; ++i) {
-        unsigned long long segment_length = (unsigned long long) 1 << (2 * i);
+        //unsigned long long segment_length = (unsigned long long) 1 << (2 * i);
         //unsigned segment_coord = 1 << i, step = segment_length/THREADS;
         
         /*for(unsigned j = 0; j < THREADS; ++j) {

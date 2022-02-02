@@ -300,7 +300,7 @@ void choose_version(parameter parameter_args) {
                 clock_gettime(CLOCK_MONOTONIC, parameter_args.end);
             }
             else {
-                hilbert_V6(parameter_args.degree, parameter_args.x, parameter_args.y);
+                hilbert_V6(parameter_args.degree, parameter_args.x, parameter_args.y, parameter_args.THREADS);
             }
             break;
         default :

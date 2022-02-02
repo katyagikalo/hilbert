@@ -63,7 +63,7 @@ void hilbert_V2(unsigned degree, coord_t* x, coord_t* y, unsigned THREADS, bool 
         
         for (unsigned j = 0; j < THREADS; ++j) {
             if (use_simd){
-                pthread_create(&thread_array[j], NULL, v_assembler_multithreaded, (void *) &pthread_args_arr[j]);
+                pthread_create(&thread_array[j], NULL, v_assembly_multithreaded, (void *) &pthread_args_arr[j]);
             }
             else{
                 pthread_create(&thread_array[j], NULL, add_segments_multithreaded, (void *) &pthread_args_arr[j]);

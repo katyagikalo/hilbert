@@ -10,9 +10,9 @@ v_assembly_multithreaded:
     mov rsi, qword ptr [rdi]                //x
     mov rdx, qword ptr [rdi + 8]            //y
     mov rax, qword ptr [rdi + 16]           //segment length
-    mov rcx, qword ptr [rdi + 24]           //segment coordinate
-    mov r8, qword ptr [rdi + 32]            //start
-    mov r9, qword ptr [rdi + 40]            //end
+    mov ecx, dword ptr [rdi + 24]           //segment coordinate
+    mov r8d, dword ptr [rdi + 28]           //start
+    mov r9d, dword ptr [rdi + 32]           //end
 
     add r8, r8
     add r8, r8                              //start * 4
@@ -22,9 +22,6 @@ v_assembly_multithreaded:
 
     add rax, rax
     add rax, rax                            //segment length * 4
-
-    add rsi, r8
-    add rdx, r8
 
     movd xmm3, rcx
     pshufd xmm3, xmm3, 0x00                 //segment coordinate .. segment coordinate
@@ -41,8 +38,8 @@ segments_loop:
     movups xmm1, [rdx]                      //y[i] .. y[i+3]
 
     //left lower segment
-    movups [rsi], xmm1
-    movups [rdx], xmm0
+    movups [rsi + r8], xmm1
+    movups [rdx + r8], xmm0
 
     mov r10, rax                            //offset = segment length
 
@@ -66,17 +63,15 @@ segments_loop:
     movups xmm0, xmm3
     paddd xmm0, xmm0
     psubd xmm0, xmm2
-    psubd xmm0, [rsi]
+    psubd xmm0, [rsi + r8]
     movups [rsi + r10], xmm0
 
     movups xmm0, xmm3
     psubd xmm0, xmm2
-    psubd xmm0, [rdx]
+    psubd xmm0, [rdx + r8]
     movups [rdx + r10], xmm0
 
     add r8, 16
-    add rsi, 16
-    add rdx, 16
     
     jmp segments_loop
 

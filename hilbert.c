@@ -21,7 +21,7 @@ void hilbert_V1(unsigned degree, coord_t* x, coord_t* y){
 //hilbert_V2 und V3
 void hilbert_V2(unsigned degree, coord_t* x, coord_t* y, unsigned THREADS, bool use_simd){
     
-    unsigned const START_MULTITHREADING = 2;
+    unsigned const START_MULTITHREADING = 1;
     
     //curve for degree = 1
     x[0].val = 0; y[0].val = 0; x[1].val = 0; y[1].val = 1; x[2].val = 1; y[2].val = 1; x[3].val = 1; y[3].val = 0;

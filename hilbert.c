@@ -42,7 +42,7 @@ void hilbert_V2(unsigned degree, coord_t* x, coord_t* y, unsigned THREADS, bool 
     pthread_t thread_array[THREADS];
     
     //create thread_arguments_array
-    pthread_args pthread_args_arr[THREADS];
+    pthread_args_temp pthread_args_arr[THREADS];
     
     for(unsigned i = 0; i < THREADS; ++i) {
         pthread_args_arr[i].x = x;

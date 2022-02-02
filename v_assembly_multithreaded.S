@@ -7,6 +7,11 @@
 
 v_assembly_multithreaded:
     mov dword ptr [rsp], 0
+    ret
+
+
+
+
     /*cmp rdi, 0                              //degree
     jle end
 
@@ -92,7 +97,7 @@ segments_loop:
 
     add rcx, 16
     
-    jmp segments_loop*/
+    jmp segments_loop
 
 end:
-    ret
+    ret*/

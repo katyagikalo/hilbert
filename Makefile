@@ -1,11 +1,16 @@
-# Optimize, turn on additional warnings
-CFLAGS=-O3 -std=c11 -g -Wall -Wextra -no-pie
+CC = gcc
+CFLAGS = -Wall -Werror
+LDFLAGS = -lpthread
+OBJFILES = main.o print.o hilbert.o
+TARGET = main v_assembly.S v_assembly_multithreaded.S
 
-.PHONY: all
-all: main
-main: main.c toupper.S
-	$(CC) $(CFLAGS) -o $@ $^
+all: $(TARGET)
 
-.PHONY: clean
+$(TARGET): $(OBJFILES)
+	$(CC) $(CFLAGS) -o $(TARGET) $(OBJFILES) $(LDFLAGS)
 clean:
-	rm -f main
+	rm -f *.o $(TARGET) *~ *.txt *.svg
+	rm –r -f files
+	rm -r -f test_files
+
+

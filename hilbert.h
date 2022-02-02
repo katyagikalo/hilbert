@@ -16,6 +16,7 @@ void hilbert_V1(unsigned degree, coord_t* x, coord_t* y);
 void hilbert_V2(unsigned degree, coord_t* x, coord_t* y, unsigned THREADS, bool use_simd);
 void hilbert_V4(unsigned degree, coord_t* x, coord_t* y);
 void hilbert_V5(unsigned degree, coord_t* x, coord_t* y);
+void hilbert_V6(unsigned degree, coord_t* x, coord_t* y, unsigned THREADS);
 
 void add_segments(unsigned degree, coord_t* x, coord_t* y);
 void add_segments_simd(unsigned segment_degree, coord_t* x, coord_t* y);

@@ -8,6 +8,7 @@
 v_assembly_multithreaded:
     mov rax, qword ptr [rdi]
     mov dword ptr [rax], 8
+    mov dword ptr [rax + 8], 4
     ret
 
 

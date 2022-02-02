@@ -7,8 +7,8 @@
 
 v_assembly_multithreaded:
 
-    mov rsi, dword ptr [rdi]                //x
-    mov rdx, dword ptr [rdi + 8]            //y
+    mov esi, dword ptr [rdi]                //x
+    mov edx, dword ptr [rdi + 8]            //y
     mov rax, qword ptr [rdi + 16]           //segment length
     mov ecx, dword ptr [rdi + 24]           //segment coordinate
     mov r8d, dword ptr [rdi + 28]           //start

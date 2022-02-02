@@ -1,5 +1,5 @@
 .intel_syntax noprefix
-.global v_assembly
+.global v_assembly_multithreaded
 
 .text
 

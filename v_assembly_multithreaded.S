@@ -20,6 +20,9 @@ v_assembly_multithreaded:
     add r9, r9
     add r9, r9                              //end * 4
 
+    add rax, rax
+    add rax, rax                            //segment length * 4
+
     movd xmm3, rcx
     pshufd xmm3, xmm3, 0x00                 //segment coordinate .. segment coordinate
      

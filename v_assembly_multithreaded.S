@@ -6,7 +6,7 @@
 .align 16
 
 v_assembly:
-    cmp rdi, 0                              //degree
+/*    cmp rdi, 0                              //degree
     jle end
 
     xor rax, rax                            //segment degree
@@ -91,7 +91,7 @@ segments_loop:
 
     add rcx, 16
     
-    jmp segments_loop
+    jmp segments_loop*/
 
 end:
     ret

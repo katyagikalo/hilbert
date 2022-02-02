@@ -26,7 +26,7 @@ int main(int argc, char **argv) {
     parameter_args.start = &start;
     parameter_args.end = &end;
     parameter_args.messure_time = false;
-    parameter_args.version = 0;
+    parameter_args.version = -1;
     parameter_args.count_call = 1;
     parameter_args.degree = 1;
     parameter_args.write_svg_file = false;
@@ -34,6 +34,7 @@ int main(int argc, char **argv) {
     parameter_args.print_console = false;
     parameter_args.test_all = false;
     parameter_args.test_time = false;
+    parameter_args.THREADS = 8;
     
       
     int option;
@@ -44,27 +45,54 @@ int main(int argc, char **argv) {
             {"test_time", no_argument, 0, 'b'}
     };
 
-    while ((option = getopt_long(argc, argv, ":V:B::n:o:t:hpb",long_options, &option_index)) != -1) {
+    while ((option = getopt_long(argc, argv, ":V:B::n:o:u:t:hpb",long_options, &option_index)) != -1) {
         char* ptr;
         switch (option) {
             case 'V' :
                 if (optarg == NULL || (*optarg != '0' && *optarg != '1' && *optarg != '2' && *optarg != '3' && *optarg != '4' && *optarg != '5')) {
                     printf("\n\n\n\nEs stehen folgende Versionen zur verfuegung:\n\n"
-                                    "0 --C ohne Optimierung--\n"
-                                    "1 --Assembler mit SIMD--\n"
-                                    "2 --C mit SIMD--\n"
-                                    "3 --Rekursiv mit SIMD--\n"
-                                    "4 --C Multithreaded mit SIMD--\n"
-                                    "5 --C Multithreaded ohne SIMD--");
-                    
+                                    "Default waehlt die schnellste Variante anhand vom Grad n aus\n"
+                                    "0 --Assembler mit SIMD--\n"
+                                    "1 --C mit SIMD--\n"
+                                    "2 --C Multithreaded mit SIMD--\n"
+                                    "3 --C Multithreaded ohne SIMD--\n"
+                                    "4 --C ohne Optimierung--\n"
+                                    "5 --Rekursiv mit SIMD--\n");
                     help_message();
                     return 0;
                 }
                 parameter_args.version = atoi(optarg);
                 break;
+            case 't' :
+                ptr = optarg;
+                while (*ptr) {
+                    if (!isdigit(*ptr)) {
+                        printf("\n\n\n\nDie Anzahl an THREADS erwartet einen int und muss mindestens 1 betragen.\n");
+                        help_message();
+                        return 0;
+                    }
+                    ptr++;
+                }
+                parameter_args.THREADS = atoi(optarg);
+                if ((parameter_args.THREADS & (parameter_args.THREADS - 1 ))) {
+                    //make it a potenz of two
+                    int i=-1;
+                    for (; parameter_args.THREADS; ++i, parameter_args.THREADS>>=1);
+                    parameter_args.THREADS = 1 << i;
+                    printf("p is: %d\n", parameter_args.THREADS);
+                }
+                break;    
             case 'B' :
                 parameter_args.messure_time = true;
-                if (optarg != NULL)
+                ptr = optarg;
+                while (*ptr) {
+                    if (!isdigit(*ptr)) {
+                        printf("\n\n\n\nDie Eingabe -B erwartet einen positiven int.\n");
+                        help_message();
+                        return 0;
+                    }
+                    ptr++;
+                }
                     parameter_args.count_call = atoi(optarg);
                 break;
             case 'n' :
@@ -85,7 +113,7 @@ int main(int argc, char **argv) {
                     parameter_args.output_file_svg = optarg;
                 }
                 break;
-            case 't' :
+            case 'u' :
                 if (optarg != NULL) {
                     parameter_args.write_txt_file = true;
                     parameter_args.output_file_txt = optarg;
@@ -182,7 +210,18 @@ int main(int argc, char **argv) {
 }
 
 void choose_version(parameter parameter_args) {
-    switch (parameter_args.version) {
+    
+    unsigned version = parameter_args.version;
+    
+    //default choosing algorithm
+    if (parameter_args.version == -1) {
+        if (parameter_args.degree < 12)
+            version = 0;
+        else 
+            version = 2;
+    }
+    
+    switch (version) {
         case 0:
             if (parameter_args.messure_time) {
                 clock_gettime(CLOCK_MONOTONIC, parameter_args.start);
@@ -193,6 +232,8 @@ void choose_version(parameter parameter_args) {
             else {
                 hilbert_V0(parameter_args.degree, parameter_args.x, parameter_args.y);
             }
+            //outcomment later
+            printf("this was v_assembly\n\n");
             break;
         case 1:
             if (parameter_args.messure_time) {
@@ -209,44 +250,46 @@ void choose_version(parameter parameter_args) {
             if (parameter_args.messure_time) {
                 clock_gettime(CLOCK_MONOTONIC, parameter_args.start);
                 for (unsigned i=parameter_args.count_call; i > 0; i--)
-                    hilbert_V2(parameter_args.degree, parameter_args.x, parameter_args.y);
+                    hilbert_V2(parameter_args.degree, parameter_args.x, parameter_args.y, parameter_args.THREADS, 1);
                 clock_gettime(CLOCK_MONOTONIC, parameter_args.end);
             }
             else {
-                hilbert_V2(parameter_args.degree, parameter_args.x, parameter_args.y);
+                hilbert_V2(parameter_args.degree, parameter_args.x, parameter_args.y ,parameter_args.THREADS, 1);
             }
+            //outcomment later
+            printf("this was multithreaded\n\n");
             break;
         case 3:
             if (parameter_args.messure_time) {
                 clock_gettime(CLOCK_MONOTONIC, parameter_args.start);
                 for (unsigned i=parameter_args.count_call; i > 0; i--)
-                    hilbert_V3(parameter_args.degree, parameter_args.x, parameter_args.y);
+                    hilbert_V2(parameter_args.degree, parameter_args.x, parameter_args.y, parameter_args.THREADS, 0);
                 clock_gettime(CLOCK_MONOTONIC, parameter_args.end);
             }
             else {
-                hilbert_V3(parameter_args.degree, parameter_args.x, parameter_args.y);
+                hilbert_V2(parameter_args.degree, parameter_args.x, parameter_args.y, parameter_args.THREADS, 0);
             }
             break;
         case 4:
             if (parameter_args.messure_time) {
                 clock_gettime(CLOCK_MONOTONIC, parameter_args.start);
                 for (unsigned i=parameter_args.count_call; i > 0; i--)
-                    hilbert_V4(parameter_args.degree, parameter_args.x, parameter_args.y, 1);
+                    hilbert_V4(parameter_args.degree, parameter_args.x, parameter_args.y);
                 clock_gettime(CLOCK_MONOTONIC, parameter_args.end);
             }
             else {
-                hilbert_V4(parameter_args.degree, parameter_args.x, parameter_args.y, 1);
+                hilbert_V4(parameter_args.degree, parameter_args.x, parameter_args.y);
             }
             break;
         case 5:
             if (parameter_args.messure_time) {
                 clock_gettime(CLOCK_MONOTONIC, parameter_args.start);
                 for (unsigned i=parameter_args.count_call; i > 0; i--)
-                    hilbert_V4(parameter_args.degree, parameter_args.x, parameter_args.y, 0);
+                    hilbert_V5(parameter_args.degree, parameter_args.x, parameter_args.y);
                 clock_gettime(CLOCK_MONOTONIC, parameter_args.end);
             }
             else {
-                hilbert_V4(parameter_args.degree, parameter_args.x, parameter_args.y, 0);
+                hilbert_V5(parameter_args.degree, parameter_args.x, parameter_args.y);
             }
             break;
         default :
@@ -270,7 +313,7 @@ void test_func(parameter parameter_args){
     clock_gettime(CLOCK_MONOTONIC, parameter_args.start);
     hilbert_V0(parameter_args.degree, parameter_args.x, parameter_args.y);
     clock_gettime(CLOCK_MONOTONIC, parameter_args.end);
-    printf("Version 0 ----C ohne Optimierung----------- : ");
+    printf("Version 0 ----Assembler mit SIMD----------- : ");
     print_time(*parameter_args.start, *parameter_args.end);
     if (parameter_args.test_all) {
         write_svg("test_files/svg", "Version_0", parameter_args.degree, parameter_args.x, parameter_args.y);
@@ -281,7 +324,7 @@ void test_func(parameter parameter_args){
     clock_gettime(CLOCK_MONOTONIC, parameter_args.start);
     hilbert_V1(parameter_args.degree, parameter_args.x, parameter_args.y);
     clock_gettime(CLOCK_MONOTONIC, parameter_args.end);
-    printf("Version 1 ----Assembler mit SIMD----------- : ");
+    printf("Version 1 ----C mit SIMD------------------- : ");
     print_time(*parameter_args.start, *parameter_args.end);
     if (parameter_args.test_all) {
         write_svg("test_files/svg", "Version_1", parameter_args.degree, parameter_args.x, parameter_args.y);
@@ -290,9 +333,9 @@ void test_func(parameter parameter_args){
     
     //Version 2
     clock_gettime(CLOCK_MONOTONIC, parameter_args.start);
-    hilbert_V2(parameter_args.degree, parameter_args.x, parameter_args.y);
+    hilbert_V2(parameter_args.degree, parameter_args.x, parameter_args.y, parameter_args.THREADS, 1);
     clock_gettime(CLOCK_MONOTONIC, parameter_args.end);
-    printf("Version 2 ----C mit SIMD------------------- : ");
+    printf("Version 2 ----C Multithreaded mit SIMD----- : ");
     print_time(*parameter_args.start, *parameter_args.end);
     if (parameter_args.test_all) {
         write_svg("test_files/svg", "Version_2", parameter_args.degree, parameter_args.x, parameter_args.y);
@@ -301,9 +344,9 @@ void test_func(parameter parameter_args){
     
     //Version 3
     clock_gettime(CLOCK_MONOTONIC, parameter_args.start);
-    hilbert_V3(parameter_args.degree, parameter_args.x, parameter_args.y);
+    hilbert_V2(parameter_args.degree, parameter_args.x, parameter_args.y, parameter_args.THREADS, 0);
     clock_gettime(CLOCK_MONOTONIC, parameter_args.end);
-    printf("Version 3 ----C Rekursiv mit SIMD --------- : ");
+    printf("Version 3 ----C Multithreaded ohne SIMD---- : ");
     print_time(*parameter_args.start, *parameter_args.end);
     if (parameter_args.test_all) {
         write_svg("test_files/svg", "Version_3", parameter_args.degree, parameter_args.x, parameter_args.y);
@@ -312,9 +355,9 @@ void test_func(parameter parameter_args){
     
     //Version 4
     clock_gettime(CLOCK_MONOTONIC, parameter_args.start);
-    hilbert_V4(parameter_args.degree, parameter_args.x, parameter_args.y, 1);
+    hilbert_V4(parameter_args.degree, parameter_args.x, parameter_args.y);
     clock_gettime(CLOCK_MONOTONIC, parameter_args.end);
-    printf("Version 4 ----C Multithreaded mit SIMD----- : ");
+    printf("Version 4 ----C ohne Optimierung----------- : ");
     print_time(*parameter_args.start, *parameter_args.end);
     if (parameter_args.test_all) {
         write_svg("test_files/svg", "Version_4", parameter_args.degree, parameter_args.x, parameter_args.y);
@@ -323,9 +366,9 @@ void test_func(parameter parameter_args){
     
     //Version 5
     clock_gettime(CLOCK_MONOTONIC, parameter_args.start);
-    hilbert_V4(parameter_args.degree, parameter_args.x, parameter_args.y, 0);
+    hilbert_V5(parameter_args.degree, parameter_args.x, parameter_args.y);
     clock_gettime(CLOCK_MONOTONIC, parameter_args.end);
-    printf("Version 5 ----C Multithreaded ohne SIMD---- : ");
+    printf("Version 5 ----C Rekursiv mit SIMD --------- : ");
     print_time(*parameter_args.start, *parameter_args.end);
     if (parameter_args.test_all) {
         write_svg("test_files/svg", "Version_5", parameter_args.degree, parameter_args.x, parameter_args.y);

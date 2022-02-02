@@ -16,6 +16,9 @@ void print_parameter(parameter parameter_args){
     else if (parameter_args.test_time) {
         printf( "\nVersion                  : Benchmark all Versions\n");
     }
+    else if (parameter_args.version == -1) {
+        printf(   "\nVersion                  : Default\n");
+    }
     else {
         printf(   "\nVersion                  : V%d\n",parameter_args.version);
     }
@@ -154,16 +157,21 @@ void help_message() {
            "  -B<int>[opt]   --Laufzeitmessung                        <int>   -> Anzahl Aufrufe\n"
            "  -n<int>        --Grad der Hilbertkurve                  <int>   -> Grad der Hilbertkurve\n"
            "  -p             --Koordinatenausgabe auf Konsole\n"
+           "  -t<int>        --Anzahl an Threads zur Berechnung       <int>   -> Thread Anzahl\n"
            "  -o<file>       --SVG Ausgabedatei                       <file>  -> Name der SVG Ausgabedatei\n"
-           "  -t<file)       --txt Ausgabedatei                       <file>  -> Name der txt Ausgabedatei\n"
+           "  -u<file)       --txt Ausgabedatei                       <file>  -> Name der txt Ausgabedatei\n"
            "  -h             --Hilfe\n"
            "  --help         --Hilfe\n\n\n"
            "Beispielaufrufe:   ./main -h\n"
            "                   ./main --help\n"
+           "                   ./main --test_time\n"
+           "                   ./main --test_all\n"
+           "                   ./main --test_time -n15 -t8\n"
+           "                   ./main --test_all -n13 -t32\n"
            "                   ./main\n"
            "                   ./main -B -n4\n"
            "                   ./main -o file_name -n5\n"
            "                   ./main -V1 -B5 -n3 -o file_name\n"
-           "                   ./main -V0 -B12 -n4 -o my_hilbert_svg -t my_hilbert_txt\n\n\n"
+           "                   ./main -V0 -B12 -n4 -o my_hilbert_svg -u my_hilbert_txt -t16\n\n\n"
            "Wird eine Option mit Optionsargument doppelt aufgerufen, so wird das letzte Optionsargument verwendet.\n\n\n\n");
 }

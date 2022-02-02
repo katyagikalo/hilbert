@@ -6,7 +6,7 @@ typedef struct {
 }coord_t;
 
 typedef struct {
-    int degree, version, count_call;
+    unsigned degree, version, count_call, THREADS;
     bool messure_time, write_svg_file, write_txt_file, print_console, test_all, test_time;
     char *output_file_svg, *output_file_txt;
     struct timespec *start, *end;

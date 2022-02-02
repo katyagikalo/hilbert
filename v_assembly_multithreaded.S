@@ -6,7 +6,7 @@
 .align 16
 
 v_assembly:
-    xor rax, rax
+    //xor rax, rax
 /*   cmp rdi, 0                              //degree
     jle end
 

@@ -6,8 +6,8 @@
 .align 16
 
 v_assembly_multithreaded:
-    mov dword ptr [rdi], 8
-    mov dword ptr [rsi], 4
+    mov dword ptr [edi], 8
+    //mov dword ptr [rsi], 4
     ret
 
 

@@ -7,8 +7,16 @@
 #include "hilbert.h"
 
 void hilbert_V0(unsigned degree, coord_t* x, coord_t* y) {
-    v_assembly(degree, x, y);
+    degree--;
+    pthread_args_temp arr = malloc(sizeof(pthread_args_temp));
+    arr->x = x;
+    arr->y = y;
+    v_assembly_multithreaded((void *) &arr);
 }
+
+/*void hilbert_V0(unsigned degree, coord_t* x, coord_t* y) {
+    v_assembly(degree, x, y);
+}*/
 
 void hilbert_V1(unsigned degree, coord_t* x, coord_t* y){
     x[0].val = 0; y[0].val = 0; x[1].val = 0; y[1].val = 1; x[2].val = 1; y[2].val = 1; x[3].val = 1; y[3].val = 0;
@@ -42,28 +50,28 @@ void hilbert_V2(unsigned degree, coord_t* x, coord_t* y, unsigned THREADS, bool 
     pthread_t thread_array[THREADS];
     
     //create thread_arguments_array
-    pthread_args_temp pthread_args_arr[THREADS];
+    pthread_args pthread_args_arr[THREADS];
     
     for(unsigned i = 0; i < THREADS; ++i) {
         pthread_args_arr[i].x = x;
-        //pthread_args_arr[i].y = y;
+        pthread_args_arr[i].y = y;
     }
 
     //calculate
     for(unsigned i = START_MULTITHREADING; i < degree; ++i) {
-        //unsigned long long segment_length = (unsigned long long) 1 << (2 * i);
-        //unsigned segment_coord = 1 << i, step = segment_length/THREADS;
+        unsigned long long segment_length = (unsigned long long) 1 << (2 * i);
+        unsigned segment_coord = 1 << i, step = segment_length/THREADS;
         
-        /*for(unsigned j = 0; j < THREADS; ++j) {
+        for(unsigned j = 0; j < THREADS; ++j) {
             pthread_args_arr[j].segment_length = segment_length;
             pthread_args_arr[j].segment_coord = segment_coord;
             pthread_args_arr[j].start = j * step;
             pthread_args_arr[j].end = step + j*step;
-        }*/
+        }
         
         for (unsigned j = 0; j < THREADS; ++j) {
             if (use_simd){
-                pthread_create(&thread_array[j], NULL, v_assembly_multithreaded, (void *) x);
+                pthread_create(&thread_array[j], NULL, add_segments_simd_multithreaded, (void *) &pthread_args_arr[j]);
             }
             else{
                 pthread_create(&thread_array[j], NULL, add_segments_multithreaded, (void *) &pthread_args_arr[j]);

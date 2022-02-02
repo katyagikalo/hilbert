@@ -34,8 +34,8 @@ segments_loop:
     cmp r8, r9
     je end
 
-    movups xmm0, [rsi]                      //x[i] .. x[i+3]
-    movups xmm1, [rdx]                      //y[i] .. y[i+3]
+    movups xmm0, [rsi + r8]                      //x[i] .. x[i+3]
+    movups xmm1, [rdx + 8]                      //y[i] .. y[i+3]
 
     //left lower segment
     movups [rsi + r8], xmm1

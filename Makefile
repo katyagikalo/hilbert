@@ -1,13 +1,13 @@
 CC = gcc
 CFLAGS = -Wall -Werror
 LDFLAGS = -lpthread
-OBJFILES = main.o print.o hilbert.o
-TARGET = main v_assembly.S v_assembly_multithreaded.S
+OBJFILES = main.c hilbert.c print.c v_assembly.S v_assembly_multithreaded.S
+TARGET = main
 
-all: $(TARGET)
+all: main
+		$(CC) $(CFLAGS) -o $(TARGET) $(OBJFILES) $(LDFLAGS)
 
-$(TARGET): $(OBJFILES)
-	$(CC) $(CFLAGS) -o $(TARGET) $(OBJFILES) $(LDFLAGS)
+.PHONY: clean
 clean:
 	rm -f *.o $(TARGET) *~ *.txt *.svg
 	rm –r -f files

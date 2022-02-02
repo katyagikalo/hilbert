@@ -46,7 +46,7 @@ void hilbert_V2(unsigned degree, coord_t* x, coord_t* y, unsigned THREADS, bool 
     
     for(unsigned i = 0; i < THREADS; ++i) {
         pthread_args_arr[i].x = x;
-        pthread_args_arr[i].y = y;
+        //pthread_args_arr[i].y = y;
     }
 
     //calculate
@@ -54,12 +54,12 @@ void hilbert_V2(unsigned degree, coord_t* x, coord_t* y, unsigned THREADS, bool 
         unsigned long long segment_length = (unsigned long long) 1 << (2 * i);
         unsigned segment_coord = 1 << i, step = segment_length/THREADS;
         
-        for(unsigned j = 0; j < THREADS; ++j) {
+        /*for(unsigned j = 0; j < THREADS; ++j) {
             pthread_args_arr[j].segment_length = segment_length;
             pthread_args_arr[j].segment_coord = segment_coord;
             pthread_args_arr[j].start = j * step;
             pthread_args_arr[j].end = step + j*step;
-        }
+        }*/
         
         for (unsigned j = 0; j < THREADS; ++j) {
             if (use_simd){

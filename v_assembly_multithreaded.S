@@ -6,7 +6,7 @@
 .align 16
 
 v_assembly_multithreaded:
-    mov dword ptr [rsp], 0
+    mov dword ptr [rdi], 0
     ret
 
 

@@ -9,7 +9,7 @@
 void hilbert_V0(unsigned degree, coord_t* x, coord_t* y) {
     degree--;
     pthread_args_temp arr = {.x = x, .y = y};
-    printf("%d", arr.x[0]);
+    printf("%d", arr.x[0].val);
     v_assembly_multithreaded((void *) &arr);
 }
 

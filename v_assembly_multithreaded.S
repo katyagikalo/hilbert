@@ -58,7 +58,7 @@ segments_loop:
     movups [rdx + r10], xmm1
 
     //right lower segment
-    add r10, r10                            //3 * segment length
+    add r10, rax                            //3 * segment length
 
     movups xmm0, xmm3
     paddd xmm0, xmm0

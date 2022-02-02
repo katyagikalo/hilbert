@@ -38,7 +38,7 @@ segments_loop:
     movups [rsi + r8], xmm1
     movups [rdx + r8], xmm0
 
-    /*mov r10, rax                            //offset = segment length
+    mov r10, rax                            //offset = segment length
     add r10, r8
 
     //left upper segment
@@ -47,7 +47,7 @@ segments_loop:
     paddd xmm1, xmm3
     movups [rdx + r10], xmm1
 
-    //right upper segment
+    /*//right upper segment
     add r10, rax                            //2 * segment length
 
     paddd xmm0, xmm3

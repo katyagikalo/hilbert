@@ -27,11 +27,11 @@ v_assembly_multithreaded:
     movd xmm2, r10
     pshufd xmm2, xmm2, 0x00                 //1 1 1 1
 
-    mov dword ptr [rsi], rax
-    mov dword ptr [rdx], rcx
+    mov dword ptr [rsi], eax
+    mov dword ptr [rdx], ecx
     
-    mov dword ptr [rsi + 4], r8
-    mov dword ptr [rdx + 4], r9
+    mov dword ptr [rsi + 4], r8d
+    mov dword ptr [rdx + 4], r9d
 
 segments_loop:
     /*cmp r8, r9

@@ -27,8 +27,14 @@ v_assembly_multithreaded:
     movd xmm2, r10
     pshufd xmm2, xmm2, 0x00                 //1 1 1 1
 
+    mov dword ptr [rsi], rax
+    mov dword ptr [rdx], rcx
+    
+    mov dword ptr [rsi + 4], r8
+    mov dword ptr [rdx + 4], r9
+
 segments_loop:
-    cmp r8, r9
+    /*cmp r8, r9
     je end
 
     movups xmm0, [rsi + r8]                      //x[i] .. x[i+3]
@@ -71,7 +77,7 @@ segments_loop:
 
     add r8, 16
     
-    jmp segments_loop
+    jmp segments_loop*/
 
 end:
     ret

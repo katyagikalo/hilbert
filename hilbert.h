@@ -7,7 +7,7 @@ typedef struct{
     unsigned long long segment_length;
     unsigned long long start;
     unsigned long long end;
-    unsigned segment_coord;
+    unsigned long long segment_coord;
 }pthread_args;
 
 void hilbert_V0(unsigned degree, coord_t* x, coord_t* y);

@@ -12,7 +12,7 @@ v_assembly_multithreaded:
     mov rax, qword ptr [rdi + 16]           //segment length
     mov r8, qword ptr [rdi + 24]            //start
     mov r9, qword ptr [rdi + 32]            //end
-    mov rcx, dword ptr [rdi + 40]           //segment coordinate
+    mov rcx, qword ptr [rdi + 40]           //segment coordinate
 
     add r8, r8
     add r8, r8                              //start * 4
@@ -23,7 +23,7 @@ v_assembly_multithreaded:
     add rax, rax
     add rax, rax                            //segment length * 4
 
-    movd xmm3, ecx
+    movd xmm3, rcx
     pshufd xmm3, xmm3, 0x00                 //segment coordinate .. segment coordinate
      
     mov r10, 1

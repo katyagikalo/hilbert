@@ -76,27 +76,7 @@ void hilbert_V2(unsigned degree, coord_t* x, coord_t* y, unsigned THREADS, bool 
     }
 }
 
-void hilbert_V4(unsigned degree, coord_t* x, coord_t* y) {
-    //curve for degree = 1
-    x[0].val = 0; y[0].val = 0; x[1].val = 0; y[1].val = 1; x[2].val = 1; y[2].val = 1; x[3].val = 1; y[3].val = 0;
-
-    for(unsigned i = 1; i < degree; ++i){
-        add_segments(i, x, y);
-    }
-}
-
-void hilbert_V5(unsigned degree, coord_t* x, coord_t* y){
-    if (degree == 1){
-        x[0].val = 0; y[0].val = 0; x[1].val = 0; y[1].val = 1; x[2].val = 1; y[2].val = 1; x[3].val = 1; y[3].val = 0;
-    }
-
-    else {
-        hilbert_V5(degree-1, x, y);
-        add_segments_simd(degree-1, x, y);
-    }
-}
-
-void hilbert_V6(unsigned degree, coord_t* x, coord_t* y, unsigned THREADS){
+void hilbert_V4(unsigned degree, coord_t* x, coord_t* y, unsigned THREADS){
     
     unsigned const START_MULTITHREADING = 5;
     
@@ -148,6 +128,25 @@ void hilbert_V6(unsigned degree, coord_t* x, coord_t* y, unsigned THREADS){
     }
 }
 
+void hilbert_V5(unsigned degree, coord_t* x, coord_t* y){
+    if (degree == 1){
+        x[0].val = 0; y[0].val = 0; x[1].val = 0; y[1].val = 1; x[2].val = 1; y[2].val = 1; x[3].val = 1; y[3].val = 0;
+    }
+
+    else {
+        hilbert_V5(degree-1, x, y);
+        add_segments_simd(degree-1, x, y);
+    }
+}
+
+void hilbert_V6(unsigned degree, coord_t* x, coord_t* y) {
+    //curve for degree = 1
+    x[0].val = 0; y[0].val = 0; x[1].val = 0; y[1].val = 1; x[2].val = 1; y[2].val = 1; x[3].val = 1; y[3].val = 0;
+
+    for(unsigned i = 1; i < degree; ++i){
+        add_segments(i, x, y);
+    }
+}
 
 void add_segments(unsigned segment_degree, coord_t* x, coord_t* y){
     unsigned long long segment_length = (unsigned long long)1 << (2 * (segment_degree));

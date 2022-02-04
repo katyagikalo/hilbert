@@ -1,7 +1,7 @@
 CC = gcc
 CFLAGS = -Wall -Werror
 LDFLAGS = -lpthread
-OBJFILES = main.c print.c hilbert.c v_assembly.S v_assembly_multithreaded.S
+OBJFILES = main.c print.c hilbert.c test.c v_assembly.S v_assembly_multithreaded.S
 TARGET = main
 
 all: $(TARGET)

@@ -58,7 +58,7 @@ void print_curve(unsigned degree, coord_t* x, coord_t* y){
     unsigned long long length = (unsigned long long)1 << (2*degree);
     printf("\n\n\n\n\nArray der Koordinaten:\n\n");
     for(unsigned long long i = 0; i < length; ++i) {
-        printf("(%lld,%lld) ", x[i].val, y[i].val);
+        printf("(%d,%d) ", x[i].val, y[i].val);
     }
     printf("\n");
 }
@@ -125,12 +125,12 @@ void write_svg(char *path, char *output_file_svg, int degree, coord_t* x, coord_
     }
 
     unsigned long long length = (unsigned long long)1 << (2*degree);
-    unsigned long long win_size = 1 << degree;
+    unsigned win_size = 1 << degree;
     
     fprintf(svg_fp, "<?xml version=\"1.0\" encoding=\"ISO-8859-1\" standalone=\"no\" ?>\n"
                     "<!DOCTYPE svg PUBLIC \"-//W3C//DTD SVG 20010904//EN\"\n"
                     "\"http://www.w3.org/TR/2001/REC-SVG-20010904/DTD/svg10.dtd\">\n"
-                    "<svg width=\"%lld0\" height=\"%lld0\" xmlns=\"http://www.w3.org/2000/svg\"\n"
+                    "<svg width=\"%d0\" height=\"%d0\" xmlns=\"http://www.w3.org/2000/svg\"\n"
                     "xmlns:xlink=\"http://www.w3.org/1999/xlink\">\n"
                     "<title>Polyline-Element</title>\n"
                     "<desc>Polylinie</desc>\n"
@@ -138,9 +138,9 @@ void write_svg(char *path, char *output_file_svg, int degree, coord_t* x, coord_
                     "points=\"00 00", win_size, win_size);
 
     for (unsigned long long i = 1; i < length; ++i)
-        fprintf(svg_fp, ",%lld0 %lld0", x[i].val, y[i].val);
+        fprintf(svg_fp, ",%d0 %d0", x[i].val, y[i].val);
 
-    fprintf(svg_fp,"\" transform=\"scale(1 -1) translate(0 -%lld0)\"/>\n</svg>\n",win_size);
+    fprintf(svg_fp,"\" transform=\"scale(1 -1) translate(0 -%d0)\"/>\n</svg>\n",win_size);
     fclose(svg_fp);
     printf("Datei %s.svg erstellt\n", output_file_svg);
 }
@@ -175,7 +175,7 @@ void write_txt(char *path, char *output_file_txt, int degree, coord_t* x, coord_
     unsigned long long length = (unsigned long long)1 << (2*degree);
     
     for (unsigned long long i = 0; i < length; ++i)
-        fprintf(txt_fp, "(%lld,%lld)", x[i].val, y[i].val);
+        fprintf(txt_fp, "(%d,%d)", x[i].val, y[i].val);
     fclose(txt_fp);
     printf("Datei %s.txt erstellt\n", output_file_txt);
 }

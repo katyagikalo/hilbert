@@ -2,7 +2,7 @@
 #define MAIN_H
 
 typedef struct {
-    unsigned long long val;
+    unsigned val;
 }coord_t;
 
 typedef struct {

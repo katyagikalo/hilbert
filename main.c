@@ -176,7 +176,7 @@ int main(int argc, char **argv) {
     
     //choose version to use
     if(!parameter_args.test_file)
-        hilbert(parameter_args);
+        choose_version(parameter_args);
 
     //Benchmark
     if(parameter_args.test_file)

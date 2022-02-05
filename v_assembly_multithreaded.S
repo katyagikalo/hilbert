@@ -30,12 +30,12 @@ v_assembly_multithreaded:
     movd xmm2, r10
     pshufd xmm2, xmm2, 0x00                 //1 1 1 1
 
-    mov qword ptr [rsi], r8
-    mov qword ptr [rdx], r9
-
 segments_loop:
     cmp r8, r9
-    jge end
+    jg greater
+
+    cmp r8, r9
+    jg end
 
     /*movups xmm0, [rsi + r8]                 //x[i] .. x[i+3]
     movups xmm1, [rdx + r8]                 //y[i] .. y[i+3]
@@ -78,6 +78,12 @@ segments_loop:
     add r8, 16
     
     jmp segments_loop
+
+greater:
+    mov rax, qword ptr [rdi + 24]
+    mov qword ptr [rsi], rax
+    mov qword ptr [rsi + 4], r8
+    mov qword ptr [rdx], r9
 
 end:
     ret

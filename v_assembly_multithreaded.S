@@ -79,11 +79,5 @@ segments_loop:
     
     jmp segments_loop*/
 
-greater:
-    mov rax, qword ptr [rdi + 24]
-    mov qword ptr [rsi], rax
-    mov qword ptr [rsi + 4], r8
-    mov qword ptr [rdx], r9
-
 end:
     ret

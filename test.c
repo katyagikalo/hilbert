@@ -50,21 +50,21 @@ void test_func_time(parameter parameter_args){
         clock_gettime(CLOCK_MONOTONIC, parameter_args.start);
         hilbert(temp_degree, parameter_args.x, parameter_args.y, parameter_args.THREADS);
         clock_gettime(CLOCK_MONOTONIC, parameter_args.end);
-        printf("Version 0 ----Assembler mit SIMD------------------ : ");
+        printf("Default ------C Multithreaded mit SIMD------------ : ");
         result[temp_degree-1][0] = print_time(*parameter_args.start, *parameter_args.end);
         
         //Version 1
         clock_gettime(CLOCK_MONOTONIC, parameter_args.start);
         hilbert_V1(temp_degree, parameter_args.x, parameter_args.y);
         clock_gettime(CLOCK_MONOTONIC, parameter_args.end);
-        printf("Version 1 ----C mit SIMD-------------------------- : ");
+        printf("Version 1 ----Assembler mit SIMD------------------ : ");
         result[temp_degree-1][1] = print_time(*parameter_args.start, *parameter_args.end);
         
         //Version 2
         clock_gettime(CLOCK_MONOTONIC, parameter_args.start);
         hilbert_V2(temp_degree, parameter_args.x, parameter_args.y);
         clock_gettime(CLOCK_MONOTONIC, parameter_args.end);
-        printf("Version 2 ----C Multithreaded mit SIMD------------ : ");
+        printf("Version 2 ----C mit SIMD-------------------------- : ");
         result[temp_degree-1][2] = print_time(*parameter_args.start, *parameter_args.end);
         
         //Version 3
@@ -85,9 +85,12 @@ void test_func_time(parameter parameter_args){
         clock_gettime(CLOCK_MONOTONIC, parameter_args.start);
         hilbert_V5(temp_degree, parameter_args.x, parameter_args.y);
         clock_gettime(CLOCK_MONOTONIC, parameter_args.end);
-        printf("Version 5 ----C Rekursiv mit SIMD ---------------- : ");
+        printf("Version 6 ----C ohne Optimierung------------------ : ");
         result[temp_degree-1][5] = print_time(*parameter_args.start, *parameter_args.end);
+        
+        printf("\n");
     }
+    
     print_result(parameter_args.degree, result);
 }
 

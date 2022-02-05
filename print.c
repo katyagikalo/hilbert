@@ -12,7 +12,7 @@
 void print_parameter(parameter parameter_args){
     if (parameter_args.test_file
     ){
-        printf( "\nVersion                  : Benchmark all Versions and create files\n");
+        printf( "\nVersion                  : Create files for all Versions\n");
     }
     else if (parameter_args.test_time) {
         printf( "\nVersion                  : Benchmark all Versions from 1 to %d\n", parameter_args.degree);
@@ -185,7 +185,7 @@ void help_message() {
     printf("\nDefaultwerte sind: -V0 -n1\n\n"
            "./main [-V<int>] [-B<int>] [-n<int>] [-o<file>] [-h] [--help]\n\n"
            "Options:\n"
-           "  -V<int>        --Version                                                         <int>   -> V0 bis V1\n"
+           "  -V<int>        --Version                                                         <int>   -> V0 bis V5\n"
            "  -B<int>[opt]   --Laufzeitmessung                                                 <int>   -> Anzahl Aufrufe\n"
            "  -n<int>        --Grad der Hilbertkurve                                           <int>   -> Grad der Hilbertkurve\n"
            "  -p             --Koordinatenausgabe auf Konsole\n"

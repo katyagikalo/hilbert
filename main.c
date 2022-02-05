@@ -167,15 +167,6 @@ int main(int argc, char **argv) {
     //information about input args
     print_parameter(parameter_args);
 
-    if(parameter_args.version == 0){
-        if(parameter_args.degree < 10 || parameter_args.THREADS > 63 || parameter_args.THREADS == 1){
-            parameter_args.version = 1;
-        }
-        else {
-            parameter_args.version = 4;
-        }
-    }
-
     if(parameter_args.test_file)
         test_func_file(parameter_args);
     
@@ -183,6 +174,15 @@ int main(int argc, char **argv) {
         test_func_time(parameter_args);
     
     if(!parameter_args.test_file && !parameter_args.test_time) {
+        if(parameter_args.version == 0){
+            if(parameter_args.degree < 10 || parameter_args.THREADS > 63 || parameter_args.THREADS == 1){
+                parameter_args.version = 1;
+            }
+            else {
+                parameter_args.version = 4;
+            }
+        }
+        
         //choose version to use
         choose_version(parameter_args);
         

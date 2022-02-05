@@ -62,6 +62,7 @@ void print_curve(unsigned degree, coord_t* x, coord_t* y){
         printf("(%d,%d) ", x[i].val, y[i].val);
     }*/
     printf("(%d,%d) \n", x[0].val, y[0].val);
+    printf("(%d,%d) \n", x[1].val, y[1].val);
     //printf("\n");
 }
 

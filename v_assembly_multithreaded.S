@@ -34,7 +34,7 @@ segments_loop:
     cmp r8, r9
     je end
 
-    movups xmm0, [rsi + r8]                 //x[i] .. x[i+3]
+    /*movups xmm0, [rsi + r8]                 //x[i] .. x[i+3]
     movups xmm1, [rdx + r8]                 //y[i] .. y[i+3]
 
     //left lower segment
@@ -67,8 +67,10 @@ segments_loop:
     psubd xmm0, [rsi + r8]                  //2 * segment coordinate - 1 - x[i] .. 2 * segment coordinate - 1 - x[i+3]
     movups [rsi + r10], xmm0
 
-    movups xmm0, [rdx + r8]                  //segment coordinate - 1 - y[i] .. segment coordinate - 1 - y[i+3]
-    movups [rdx + r10], xmm0
+    movups xmm0, xmm3
+    psubd xmm0, xmm2
+    psubd xmm0, [rdx + r8]                  //segment coordinate - 1 - y[i] .. segment coordinate - 1 - y[i+3]
+    movups [rdx + r10], xmm0*/
 
     add r8, 16
     

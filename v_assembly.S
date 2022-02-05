@@ -84,7 +84,9 @@ segments_loop:
     psubd xmm0, [rsi + rcx]                 //2 * segment coordinate - 1 - x[i] .. 2 * segment coordinate - 1 - x[i+3]
     movups [rsi + r9], xmm0
 
-    movups xmm0, [rdx + rcx]                 //segment coordinate - 1 - y[i] .. segment coordinate - 1 - y[i+3]
+    movups xmm0, xmm3
+    psubd xmm0, xmm2
+    psubd xmm0, [rdx + rcx]                 //segment coordinate - 1 - y[i] .. segment coordinate - 1 - y[i+3]
     movups [rdx + r9], xmm0
 
     add rcx, 16

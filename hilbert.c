@@ -177,7 +177,7 @@ void add_segments(unsigned segment_degree, coord_t* x, coord_t* y){
 
         //right lower segment
         vx[t_segment_length].val = 2*segment_coord - 1 - wy;
-        vy[t_segment_length].val = wx;
+        vy[t_segment_length].val = segment_coord - 1 - wx;
 
         vx++;
         vy++;
@@ -220,7 +220,7 @@ void add_segments_simd(unsigned segment_degree, coord_t* x, coord_t* y){
 
         //right lower segment
         _mm_storeu_si128((__m128i*)(vx + t_segment_length), _mm_sub_epi32(_mm_sub_epi32(d_sc, one), arr_y));
-        _mm_storeu_si128((__m128i*)(vy + t_segment_length), arr_x);
+        _mm_storeu_si128((__m128i*)(vy + t_segment_length), _mm_sub_epi32(_mm_sub_epi32(sc, one), arr_x));
 
         vx+=4;
         vy+=4;
@@ -260,7 +260,7 @@ void * add_segments_multithreaded(void * args){
 
         //right lower segment
         vx[t_segment_length].val = 2 * seg_coord - 1 - wy;
-        vy[t_segment_length].val = wx;
+        vy[t_segment_length].val = seg_coord - 1 - wx;
         
         vx++;
         vy++;
@@ -304,7 +304,7 @@ void * add_segments_simd_multithreaded(void * args){
 
         //right lower segment
         _mm_storeu_si128((__m128i*)(vx + t_segment_length), _mm_sub_epi32(_mm_sub_epi32(d_sc, one), arr_y));
-        _mm_storeu_si128((__m128i*)(vy + t_segment_length), arr_x);
+        _mm_storeu_si128((__m128i*)(vy + t_segment_length), _mm_sub_epi32(_mm_sub_epi32(sc, one), arr_x));
         
         vx+=4;
         vy+=4;

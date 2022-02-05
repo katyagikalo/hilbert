@@ -57,10 +57,11 @@ void print_parameter(parameter parameter_args){
 void print_curve(unsigned degree, coord_t* x, coord_t* y){
     unsigned long long length = (unsigned long long)1 << (2*degree);
     printf("\n\n\n\n\nArray der Koordinaten:\n\n");
-    for(unsigned long long i = 0; i < length; ++i) {
+    /*for(unsigned long long i = 0; i < length; ++i) {
         printf("(%d,%d) ", x[i].val, y[i].val);
-    }
-    printf("\n");
+    }*/
+    printf("(%d,%d) \n", x[0].val, y[0].val);
+    //printf("\n");
 }
 
 

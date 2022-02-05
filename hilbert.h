@@ -7,15 +7,14 @@ typedef struct{
     unsigned long long segment_length;
     unsigned long long start;
     unsigned long long end;
-    unsigned long long segment_coord;
+    unsigned segment_coord;
 }pthread_args;
 
-void hilbert_V0(unsigned degree, coord_t* x, coord_t* y);
+void hilbert(unsigned degree, coord_t* x, coord_t* y);
 void hilbert_V1(unsigned degree, coord_t* x, coord_t* y);
-void hilbert_V2(unsigned degree, coord_t* x, coord_t* y, unsigned THREADS, bool use_simd);
-void hilbert_V4(unsigned degree, coord_t* x, coord_t* y, unsigned THREADS);
+void hilbert_V2(unsigned degree, coord_t* x, coord_t* y);
+void hilbert_V4(unsigned degree, coord_t* x, coord_t* y);
 void hilbert_V5(unsigned degree, coord_t* x, coord_t* y);
-void hilbert_V6(unsigned degree, coord_t* x, coord_t* y);
 
 void add_segments(unsigned degree, coord_t* x, coord_t* y);
 void add_segments_simd(unsigned segment_degree, coord_t* x, coord_t* y);

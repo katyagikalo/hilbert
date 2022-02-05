@@ -13,7 +13,6 @@ typedef struct {
     coord_t *x, *y;
 }parameter;
 
-void hilbert(parameter parameter_args);
 void choose_version(parameter parameter_args);
 void test_func_time(parameter parameter_args);
 void test_func_file(parameter parameter_args);

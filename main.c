@@ -45,14 +45,13 @@ int main(int argc, char **argv) {
             case 'V' :
                 if (optarg == NULL || (*optarg != '0' && *optarg != '1' && *optarg != '2' && *optarg != '3' && *optarg != '4' && *optarg != '5' && *optarg != '6')) {
                     printf("\n\n\n\nEs stehen folgende Versionen zur verfuegung:\n\n"
-                           "Default waehlt die schnellste Variante anhand vom Grad n und Anzahl der THREADS aus\n"
-                           "0 --Assembler mit SIMD--\n"
-                           "1 --C mit SIMD--\n"
-                           "2 --C Multithreaded mit SIMD--\n"
+                           "Default wird C Multithreaded mit SIMD aufgerufen\n"
+                           "0 --Die schnellste Variante wird anhand vom Grad n und Anzahl der THREADS ausgewaehlt--\n"
+                           "1 --Assembler mit SIMD--\n"
+                           "2 --C mit SIMD--\n"
                            "3 --C Multithreaded ohne SIMD--\n"
                            "4 --Assembler Multithreaded mit SIMD--\n"
-                           "5 --C ohne Optimierung--\n"
-                           "6 --Rekursiv mit SIMD--\n");
+                           "5 --C ohne Optimierung--\n");
                     help_message();
                     return 0;
                 }
@@ -64,7 +63,7 @@ int main(int argc, char **argv) {
                     if (!isdigit(*ptr)) {
                         fprintf(stderr, "\n\n\n\nDie Anzahl an THREADS erwartet einen int und muss mindestens 1 betragen.\n\n");
                         help_message();
-                        return 0;
+                        return -1;
                     }
                     ptr++;
                 } 
@@ -87,7 +86,7 @@ int main(int argc, char **argv) {
                         if (!isdigit(*ptr)) {
                             fprintf(stderr, "\n\n\n\nDie Eingabe -B erwartet einen positiven int.\n\n");
                             help_message();
-                            return 0;
+                            return -1;
                         }
                         ptr++;
                     }
@@ -100,7 +99,7 @@ int main(int argc, char **argv) {
                     if (!isdigit(*ptr)) {
                         fprintf(stderr, "\n\n\n\nFuer den Grad der Hilbertkurve wird ein positiver int als Eingabe erwartet.\n\n");
                         help_message();
-                        return 0;
+                        return -1;
                     }
                     ptr++;
                 }
@@ -139,11 +138,6 @@ int main(int argc, char **argv) {
                 help_message();
                 return -1;
         }
-//         if (argc - optind != 0) {
-//             fprintf(stderr, "Invalid Option found\n");
-//             help_message();
-//             return -1;
-//         }
     }
 
     
@@ -154,7 +148,7 @@ int main(int argc, char **argv) {
 
     x = malloc(sizeof(coord_t)*curve_length);
     if(x == NULL){
-        printf("x was null\n");
+        printf("malloc hat fehlgeschlagen\n");
         return -1;
     }
 
@@ -162,7 +156,7 @@ int main(int argc, char **argv) {
 
     y = malloc(sizeof(coord_t)*curve_length);
     if(y == NULL){
-        printf("y was null\n");
+        printf("malloc hat fehlgeschlagen\n");
         return -1;
     }
 
@@ -176,7 +170,7 @@ int main(int argc, char **argv) {
     
     //choose version to use
     if(!parameter_args.test_file)
-        hilbert(parameter_args);
+        choose_version(parameter_args);
 
     //Benchmark
     if(parameter_args.test_file)
@@ -211,40 +205,30 @@ int main(int argc, char **argv) {
     return 0;
 }
 
-void hilbert(parameter parameter_args){
-    if (parameter_args.degree == 1){
-        parameter_args.x[0].val = 0; parameter_args.y[0].val = 0;
-        parameter_args.x[1].val = 0; parameter_args.y[1].val = 1; 
-        parameter_args.x[2].val = 1; parameter_args.y[2].val = 1; 
-        parameter_args.x[3].val = 1; parameter_args.y[3].val = 0;
-        return;
-    }
-    else if(parameter_args.degree < 10 || parameter_args.THREADS > 63 || parameter_args.THREADS == 1){
-        parameter_args.version = 0;
-    }
-    else {
-        parameter_args.version = 4;
-    }
-    
-    choose_version(parameter_args);
-}
-
 void choose_version(parameter parameter_args) {
     
     unsigned version = parameter_args.version;
     
     switch (version) {
-        case 0:
+        case -1:
             if (parameter_args.messure_time) {
                 clock_gettime(CLOCK_MONOTONIC, parameter_args.start);
                 for (unsigned i=parameter_args.count_call; i > 0; i--)
-                    hilbert_V0(parameter_args.degree, parameter_args.x, parameter_args.y);
+                    hilbert(parameter_args.degree, parameter_args.x, parameter_args.y);
                 clock_gettime(CLOCK_MONOTONIC, parameter_args.end);
             }
             else {
-                hilbert_V0(parameter_args.degree, parameter_args.x, parameter_args.y);
+                hilbert(parameter_args.degree, parameter_args.x, parameter_args.y);
             }
             break;
+        case 0:
+            if(parameter_args.degree < 10 || parameter_args.THREADS > 63 || parameter_args.THREADS == 1){
+                parameter_args.version = 1;
+            }
+            else {
+                parameter_args.version = 4;
+            }
+            continue;
         case 1:
             if (parameter_args.messure_time) {
                 clock_gettime(CLOCK_MONOTONIC, parameter_args.start);
@@ -260,33 +244,33 @@ void choose_version(parameter parameter_args) {
             if (parameter_args.messure_time) {
                 clock_gettime(CLOCK_MONOTONIC, parameter_args.start);
                 for (unsigned i=parameter_args.count_call; i > 0; i--)
-                    hilbert_V2(parameter_args.degree, parameter_args.x, parameter_args.y, parameter_args.THREADS, 1);
+                    hilbert_V2(parameter_args.degree, parameter_args.x, parameter_args.y);
                 clock_gettime(CLOCK_MONOTONIC, parameter_args.end);
             }
             else {
-                hilbert_V2(parameter_args.degree, parameter_args.x, parameter_args.y ,parameter_args.THREADS, 1);
+                hilbert_V2(parameter_args.degree, parameter_args.x, parameter_args.y);
             }
             break;
         case 3:
             if (parameter_args.messure_time) {
                 clock_gettime(CLOCK_MONOTONIC, parameter_args.start);
                 for (unsigned i=parameter_args.count_call; i > 0; i--)
-                    hilbert_V2(parameter_args.degree, parameter_args.x, parameter_args.y, parameter_args.THREADS, 0);
+                    hilbert_V3(parameter_args.degree, parameter_args.x, parameter_args.y);
                 clock_gettime(CLOCK_MONOTONIC, parameter_args.end);
             }
             else {
-                hilbert_V2(parameter_args.degree, parameter_args.x, parameter_args.y, parameter_args.THREADS, 0);
+                hilbert_V3(parameter_args.degree, parameter_args.x, parameter_args.y);
             }
             break;
         case 4:
             if (parameter_args.messure_time) {
                 clock_gettime(CLOCK_MONOTONIC, parameter_args.start);
                 for (unsigned i=parameter_args.count_call; i > 0; i--)
-                    hilbert_V4(parameter_args.degree, parameter_args.x, parameter_args.y, parameter_args.THREADS);
+                    hilbert_V4(parameter_args.degree, parameter_args.x, parameter_args.y);
                 clock_gettime(CLOCK_MONOTONIC, parameter_args.end);
             }
             else {
-                hilbert_V4(parameter_args.degree, parameter_args.x, parameter_args.y, parameter_args.THREADS);
+                hilbert_V4(parameter_args.degree, parameter_args.x, parameter_args.y);
             }
             break;
         case 5:
@@ -298,17 +282,6 @@ void choose_version(parameter parameter_args) {
             }
             else {
                 hilbert_V5(parameter_args.degree, parameter_args.x, parameter_args.y);
-            }
-            break;
-        case 6:
-            if (parameter_args.messure_time) {
-                clock_gettime(CLOCK_MONOTONIC, parameter_args.start);
-                for (unsigned i=parameter_args.count_call; i > 0; i--)
-                    hilbert_V6(parameter_args.degree, parameter_args.x, parameter_args.y);
-                clock_gettime(CLOCK_MONOTONIC, parameter_args.end);
-            }
-            else {
-                hilbert_V6(parameter_args.degree, parameter_args.x, parameter_args.y);
             }
             break;
         default :

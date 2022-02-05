@@ -108,8 +108,8 @@ void hilbert_V4(unsigned degree, coord_t* x, coord_t* y, unsigned THREADS){
 
     //calculate
     for(unsigned i = START_MULTITHREADING; i < degree; ++i) {
-        unsigned long long segment_length = (unsigned long long) 1 << (2 * i), step = segment_length/THREADS;
-        unsigned segment_coord = 1 << i;
+        unsigned long long segment_length = (unsigned long long) 1 << (2 * i);
+        unsigned segment_coord = 1 << i, step = segment_length/THREADS;
         
         for(unsigned j = 0; j < THREADS; ++j) {
             pthread_args_arr[j].segment_length = segment_length;

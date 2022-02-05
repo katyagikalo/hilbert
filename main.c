@@ -139,12 +139,13 @@ int main(int argc, char **argv) {
                 help_message();
                 return -1;
         }
-//         if (argc - optind != 0) {
-//             fprintf(stderr, "Invalid Option found\n");
-//             help_message();
-//             return -1;
-//         }
     }
+    if (argc - optind != 0) {
+        fprintf(stderr, "Invalid Option found\n");
+        help_message();
+        return -1;
+    }
+
 
     
     //prep x und y

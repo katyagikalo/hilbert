@@ -32,7 +32,7 @@ v_assembly_multithreaded:
 
 segments_loop:
     cmp r8, r9
-    jge end
+    je end
 
     /*movups xmm0, [rsi + r8]                 //x[i] .. x[i+3]
     movups xmm1, [rdx + r8]                 //y[i] .. y[i+3]

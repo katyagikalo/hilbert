@@ -43,7 +43,7 @@ int main(int argc, char **argv) {
         char* ptr;
         switch (option) {
             case 'V' :
-                if (optarg == NULL || (*optarg != '0' && *optarg != '1' && *optarg != '2' && *optarg != '3' && *optarg != '4' && *optarg != '5' && *optarg != '6')) {
+                if (optarg == NULL || (*optarg != '0' && *optarg != '1' && *optarg != '2' && *optarg != '3' && *optarg != '4' && *optarg != '5')) {
                     printf("\n\n\n\nEs stehen folgende Versionen zur verfuegung:\n\n"
                            "Default wird C Multithreaded mit SIMD aufgerufen\n"
                            "0 --Die schnellste Variante wird anhand vom Grad n und Anzahl der THREADS ausgewaehlt--\n"
@@ -164,40 +164,48 @@ int main(int argc, char **argv) {
     parameter_args.y = y;
     
       
-    //informationen about imput args
+    //information about input args
     print_parameter(parameter_args);
 
-    
-    //choose version to use
-    if(!parameter_args.test_file)
-        choose_version(parameter_args);
+    if(parameter_args.version == 0){
+        if(parameter_args.degree < 10 || parameter_args.THREADS > 63 || parameter_args.THREADS == 1){
+            parameter_args.version = 1;
+        }
+        else {
+            parameter_args.version = 4;
+        }
+    }
 
-    //Benchmark
     if(parameter_args.test_file)
         test_func_file(parameter_args);
     
     if(parameter_args.test_time)
         test_func_time(parameter_args);
     
-    //print hilbert_curve on console
-    if(parameter_args.print_console)
-        print_curve(parameter_args.degree, parameter_args.x, parameter_args.y);
-
-    //save svg file
-    if(parameter_args.write_svg_file) {
-
-        create_folder("files");
-        create_folder("files/svg");
-
-        write_svg("files/svg", parameter_args.output_file_svg, parameter_args.degree, parameter_args.x, parameter_args.y);
-    }
-    
-    //save txt file
-    if(parameter_args.write_txt_file) {
-        create_folder("files");
-        create_folder("files/txt");
+    if(!parameter_args.test_file && !parameter_args.test_time) {
+        //choose version to use
+        choose_version(parameter_args);
         
-        write_txt("files/txt", parameter_args.output_file_txt, parameter_args.degree, parameter_args.x, parameter_args.y);
+        //print hilbert_curve on console
+        if(parameter_args.print_console)
+            print_curve(parameter_args.degree, parameter_args.x, parameter_args.y);
+
+        //save svg file
+        if(parameter_args.write_svg_file) {
+
+            create_folder("files");
+            create_folder("files/svg");
+
+            write_svg("files/svg", parameter_args.output_file_svg, parameter_args.degree, parameter_args.x, parameter_args.y);
+        }
+        
+        //save txt file
+        if(parameter_args.write_txt_file) {
+            create_folder("files");
+            create_folder("files/txt");
+            
+            write_txt("files/txt", parameter_args.output_file_txt, parameter_args.degree, parameter_args.x, parameter_args.y);
+        }
     }
 
     free(x);
@@ -207,9 +215,7 @@ int main(int argc, char **argv) {
 
 void choose_version(parameter parameter_args) {
     
-    unsigned version = parameter_args.version;
-    
-    switch (version) {
+    switch (parameter_args.version) {
         case -1:
             if (parameter_args.messure_time) {
                 clock_gettime(CLOCK_MONOTONIC, parameter_args.start);
@@ -221,14 +227,6 @@ void choose_version(parameter parameter_args) {
                 hilbert(parameter_args.degree, parameter_args.x, parameter_args.y, parameter_args.THREADS);
             }
             break;
-        case 0:
-            if(parameter_args.degree < 10 || parameter_args.THREADS > 63 || parameter_args.THREADS == 1){
-                parameter_args.version = 1;
-            }
-            else {
-                parameter_args.version = 4;
-            }
-            continue;
         case 1:
             if (parameter_args.messure_time) {
                 clock_gettime(CLOCK_MONOTONIC, parameter_args.start);
@@ -287,6 +285,7 @@ void choose_version(parameter parameter_args) {
         default :
             help_message();
     }
+    
     if(parameter_args.messure_time){
         printf("Zeitmessung ergibt: ");
         print_time(*parameter_args.start, *parameter_args.end);

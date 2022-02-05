@@ -40,7 +40,7 @@ void test_func_file(parameter parameter_args){
 
 void test_func_time(parameter parameter_args){
     
-    double result[parameter_args.degree][7];
+    double result[parameter_args.degree][6];
     
     for (unsigned temp_degree = 1; temp_degree <= parameter_args.degree; temp_degree++) {
 
@@ -85,7 +85,7 @@ void test_func_time(parameter parameter_args){
         clock_gettime(CLOCK_MONOTONIC, parameter_args.start);
         hilbert_V5(temp_degree, parameter_args.x, parameter_args.y);
         clock_gettime(CLOCK_MONOTONIC, parameter_args.end);
-        printf("Version 6 ----C ohne Optimierung------------------ : ");
+        printf("Version 5 ----C ohne Optimierung------------------ : ");
         result[temp_degree-1][5] = print_time(*parameter_args.start, *parameter_args.end);
         
         printf("\n");

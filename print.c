@@ -71,17 +71,20 @@ double print_time(struct timespec start, struct timespec end) {
      return elapsed;
 }
 
-void print_result(unsigned degree, double result[][7]) {
+void print_result(unsigned degree, double result[][6]) {
     for (unsigned i=0; i<degree; i++) {
 
         unsigned temp = 0;
         double val = result[i][0];
 
-        for (unsigned j=1; j<=6; j++) {
+        for (unsigned j=0; j<6; j++) {
             if (result[i][j] < val) {
                 val = result[i][j];
                 temp = j;
             }
+        }
+        if(temp == 0){
+            printf("The fastest time for n=%d was Default Version\n", i+1);
         }
         printf("The fastest time for n=%d was Version %d\n", i+1, temp);
     }

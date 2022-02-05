@@ -218,7 +218,7 @@ void choose_version(parameter parameter_args) {
                 clock_gettime(CLOCK_MONOTONIC, parameter_args.end);
             }
             else {
-                hilbert(parameter_args.degree, parameter_args.x, parameter_args.y);
+                hilbert(parameter_args.degree, parameter_args.x, parameter_args.y, unsigned THREADS);
             }
             break;
         case 0:
@@ -259,7 +259,7 @@ void choose_version(parameter parameter_args) {
                 clock_gettime(CLOCK_MONOTONIC, parameter_args.end);
             }
             else {
-                hilbert_V3(parameter_args.degree, parameter_args.x, parameter_args.y);
+                hilbert_V3(parameter_args.degree, parameter_args.x, parameter_args.y, unsigned THREADS);
             }
             break;
         case 4:
@@ -270,7 +270,7 @@ void choose_version(parameter parameter_args) {
                 clock_gettime(CLOCK_MONOTONIC, parameter_args.end);
             }
             else {
-                hilbert_V4(parameter_args.degree, parameter_args.x, parameter_args.y);
+                hilbert_V4(parameter_args.degree, parameter_args.x, parameter_args.y, unsigned THREADS);
             }
             break;
         case 5:

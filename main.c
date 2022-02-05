@@ -214,7 +214,7 @@ void choose_version(parameter parameter_args) {
             if (parameter_args.messure_time) {
                 clock_gettime(CLOCK_MONOTONIC, parameter_args.start);
                 for (unsigned i=parameter_args.count_call; i > 0; i--)
-                    hilbert(parameter_args.degree, parameter_args.x, parameter_args.y);
+                    hilbert(parameter_args.degree, parameter_args.x, parameter_args.y, unsigned THREADS);
                 clock_gettime(CLOCK_MONOTONIC, parameter_args.end);
             }
             else {
@@ -255,7 +255,7 @@ void choose_version(parameter parameter_args) {
             if (parameter_args.messure_time) {
                 clock_gettime(CLOCK_MONOTONIC, parameter_args.start);
                 for (unsigned i=parameter_args.count_call; i > 0; i--)
-                    hilbert_V3(parameter_args.degree, parameter_args.x, parameter_args.y);
+                    hilbert_V3(parameter_args.degree, parameter_args.x, parameter_args.y, unsigned THREADS);
                 clock_gettime(CLOCK_MONOTONIC, parameter_args.end);
             }
             else {
@@ -266,7 +266,7 @@ void choose_version(parameter parameter_args) {
             if (parameter_args.messure_time) {
                 clock_gettime(CLOCK_MONOTONIC, parameter_args.start);
                 for (unsigned i=parameter_args.count_call; i > 0; i--)
-                    hilbert_V4(parameter_args.degree, parameter_args.x, parameter_args.y);
+                    hilbert_V4(parameter_args.degree, parameter_args.x, parameter_args.y, unsigned THREADS);
                 clock_gettime(CLOCK_MONOTONIC, parameter_args.end);
             }
             else {

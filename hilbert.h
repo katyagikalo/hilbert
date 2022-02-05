@@ -10,10 +10,11 @@ typedef struct{
     unsigned segment_coord;
 }pthread_args;
 
-void hilbert(unsigned degree, coord_t* x, coord_t* y);
+void hilbert(unsigned degree, coord_t* x, coord_t* y, unsigned THREADS);
 void hilbert_V1(unsigned degree, coord_t* x, coord_t* y);
 void hilbert_V2(unsigned degree, coord_t* x, coord_t* y);
-void hilbert_V4(unsigned degree, coord_t* x, coord_t* y);
+void hilbert_V3(unsigned degree, coord_t* x, coord_t* y, unsigned THREADS);
+void hilbert_V4(unsigned degree, coord_t* x, coord_t* y, unsigned THREADS);
 void hilbert_V5(unsigned degree, coord_t* x, coord_t* y);
 
 void add_segments(unsigned degree, coord_t* x, coord_t* y);

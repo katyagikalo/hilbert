@@ -20,7 +20,7 @@ v_assembly_multithreaded:
     add r9, r9
     add r9, r9                              //end * 4
 
-    /*add rax, rax
+    add rax, rax
     add rax, rax                            //segment length * 4
 
     movd xmm3, rcx
@@ -28,7 +28,7 @@ v_assembly_multithreaded:
      
     mov r10, 1
     movd xmm2, r10
-    pshufd xmm2, xmm2, 0x00                 //1 1 1 1*/
+    pshufd xmm2, xmm2, 0x00                 //1 1 1 1
 
 segments_loop:
     cmp r8, r9

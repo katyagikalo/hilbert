@@ -39,7 +39,7 @@ int main(int argc, char **argv) {
             {"test_time", no_argument, 0, 'b'}
     };
 
-    while ((option = getopt_long(argc, argv, ":V:B::n:o:u:t:hpb",long_options, &option_index)) != -1) {
+    while ((option = getopt_long(argc, argv, ":V:B::n:o:u:t:hp",long_options, &option_index)) != -1) {
         char* ptr;
         switch (option) {
             case 'V' :
@@ -176,7 +176,7 @@ int main(int argc, char **argv) {
     
     //choose version to use
     if(!parameter_args.test_file)
-        choose_version(parameter_args);
+        hilbert(parameter_args);
 
     //Benchmark
     if(parameter_args.test_file)

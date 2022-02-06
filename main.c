@@ -158,10 +158,12 @@ int main(int argc, char **argv) {
                 return -1;
         }
     }
-    if(argc - optind != 0){
-        fprintf(stderr, "not an option\n");
+    if (option != NULL && (argc - optind)) {
+        fprintf(stderr, "\n\nWrong usage of parameter\n\n");
+        help_message();
         return -1;
     }
+    
 
     
     //prep x und y

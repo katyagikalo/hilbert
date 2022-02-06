@@ -143,7 +143,7 @@ void write_svg(char *path, char *output_file_svg, int degree, coord_t* x, coord_
     for (unsigned long long i = 1; i < length; ++i)
         fprintf(svg_fp, ",%d0 %d0", x[i].val, y[i].val);
 
-    fprintf(svg_fp,"\" transform=\"scale(1 -1) translate(1 -%d9)\"/>\n</svg>\n",(win_size-1));
+    fprintf(svg_fp,"\" transform=\"scale(1 -1) translate(5 -%d9)\"/>\n</svg>\n",(win_size-1));
     fclose(svg_fp);
     printf("file %s.svg created\n", output_file_svg);
 }

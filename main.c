@@ -40,13 +40,14 @@ int main(int argc, char **argv) {
     };
 
     while ((option = getopt_long(argc, argv, ":V:B::n:o:u:t:hp",long_options, &option_index)) != -1) {
-        char* ptr;
+        char *ptr;
         switch (option) {
             case 'V' :
-                if (optarg == NULL || (*optarg != '0' && *optarg != '1' && *optarg != '2' && *optarg != '3' && *optarg != '4' && *optarg != '5' && *optarg != '6')) {
-                    printf("\n\n\n\nThe following versions are available:\n\n"
+                if (optarg == NULL || (*optarg != '0' && *optarg != '1' && *optarg != '2' && *optarg != '3' && *optarg != '4' && *optarg != '5' && *optarg != '6') ||  *(optarg + 1) != '\0') {
+                    fprintf(stderr, "\n\nWrong usage of parameter\n\n");
+                    printf("\n\nThe following versions are available:\n\n"
                            "The default version is C Multithreaded with SIMD\n"
-                           "0 --C without Optimierung--\n"
+                           "0 --C without Optimization--\n"
                            "1 --C with SIMD--\n"
                            "2 --Assembler with SIMD--\n"
                            "3 --C Multithreaded without SIMD--\n"
@@ -54,7 +55,7 @@ int main(int argc, char **argv) {
                            "5 --Assembler Multithreaded with SIMD--\n"
                            "6 --The fastest variant is selected based on the degree n and number of THREADS--\n");
                     help_message();
-                    return 0;
+                    return -1;
                 }
                 parameter_args.version = atoi(optarg);
                 break;
@@ -62,7 +63,8 @@ int main(int argc, char **argv) {
                 ptr = optarg;
                 while (*ptr) {
                     if (!isdigit(*ptr)) {
-                        fprintf(stderr, "\n\n\n\nThe number of THREADS expects an int and must be at least 1.\n\n");
+                        fprintf(stderr, "\n\nWrong usage of parameter\n\n");
+                        printf("\n\nThe number of THREADS expects an int and must be at least 1.\n\n");
                         help_message();
                         return -1;
                     }
@@ -85,26 +87,41 @@ int main(int argc, char **argv) {
                 if (ptr != NULL) {
                     while (*ptr) {
                         if (!isdigit(*ptr)) {
-                            fprintf(stderr, "\n\n\n\nThe -B parameter input expects an optinal positive int.\n\n");
+                            fprintf(stderr, "\n\nWrong usage of parameter\n\n");
+                            printf("\n\nThe -B parameter input expects an optinal positive int.\n\n");
                             help_message();
                             return -1;
                         }
                         ptr++;
                     }
-                parameter_args.count_call = atoi(optarg);
+                    parameter_args.count_call = atoi(optarg);
+                }
+                if (parameter_args.count_call < 1){
+                    fprintf(stderr, "\n\nWrong usage of parameter\n\n");
+                            printf("\n\nThe -B parameter input expects an optinal positive int.\n\n");
+                            help_message();
+                            return -1;
                 }
                 break;
             case 'n' :
                 ptr = optarg;
                 while (*ptr) {
                     if (!isdigit(*ptr)) {
-                        fprintf(stderr, "\n\n\n\nFor the degree of the Hilbert curve a positive int is expected as input.\n\n");
+                        fprintf(stderr, "\n\nWrong usage of parameter\n\n");
+                        printf("\n\nFor the degree of the Hilbert curve a positive int between 1 and 25 is expected as input.\n\n");
                         help_message();
                         return -1;
                     }
                     ptr++;
                 }
                 parameter_args.degree = atoi(optarg);
+                if (parameter_args.degree > 25) {
+                    fprintf(stderr, "\n\nWrong usage of parameter\n\n");
+                    printf("\n\nFor the degree of the Hilbert curve a positive int between 1 and 25 is expected as input.\n"
+                    "For a degree of n=25 the RAM wich will be used is 4 Pebibyte.\nThis Application is not made for theese sizes of calculations\n\n");
+                    help_message();
+                    return -1;
+                }
                 break;
             case 'o' :
                 if (optarg != NULL) {
@@ -131,11 +148,12 @@ int main(int argc, char **argv) {
                 help_message();
                 return 0;
             case '?' :
-                fprintf(stderr, "\n\n\n\nParameter %c not recognized\n\n", optopt);
+                fprintf(stderr, "\n\nWrong usage of parameter\n\n");
+                printf("\n\nParameter %c not recognized\n\n", optopt);
                 help_message();
                 return -1;
             default :
-                fprintf(stderr, "\n\n\n\nFalsche Nutzung von Parametern\n\n");
+                fprintf(stderr, "\n\nWrong usage of parameter\n\n");
                 help_message();
                 return -1;
         }
@@ -177,7 +195,7 @@ int main(int argc, char **argv) {
     if(!parameter_args.test_file && !parameter_args.test_time) {
         if(parameter_args.version == 6){
             if(parameter_args.degree < 10 || parameter_args.THREADS > 63 || parameter_args.THREADS == 1){
-                parameter_args.version = 1;
+                parameter_args.version = 2;
             }
             else {
                 parameter_args.version = 4;

@@ -12,35 +12,35 @@
 void print_parameter(parameter parameter_args){
     if (parameter_args.test_file
     ){
-        printf("\nVersion                      : Create files for all Versions\n");
+        printf("\nVersion                          : Create files for all Versions\n");
     }
     else if (parameter_args.test_time) {
-        printf("\nVersion                      : Benchmark all Versions from 1 to %d\n", parameter_args.degree);
+        printf("\nVersion                          : Benchmark all Versions from 1 to %d\n", parameter_args.degree);
     }
     else if (parameter_args.version == -1) {
-        printf("\nVersion                      : Default\n");
+        printf("\nVersion                          : Default\n");
     }
     else {
-        printf("\nVersion                      : V%d\n",parameter_args.version);
+        printf("\nVersion                          : V%d\n",parameter_args.version);
     }
     if (parameter_args.test_file){
-        printf("Degree of the Hilbert curve    : %d\n",parameter_args.degree);
+        printf(  "Degree of the Hilbert curve      : %d\n",parameter_args.degree);
     }
     else if (parameter_args.test_time){
-        printf("Degree of the Hilbert curve    : 1 to %d\n",parameter_args.degree);
+        printf(  "Degree of the Hilbert curve      : 1 to %d\n",parameter_args.degree);
     }
     else{
-        printf("Degree of the Hilbert curve    : %d\n",parameter_args.degree);
+        printf(  "Degree of the Hilbert curve      : %d\n",parameter_args.degree);
     }
     
     if (parameter_args.test_time) {
-        printf("Time_messuring                  : yes\n\n\n");
+        printf(  "Time_messuring                   : yes\n\n\n");
     }
     else if (parameter_args.test_file) {
-        printf("Dateien werden erstellt\n");
+        printf(  "Dateien werden erstellt\n");
     }
     else {
-        printf("Zeitmessung                      : %s\n",
+        printf(  "Zeitmessung                      : %s\n",
             (parameter_args.messure_time ? "yes" : "no"));
     }
     
@@ -197,13 +197,13 @@ void help_message() {
            "                  \n\n"
            "./main [-V<int>] [-n<int>] [-B<int>] [-p] [-o<file>] [-u<file>] [-t<int>] [-h] [--test_file] [--test_time] [--help]\n\n"
            "Options:\n"
-           "  -V<int>        --Version                                                 <int>   -> V0 bis V5\n"
-           "  -n<int>        --degree of Hilbert curve                                 <int>   -> Degree of Hilbert curve\n"
-           "  -B<int>[opt]   --messure time                                            <int>   -> Number of function calls\n"
+           "  -V<int>        --Version                                             <int>   -> V0 bis V5\n"
+           "  -n<int>        --degree of Hilbert curve                             <int>   -> Degree of Hilbert curve\n"
+           "  -B<int>[opt]   --messure time                                        <int>   -> Number of function calls\n"
            "  -p             --print on console\n"
-           "  -o<file>       --create svg file                                         <file>  -> Name of svg output file\n"
-           "  -u<file>       --create txt file                                         <file>  -> Name of txt output file\n"
-           "  -t<int>        --number of used Threads for calculation                  <int>   -> Number of Threads for calculation\n\n"
+           "  -o<file>       --create svg file                                     <file>  -> Name of svg output file\n"
+           "  -u<file>       --create txt file                                     <file>  -> Name of txt output file\n"
+           "  -t<int>        --number of used Threads for calculation              <int>   -> Number of Threads for calculation\n\n"
            "  --test_file    --create files for all versions\n"
            "  --test_time    --test all Versions from 0 to n and Benchmark\n"
            "  -h             --Hilfe\n"

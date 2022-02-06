@@ -43,7 +43,7 @@ int main(int argc, char **argv) {
         char* ptr;
         switch (option) {
             case 'V' :
-                if (optarg == NULL || (*optarg != '0' && *optarg != '1' && *optarg != '2' && *optarg != '3' && *optarg != '4' && *optarg != '5' || *optarg != '6')) {
+                if (optarg == NULL || (*optarg != '0' && *optarg != '1' && *optarg != '2' && *optarg != '3' && *optarg != '4' && *optarg != '5' && *optarg != '6')) {
                     printf("\n\n\n\nThe following versions are available:\n\n"
                            "The default version is C Multithreaded with SIMD\n"
                            "0 --C without Optimierung--\n"

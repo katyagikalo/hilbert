@@ -161,7 +161,7 @@ int main(int argc, char **argv) {
     
     
     printf("%d\n", argc);
-    printf("%d\n", optind);
+    //printf("%d\n", optind);
     /*if (argc - optind) {
         fprintf(stderr, "\n\nWrong usage of parameter\n\n");
         help_message();

@@ -12,51 +12,51 @@
 void print_parameter(parameter parameter_args){
     if (parameter_args.test_file
     ){
-        printf( "\nVersion                  : Create files for all Versions\n");
+        printf("\nVersion                      : Create files for all Versions\n");
     }
     else if (parameter_args.test_time) {
-        printf( "\nVersion                  : Benchmark all Versions from 1 to %d\n", parameter_args.degree);
+        printf("\nVersion                      : Benchmark all Versions from 1 to %d\n", parameter_args.degree);
     }
     else if (parameter_args.version == -1) {
-        printf(   "\nVersion                  : Default\n");
+        printf("\nVersion                      : Default\n");
     }
     else {
-        printf(   "\nVersion                  : V%d\n",parameter_args.version);
+        printf("\nVersion                      : V%d\n",parameter_args.version);
     }
     if (parameter_args.test_file){
-        printf("Grad der Hilbertkurve    : %d\n",parameter_args.degree);
+        printf("Degree of the Hilbert curve    : %d\n",parameter_args.degree);
     }
     else if (parameter_args.test_time){
-        printf("Grad der Hilbertkurve    : 1 to %d\n",parameter_args.degree);
+        printf("Degree of the Hilbert curve    : 1 to %d\n",parameter_args.degree);
     }
     else{
-        printf("Grad der Hilbertkurve    : %d\n",parameter_args.degree);
+        printf("Degree of the Hilbert curve    : %d\n",parameter_args.degree);
     }
     
     if (parameter_args.test_time) {
-        printf("Zeitmessung              : ja\n\n\n");
+        printf("Time_messuring                  : yes\n\n\n");
     }
     else if (parameter_args.test_file) {
         printf("Dateien werden erstellt\n");
     }
     else {
-        printf("Zeitmessung              : %s\n",
-            (parameter_args.messure_time ? "ja" : "nein"));
+        printf("Zeitmessung                      : %s\n",
+            (parameter_args.messure_time ? "yes" : "no"));
     }
     
     if (!parameter_args.test_file && !parameter_args.test_time)
-        printf("Funktionsaufrufe         : %d\n"
-               "AusgabeArray auf Konsole : %s\n"
-               "SVG_Ausgabedatei         : %s\n"
-               "TXT_Ausgabedatei         : %s\n\n\n",
-               parameter_args.count_call, (parameter_args.print_console ? "ja" : "nein"),
-               (parameter_args.write_svg_file ? parameter_args.output_file_svg : "--nicht gewaehlt--"),
-               (parameter_args.write_txt_file ? parameter_args.output_file_txt : "--nicht gewaehlt--"));
+        printf("Number of function calls         : %d\n"
+               "Output array on console          : %s\n"
+               "SVG_output_file                  : %s\n"
+               "TXT_output_file                  : %s\n\n\n",
+               parameter_args.count_call, (parameter_args.print_console ? "yes" : "no"),
+               (parameter_args.write_svg_file ? parameter_args.output_file_svg : "--not chosen--"),
+               (parameter_args.write_txt_file ? parameter_args.output_file_txt : "--not chosen--"));
 }
 
 void print_curve(unsigned degree, coord_t* x, coord_t* y){
     unsigned long long length = (unsigned long long)1 << (2*degree);
-    printf("\n\n\n\n\nArray der Koordinaten:\n\n");
+    printf("\n\n\n\n\nArray of coordinates:\n\n");
     for(unsigned long long i = 0; i < length; ++i) {
         printf("(%d,%d) ", x[i].val, y[i].val);
     }
@@ -67,7 +67,7 @@ void print_curve(unsigned degree, coord_t* x, coord_t* y){
 double print_time(struct timespec start, struct timespec end) {
      double elapsed = (end.tv_sec - start.tv_sec);
      elapsed += (end.tv_nsec - start.tv_nsec) / 1000000000.0;
-     printf("%.10f Sekunden\n", elapsed);
+     printf("%.10f seconds\n", elapsed);
      return elapsed;
 }
 
@@ -96,7 +96,7 @@ void create_folder(char path[]){
     if (stat(path, &st_0) == -1)
         mkdir(path, 0700);
     
-    printf("Ordner %s erstellt\n", path);
+    printf("directory %s created\n", path);
 }
 
 
@@ -123,7 +123,7 @@ void write_svg(char *path, char *output_file_svg, int degree, coord_t* x, coord_
     }
     
     if (svg_fp == NULL) {
-        printf("File kann nicht angelegt werden\n");
+        printf("File cannot be created\n");
         return;
     }
 
@@ -145,7 +145,7 @@ void write_svg(char *path, char *output_file_svg, int degree, coord_t* x, coord_
 
     fprintf(svg_fp,"\" transform=\"scale(1 -1) translate(0 -%d0)\"/>\n</svg>\n",win_size);
     fclose(svg_fp);
-    printf("Datei %s.svg erstellt\n", output_file_svg);
+    printf("file %s.svg created\n", output_file_svg);
 }
 
 void write_txt(char *path, char *output_file_txt, int degree, coord_t* x, coord_t* y) {
@@ -171,7 +171,7 @@ void write_txt(char *path, char *output_file_txt, int degree, coord_t* x, coord_
     }
     
     if (txt_fp == NULL) {
-        printf("File kann nicht angelegt werden\n");
+        printf("File cannot be created\n");
         return;
     }
     
@@ -180,35 +180,44 @@ void write_txt(char *path, char *output_file_txt, int degree, coord_t* x, coord_
     for (unsigned long long i = 0; i < length; ++i)
         fprintf(txt_fp, "(%d,%d)", x[i].val, y[i].val);
     fclose(txt_fp);
-    printf("Datei %s.txt erstellt\n", output_file_txt);
+    printf("File %s.txt created\n", output_file_txt);
 }
 
 
 void help_message() {
-    printf("\nDefaultwerte sind: -V0 -n1\n\n"
-           "./main [-V<int>] [-B<int>] [-n<int>] [-o<file>] [-h] [--help]\n\n"
+    printf("\nDefault values: Version C Multithreaded with SIMD\n"
+           "                  degree of Hilbert curve = 1\n"
+           "                  messure time: no\n"
+           "                  print on console: no\n"
+           "                  create svg file: no\n"
+           "                  create txt file: no\n"
+           "                  number of used Threads for calculation: 8\n"
+           "                  create files for all versions: no\n"
+           "                  test all Versions from 0 to n and Benchmark: no\n"
+           "                  \n\n"
+           "./main [-V<int>] [-n<int>] [-B<int>] [-p] [-o<file>] [-u<file>] [-t<int>] [-h] [--test_file] [--test_time] [--help]\n\n"
            "Options:\n"
-           "  -V<int>        --Version                                                         <int>   -> V0 bis V5\n"
-           "  -B<int>[opt]   --Laufzeitmessung                                                 <int>   -> Anzahl Aufrufe\n"
-           "  -n<int>        --Grad der Hilbertkurve                                           <int>   -> Grad der Hilbertkurve\n"
-           "  -p             --Koordinatenausgabe auf Konsole\n"
-           "  -t<int>        --Anzahl an Threads zur Berechnung                                <int>   -> Thread Anzahl\n"
-           "  -o<file>       --SVG Ausgabedatei                                                <file>  -> Name der SVG Ausgabedatei\n"
-           "  -u<file>       --txt Ausgabedatei                                                <file>  -> Name der txt Ausgabedatei\n"
-           "  --test_file    --Erstellt von jeder Version eine txt und eine svg Datei"
-           "  --test_time    --Testet alle Versionen von 1 bis n"
+           "  -V<int>        --Version                                                 <int>   -> V0 bis V5\n"
+           "  -n<int>        --degree of Hilbert curve                                 <int>   -> Degree of Hilbert curve\n"
+           "  -B<int>[opt]   --messure time                                            <int>   -> Number of function calls\n"
+           "  -p             --print on console\n"
+           "  -o<file>       --create svg file                                         <file>  -> Name of svg output file\n"
+           "  -u<file>       --create txt file                                         <file>  -> Name of txt output file\n"
+           "  -t<int>        --number of used Threads for calculation                  <int>   -> Number of Threads for calculation\n\n"
+           "  --test_file    --create files for all versions\n"
+           "  --test_time    --test all Versions from 0 to n and Benchmark\n"
            "  -h             --Hilfe\n"
            "  --help         --Hilfe\n\n\n"
            "Beispielaufrufe:   ./main -h\n"
-           "                   ./main --help\n"
+           "                   ./main --help\n\n"
            "                   ./main --test_time\n"
            "                   ./main --test_all\n"
            "                   ./main --test_time -n15 -t8\n"
-           "                   ./main --test_all -n13 -t32\n"
+           "                   ./main --test_all -n13 -t32\n\n"
            "                   ./main\n"
            "                   ./main -B -n4\n"
            "                   ./main -o file_name -n5\n"
            "                   ./main -V1 -B5 -n3 -o file_name\n"
            "                   ./main -V0 -B12 -n4 -o my_hilbert_svg -u my_hilbert_txt -t16\n\n\n"
-           "Wird eine Option mit Optionsargument doppelt aufgerufen, so wird das letzte Optionsargument verwendet.\n\n\n\n");
+           "If an option with option argument is called twice, the last option argument is used.\n\n\n\n");
 }

@@ -20,7 +20,7 @@ int main(int argc, char **argv) {
     parameter_args.start = &start;
     parameter_args.end = &end;
     parameter_args.messure_time = false;
-    parameter_args.version = -1;
+    parameter_args.version = 4;
     parameter_args.count_call = 1;
     parameter_args.degree = 1;
     parameter_args.write_svg_file = false;
@@ -43,15 +43,16 @@ int main(int argc, char **argv) {
         char* ptr;
         switch (option) {
             case 'V' :
-                if (optarg == NULL || (*optarg != '0' && *optarg != '1' && *optarg != '2' && *optarg != '3' && *optarg != '4' && *optarg != '5')) {
-                    printf("\n\n\n\nEs stehen folgende Versionen zur verfuegung:\n\n"
-                           "Default wird C Multithreaded mit SIMD aufgerufen\n"
-                           "0 --Die schnellste Variante wird anhand vom Grad n und Anzahl der THREADS ausgewaehlt--\n"
-                           "1 --Assembler mit SIMD--\n"
-                           "2 --C mit SIMD--\n"
-                           "3 --C Multithreaded ohne SIMD--\n"
-                           "4 --Assembler Multithreaded mit SIMD--\n"
-                           "5 --C ohne Optimierung--\n");
+                if (optarg == NULL || (*optarg != '0' && *optarg != '1' && *optarg != '2' && *optarg != '3' && *optarg != '4' && *optarg != '5' || *optarg != '6')) {
+                    printf("\n\n\n\nThe following versions are available:\n\n"
+                           "The default version is C Multithreaded with SIMD\n"
+                           "0 --C without Optimierung--\n"
+                           "1 --C with SIMD--\n"
+                           "2 --Assembler with SIMD--\n"
+                           "3 --C Multithreaded without SIMD--\n"
+                           "4 --C Multithreaded with SIMD--\n"
+                           "5 --Assembler Multithreaded with SIMD--\n"
+                           "6 --The fastest variant is selected based on the degree n and number of THREADS--\n");
                     help_message();
                     return 0;
                 }
@@ -61,7 +62,7 @@ int main(int argc, char **argv) {
                 ptr = optarg;
                 while (*ptr) {
                     if (!isdigit(*ptr)) {
-                        fprintf(stderr, "\n\n\n\nDie Anzahl an THREADS erwartet einen int und muss mindestens 1 betragen.\n\n");
+                        fprintf(stderr, "\n\n\n\nThe number of THREADS expects an int and must be at least 1.\n\n");
                         help_message();
                         return -1;
                     }
@@ -84,7 +85,7 @@ int main(int argc, char **argv) {
                 if (ptr != NULL) {
                     while (*ptr) {
                         if (!isdigit(*ptr)) {
-                            fprintf(stderr, "\n\n\n\nDie Eingabe -B erwartet einen positiven int.\n\n");
+                            fprintf(stderr, "\n\n\n\nThe -B parameter input expects an optinal positive int.\n\n");
                             help_message();
                             return -1;
                         }
@@ -97,7 +98,7 @@ int main(int argc, char **argv) {
                 ptr = optarg;
                 while (*ptr) {
                     if (!isdigit(*ptr)) {
-                        fprintf(stderr, "\n\n\n\nFuer den Grad der Hilbertkurve wird ein positiver int als Eingabe erwartet.\n\n");
+                        fprintf(stderr, "\n\n\n\nFor the degree of the Hilbert curve a positive int is expected as input.\n\n");
                         help_message();
                         return -1;
                     }
@@ -130,11 +131,11 @@ int main(int argc, char **argv) {
                 help_message();
                 return 0;
             case '?' :
-                fprintf(stderr, "\n\n\n\nParameter %c nicht erkannt.\n\n", optopt);
+                fprintf(stderr, "\n\n\n\nParameter %c not recognized\n\n", optopt);
                 help_message();
                 return -1;
             default :
-                fprintf(stderr, "\n\n\n\nFalsche Nutzung von Parametern!\n\n");
+                fprintf(stderr, "\n\n\n\nFalsche Nutzung von Parametern\n\n");
                 help_message();
                 return -1;
         }
@@ -148,7 +149,7 @@ int main(int argc, char **argv) {
 
     x = malloc(sizeof(coord_t)*curve_length);
     if(x == NULL){
-        printf("malloc hat fehlgeschlagen\n");
+        fprintf(stderr, "malloc failed\n");
         return -1;
     }
 
@@ -156,7 +157,7 @@ int main(int argc, char **argv) {
 
     y = malloc(sizeof(coord_t)*curve_length);
     if(y == NULL){
-        printf("malloc hat fehlgeschlagen\n");
+        fprintf(stderr, "malloc failed\n");
         return -1;
     }
 
@@ -174,7 +175,7 @@ int main(int argc, char **argv) {
         test_func_time(parameter_args);
     
     if(!parameter_args.test_file && !parameter_args.test_time) {
-        if(parameter_args.version == 0){
+        if(parameter_args.version == 6){
             if(parameter_args.degree < 10 || parameter_args.THREADS > 63 || parameter_args.THREADS == 1){
                 parameter_args.version = 1;
             }
@@ -216,15 +217,15 @@ int main(int argc, char **argv) {
 void choose_version(parameter parameter_args) {
     
     switch (parameter_args.version) {
-        case -1:
+        case 0:
             if (parameter_args.messure_time) {
                 clock_gettime(CLOCK_MONOTONIC, parameter_args.start);
                 for (unsigned i=parameter_args.count_call; i > 0; i--)
-                    hilbert(parameter_args.degree, parameter_args.x, parameter_args.y, parameter_args.THREADS);
+                    hilbert_V0(parameter_args.degree, parameter_args.x, parameter_args.y);
                 clock_gettime(CLOCK_MONOTONIC, parameter_args.end);
             }
             else {
-                hilbert(parameter_args.degree, parameter_args.x, parameter_args.y, parameter_args.THREADS);
+                hilbert_V0(parameter_args.degree, parameter_args.x, parameter_args.y);
             }
             break;
         case 1:
@@ -264,22 +265,22 @@ void choose_version(parameter parameter_args) {
             if (parameter_args.messure_time) {
                 clock_gettime(CLOCK_MONOTONIC, parameter_args.start);
                 for (unsigned i=parameter_args.count_call; i > 0; i--)
-                    hilbert_V4(parameter_args.degree, parameter_args.x, parameter_args.y, parameter_args.THREADS);
+                    hilbert(parameter_args.degree, parameter_args.x, parameter_args.y, parameter_args.THREADS);
                 clock_gettime(CLOCK_MONOTONIC, parameter_args.end);
             }
             else {
-                hilbert_V4(parameter_args.degree, parameter_args.x, parameter_args.y, parameter_args.THREADS);
+                hilbert(parameter_args.degree, parameter_args.x, parameter_args.y, parameter_args.THREADS);
             }
             break;
         case 5:
             if (parameter_args.messure_time) {
                 clock_gettime(CLOCK_MONOTONIC, parameter_args.start);
                 for (unsigned i=parameter_args.count_call; i > 0; i--)
-                    hilbert_V5(parameter_args.degree, parameter_args.x, parameter_args.y);
+                    hilbert_V5(parameter_args.degree, parameter_args.x, parameter_args.y, parameter_args.THREADS);
                 clock_gettime(CLOCK_MONOTONIC, parameter_args.end);
             }
             else {
-                hilbert_V5(parameter_args.degree, parameter_args.x, parameter_args.y);
+                hilbert_V5(parameter_args.degree, parameter_args.x, parameter_args.y, parameter_args.THREADS);
             }
             break;
         default :
@@ -287,7 +288,7 @@ void choose_version(parameter parameter_args) {
     }
     
     if(parameter_args.messure_time){
-        printf("Zeitmessung ergibt: ");
+        printf("Time messurement result is: ");
         print_time(*parameter_args.start, *parameter_args.end);
     }
 }

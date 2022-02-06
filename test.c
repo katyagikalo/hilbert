@@ -13,7 +13,7 @@ void test_func_file(parameter parameter_args){
     create_folder("test_files/svg");
     create_folder("test_files/txt");
     
-    hilbert(parameter_args.degree, parameter_args.x, parameter_args.y, parameter_args.THREADS);
+    hilbert_V0(parameter_args.degree, parameter_args.x, parameter_args.y);
     write_svg("test_files/svg", "Version_0", parameter_args.degree, parameter_args.x, parameter_args.y);
     write_txt("test_files/txt", "Version_0", parameter_args.degree, parameter_args.x, parameter_args.y);
     
@@ -29,11 +29,11 @@ void test_func_file(parameter parameter_args){
     write_svg("test_files/svg", "Version_3", parameter_args.degree, parameter_args.x, parameter_args.y);
     write_txt("test_files/txt", "Version_3", parameter_args.degree, parameter_args.x, parameter_args.y);
     
-    hilbert_V4(parameter_args.degree, parameter_args.x, parameter_args.y, parameter_args.THREADS);
+    hilbert(parameter_args.degree, parameter_args.x, parameter_args.y, parameter_args.THREADS);
     write_svg("test_files/svg", "Version_4", parameter_args.degree, parameter_args.x, parameter_args.y);
     write_txt("test_files/txt", "Version_4", parameter_args.degree, parameter_args.x, parameter_args.y);
     
-    hilbert_V5(parameter_args.degree, parameter_args.x, parameter_args.y);
+    hilbert_V5(parameter_args.degree, parameter_args.x, parameter_args.y, parameter_args.THREADS);
     write_svg("test_files/svg", "Version_5", parameter_args.degree, parameter_args.x, parameter_args.y);
     write_txt("test_files/txt", "Version_5", parameter_args.degree, parameter_args.x, parameter_args.y);
 }
@@ -48,44 +48,44 @@ void test_func_time(parameter parameter_args){
         printf("n=%d\n", temp_degree);
         //Default Version
         clock_gettime(CLOCK_MONOTONIC, parameter_args.start);
-        hilbert(temp_degree, parameter_args.x, parameter_args.y, parameter_args.THREADS);
+        hilbert_V0(temp_degree, parameter_args.x, parameter_args.y);
         clock_gettime(CLOCK_MONOTONIC, parameter_args.end);
-        printf("Default ------C Multithreaded mit SIMD------------ : ");
+        printf("Version 0 ----C without optimization--------------- : ");
         result[temp_degree-1][0] = print_time(*parameter_args.start, *parameter_args.end);
         
         //Version 1
         clock_gettime(CLOCK_MONOTONIC, parameter_args.start);
         hilbert_V1(temp_degree, parameter_args.x, parameter_args.y);
         clock_gettime(CLOCK_MONOTONIC, parameter_args.end);
-        printf("Version 1 ----Assembler mit SIMD------------------ : ");
+        printf("Version 1 ----C with SIMD-------------------------- : ");
         result[temp_degree-1][1] = print_time(*parameter_args.start, *parameter_args.end);
         
         //Version 2
         clock_gettime(CLOCK_MONOTONIC, parameter_args.start);
         hilbert_V2(temp_degree, parameter_args.x, parameter_args.y);
         clock_gettime(CLOCK_MONOTONIC, parameter_args.end);
-        printf("Version 2 ----C mit SIMD-------------------------- : ");
+        printf("Version 2 ----Assembler with SIMD------------------ : ");
         result[temp_degree-1][2] = print_time(*parameter_args.start, *parameter_args.end);
         
         //Version 3
         clock_gettime(CLOCK_MONOTONIC, parameter_args.start);
         hilbert_V3(temp_degree, parameter_args.x, parameter_args.y, parameter_args.THREADS);
         clock_gettime(CLOCK_MONOTONIC, parameter_args.end);
-        printf("Version 3 ----C Multithreaded ohne SIMD----------- : ");
+        printf("Version 3 ----C Multithreaded without SIMD--------- : ");
         result[temp_degree-1][3] = print_time(*parameter_args.start, *parameter_args.end);
         
         //Version 4
         clock_gettime(CLOCK_MONOTONIC, parameter_args.start);
-        hilbert_V4(temp_degree, parameter_args.x, parameter_args.y, parameter_args.THREADS);
+        hilbert(temp_degree, parameter_args.x, parameter_args.y, parameter_args.THREADS);
         clock_gettime(CLOCK_MONOTONIC, parameter_args.end);
-        printf("Version 4 ----Assembler Multithreaded mit SIMD --- : ");
+        printf("Version 4 ----C Multithreaded with SIMD------------ : ");
         result[temp_degree-1][4] = print_time(*parameter_args.start, *parameter_args.end);
         
         //Version 5
         clock_gettime(CLOCK_MONOTONIC, parameter_args.start);
-        hilbert_V5(temp_degree, parameter_args.x, parameter_args.y);
+        hilbert_V5(temp_degree, parameter_args.x, parameter_args.y, parameter_args.THREADS);
         clock_gettime(CLOCK_MONOTONIC, parameter_args.end);
-        printf("Version 5 ----C ohne Optimierung------------------ : ");
+        printf("Version 5 ----Assembler Multithreaded with SIMD---- : ");
         result[temp_degree-1][5] = print_time(*parameter_args.start, *parameter_args.end);
         
         printf("\n");

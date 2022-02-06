@@ -158,13 +158,15 @@ int main(int argc, char **argv) {
                 return -1;
         }
     }
+    
+    
     printf("%d\n", argc);
     printf("%d\n", optind);
-    if (argc - optind) {
+    /*if (argc - optind) {
         fprintf(stderr, "\n\nWrong usage of parameter\n\n");
         help_message();
         return -1;
-    }
+    }*/
     
 
     

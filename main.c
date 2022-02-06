@@ -202,14 +202,7 @@ int main(int argc, char **argv) {
         test_func_time(parameter_args);
     
     if(!parameter_args.test_file && !parameter_args.test_time) {
-        if(parameter_args.version == 6){
-            if(parameter_args.degree < 10 || parameter_args.THREADS > 63 || parameter_args.THREADS == 1){
-                parameter_args.version = 2;
-            }
-            else {
-                parameter_args.version = 4;
-            }
-        }
+        parameter_args.version = best_version(parameter_args);
         
         //choose version to use
         choose_version(parameter_args);
@@ -239,6 +232,19 @@ int main(int argc, char **argv) {
     free(x);
     free(y);
     return 0;
+}
+
+unsigned best_version(unsigned parameter_args){
+    if(parameter_args.version == 6){
+        if(parameter_args.degree < 10 || parameter_args.THREADS > 63 || parameter_args.THREADS == 1){
+            return 2;
+        }
+        else {
+            return 4;
+        }
+    }
+    
+    return parameter_args.version;
 }
 
 void choose_version(parameter parameter_args) {

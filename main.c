@@ -234,7 +234,7 @@ int main(int argc, char **argv) {
     return 0;
 }
 
-unsigned best_version(unsigned parameter_args){
+unsigned best_version(parameter parameter_args){
     if(parameter_args.version == 6){
         if(parameter_args.degree < 10 || parameter_args.THREADS > 63 || parameter_args.THREADS == 1){
             return 2;

@@ -14,6 +14,6 @@ typedef struct {
 }parameter;
 
 void choose_version(parameter parameter_args);
-unsigned best_version(unsigned parameter_args)
+unsigned best_version(unsigned parameter_args);
 
 #endif

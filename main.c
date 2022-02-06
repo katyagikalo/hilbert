@@ -157,6 +157,10 @@ int main(int argc, char **argv) {
                 help_message();
                 return -1;
         }
+        if(argc - optind != 0){
+            fprintf(stderr, "not an option\n");
+            return -1;
+        }
     }
 
     

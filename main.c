@@ -30,11 +30,10 @@ int main(int argc, char **argv) {
     parameter_args.test_time = false;
     parameter_args.THREADS = 8;
     
-    int counter = 1;
-    
       
     int option;
     int option_index = 0;
+    int option_counter = 1;
     static struct option long_options[] = {
             {"help", no_argument, 0, 'h'},
             {"test_file", no_argument, 0, 'a'},
@@ -159,13 +158,10 @@ int main(int argc, char **argv) {
                 help_message();
                 return -1;
         }
-        counter++;
+        option_counter++;
     }
     
-    
-    //printf("%d\n", argc);
-    //printf("%d\n", optind);
-    if (argc - counter) {
+    if (argc - option_counter) {
         fprintf(stderr, "\n\nWrong usage of parameter\n\n");
         help_message();
         return -1;

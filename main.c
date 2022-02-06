@@ -30,6 +30,8 @@ int main(int argc, char **argv) {
     parameter_args.test_time = false;
     parameter_args.THREADS = 8;
     
+    int counter = 1;
+    
       
     int option;
     int option_index = 0;
@@ -157,16 +159,17 @@ int main(int argc, char **argv) {
                 help_message();
                 return -1;
         }
+        counter++;
     }
     
     
-    printf("%d\n", argc);
-    printf("%d\n", optind);
-    /*if (argc - optind) {
+    //printf("%d\n", argc);
+    //printf("%d\n", optind);
+    if (argc - counter) {
         fprintf(stderr, "\n\nWrong usage of parameter\n\n");
         help_message();
         return -1;
-    }*/
+    }
     
 
     

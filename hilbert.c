@@ -190,9 +190,9 @@ void add_segments(unsigned segment_degree, coord_t* x, coord_t* y){
     coord_t *vx = x, *vy = y;
 
     //2*segment_length
-    unsigned long long d_segment_length = segment_length + segment_length;
+    //unsigned long long d_segment_length = segment_length + segment_length;
     //3*segment_length
-    unsigned long long t_segment_length = d_segment_length + segment_length;
+    //unsigned long long t_segment_length = d_segment_length + segment_length;
 
     for(unsigned long long i = 0; i < segment_length; ++i) {
         wx = vx[0].val;
